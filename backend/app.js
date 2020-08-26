@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 const parser = require("body-parser");
+const cors = require("cors");
 const path = require("path");
 const MongoStore = require("connect-mongo")(session);
 const passport = require("passport");
@@ -22,6 +23,7 @@ connectDB();
 const app = express();
 
 // Middleware
+app.use(cors());
 app.use(morgan("combined"));
 app.use(parser.urlencoded({ extended: true }));
 app.use(

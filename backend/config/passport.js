@@ -1,6 +1,5 @@
 const LocalStrategy = require("passport-local").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const mongoose = require("mongoose");
 const User = require("../models/User");
 
 module.exports = function (passport) {
@@ -11,52 +10,37 @@ module.exports = function (passport) {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: "/auth/google/callback",
       },
-      async (accessToken, refreshToken, profile, done) => {
-        const newUser = {
-          googleId: profile.id,
-          displayName: profile.displayName,
-          firstName: profile.name.givenName,
-          lastName: profile.name.familyName,
-          image: profile.photos[0].value,
-        };
-
-        try {
-          let user = await User.findOne({ googleId: profile.id });
-          if (!user) {
-            user = await User.create(newUser);
-          }
-          done(null, user);
-        } catch (err) {
-          console.error(err);
-        }
+      async (accessToken, refreshToken, profile, cb) => {
+        return cb(null, profile)
       }
     )
   );
 
   passport.use(
-    new LocalStrategy(function (username, password, done) {
+    new LocalStrategy(function (username, password, cb) {
       User.findOne({ username: username }, function (err, user) {
         if (err) {
-          return done(err);
+          return cb(err);
         }
         if (!user) {
-          return done(null, false);
+          return cb(null, false);
         }
         if (user.password != password) {
-          return done(null, false);
+          return cb(null, false);
         }
-        return done(null, user);
+        return cb(null, user);
       });
     })
   );
 
-  passport.serializeUser(function (user, done) {
-    done(null, user.id);
+  passport.serializeUser(function (user, cb) {
+    return cb(null, user.id);
   });
 
-  passport.deserializeUser(function (id, done) {
+  passport.deserializeUser(function (id, cb) {
     User.findById(id, function (err, user) {
-      done(err, user);
+      if (err) { return cb(err); }
+      cb(null, user);
     });
   });
 };
