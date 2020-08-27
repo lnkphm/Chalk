@@ -1,4 +1,3 @@
-const LocalStrategy = require("passport-local").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User");
 
@@ -11,35 +10,35 @@ module.exports = function (passport) {
         callbackURL: "/auth/google/callback",
       },
       async (accessToken, refreshToken, profile, cb) => {
-        return cb(null, profile)
+        const currentUser = await User.findOne({
+          googleId: profile.id,
+        });
+        if (!currentUser) {
+          const newUser = await new User({
+            googleId: profile.id,
+            displayName: profile.displayName,
+            firstName: profile.name.givenName,
+            lastName: profile.name.familyName,
+            profileImageUrl: profile.photos[0].value,
+          }).save();
+          if (newUser) {
+            cb(null, newUser);
+          }
+        }
+        cb(null, currentUser);
       }
     )
   );
 
-  passport.use(
-    new LocalStrategy(function (username, password, cb) {
-      User.findOne({ username: username }, function (err, user) {
-        if (err) {
-          return cb(err);
-        }
-        if (!user) {
-          return cb(null, false);
-        }
-        if (user.password != password) {
-          return cb(null, false);
-        }
-        return cb(null, user);
-      });
-    })
-  );
-
   passport.serializeUser(function (user, cb) {
-    return cb(null, user.id);
+    cb(null, user.id);
   });
 
   passport.deserializeUser(function (id, cb) {
     User.findById(id, function (err, user) {
-      if (err) { return cb(err); }
+      if (err) {
+        cb(err);
+      }
       cb(null, user);
     });
   });

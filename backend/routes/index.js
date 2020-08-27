@@ -1,16 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const { ensureAuth, ensureGuest } = require("../middleware/auth");
 
-// @desc Login/Landing Page
+const authCheck = (req, res, next) => {
+  if (!req.user) {
+    res.status(401).json("User Unauthorized");
+  } else {
+    next();
+  }
+};
+
+// @desc Get user info
 // @route GET /
-router.get("/", ensureGuest, (req, res) => {
-})
-
-// @decv Home
-// @route GET /home
-router.get("/home", ensureAuth, (req, res) => {
-  console.log(req.user);
+router.get("/", authCheck, (req, res) => {
+  res.status(200).json(req.user)
 })
 
 module.exports = router;

@@ -7,13 +7,17 @@ const UserProvider = ({ children }) => {
   useEffect(() => {
     fetch("/user")
       .then((res) => res.json())
-      .then((res) => res.setUser(res))
+      .then((res) => setUser(res))
       .catch((err) => {
         console.log(err);
       });
   }, []);
 
-  return <context.Provider value={user}>{children}</context.Provider>;
+  return (
+    <context.Provider value={user}>
+      {children}
+    </context.Provider>
+  );
 };
 
 UserProvider.context = context;

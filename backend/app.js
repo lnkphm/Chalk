@@ -8,7 +8,6 @@ const cors = require("cors");
 const path = require("path");
 const MongoStore = require("connect-mongo")(session);
 const passport = require("passport");
-
 const connectDB = require("./config/db");
 
 // Load config
@@ -41,7 +40,7 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
-app.use("/", require("./routes/index"));
+// app.use("/", require("./routes/index"));
 app.use("/auth", require("./routes/auth"));
 
 const PORT = process.env.PORT || 5000;

@@ -4,15 +4,10 @@ const crypto = require("crypto");
 const UserSchema = mongoose.Schema(
   {
     googleId: String,
-    username: String,
-    email: String,
-    password: String,
-    image: String,
     displayName: String,
     firstName: String,
     lastName: String,
-    hash: String,
-    salt: String,
+    image: String,
   },
   {
     timestamps: true,

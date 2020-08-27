@@ -1,27 +1,64 @@
 import React from "react";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Container from "@material-ui/core/Container"
-import { makeStyles } from "@material-ui/core/styles";
+import axios from "axios";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexDirection: "column",
-    minHeight: '100vh'
-  },
-  main: {
-    marginTop: theme.spacing(8),
-    marginBottom: theme.spacing(2)
-  },
-}));
+class Home extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      authenticated: false,
+      user: {},
+    };
+  }
 
-export default function Home() {
-  const classes = useStyles();
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <Container component="main" className={classes.main} maxWidth="sm">
-      </Container>
-    </div>
-  );
+  componentDidMount() {
+    fetch("/auth/login", {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Credentials": true,
+      },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        this.setState({
+          authenticated: true,
+          user: res,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  render() {
+    const auth = this.state.authenticated;
+    return (
+      <div>
+        <div>
+          <ul>
+            <li>
+              <a href="/home">Home</a>
+            </li>
+            <li>
+              <a href="/auth/google">Sign in (Google)</a>
+            </li>
+            <li>
+              <a href="/auth/logout">Sign out</a>
+            </li>
+          </ul>
+        </div>
+        {!auth ? (
+          <div>Hi, Anon</div>
+        ) : (
+          <div>Hi, {this.state.user.displayName}</div>
+        )}
+      </div>
+    );
+  }
 }
+
+export default Home;
