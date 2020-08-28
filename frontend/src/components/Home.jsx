@@ -11,27 +11,12 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    fetch("/auth/login", {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Credentials": true,
-      },
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        this.setState({
-          authenticated: true,
-          user: res,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
+    axios.get("/auth/user").then((res) => {
+      this.setState({
+        authenticated: true,
+        user: res.data,
       });
+    });
   }
 
   render() {
@@ -41,7 +26,7 @@ class Home extends React.Component {
         <div>
           <ul>
             <li>
-              <a href="/home">Home</a>
+              <a href="/">Home</a>
             </li>
             <li>
               <a href="/auth/google">Sign in (Google)</a>
