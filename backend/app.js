@@ -8,7 +8,7 @@ const cors = require("cors");
 const path = require("path");
 const MongoStore = require("connect-mongo")(session);
 const passport = require("passport");
-const connectDB = require("./config/db");
+const connectDB = require("./config/database");
 
 // Load config
 dotenv.config({ path: "./config/config.env" });
@@ -24,7 +24,7 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(morgan("combined"));
-app.use(parser.urlencoded({ extended: true }));
+app.use(parser.json());
 app.use(
   session({
     secret: "keyboard cat",
@@ -42,6 +42,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // Routes
 // app.use("/", require("./routes/index"));
 app.use("/auth", require("./routes/auth"));
+app.use("/user", require("./routes/user"));
 
 const PORT = process.env.PORT || 5000;
 

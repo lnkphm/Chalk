@@ -29,17 +29,23 @@ class Home extends React.Component {
               <a href="/">Home</a>
             </li>
             <li>
-              <a href="/auth/google">Sign in (Google)</a>
+              <a href="/signin">Sign In</a>
             </li>
             <li>
-              <a href="/auth/logout">Sign out</a>
+              <a href="/register">Register</a>
+            </li>
+            <li>
+              <a href="/auth/google">Google Auth</a>
+            </li>
+            <li>
+              <a href="/auth/logout">Sign Out</a>
             </li>
           </ul>
         </div>
         {!auth ? (
           <div>Hi, Anon</div>
         ) : (
-          <div>Hi, {this.state.user.displayName}</div>
+          <div>Hi, {this.state.user.name}</div>
         )}
       </div>
     );

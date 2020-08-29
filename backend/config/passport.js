@@ -1,4 +1,5 @@
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const LocalStrategy = require("passport-local").Strategy;
 const User = require("../models/User");
 
 module.exports = function (passport) {
@@ -10,16 +11,16 @@ module.exports = function (passport) {
         callbackURL: "/auth/google/callback",
       },
       async (accessToken, refreshToken, profile, cb) => {
+        console.log(profile);
         const currentUser = await User.findOne({
           googleId: profile.id,
         });
         if (!currentUser) {
           const newUser = await new User({
             googleId: profile.id,
-            displayName: profile.displayName,
-            firstName: profile.name.givenName,
-            lastName: profile.name.familyName,
-            profileImageUrl: profile.photos[0].value,
+            name: profile.displayName,
+            avatar: profile.photos[0].value,
+            email: profile.emails[0].value
           }).save();
           if (newUser) {
             cb(null, newUser);
@@ -27,6 +28,26 @@ module.exports = function (passport) {
         }
         cb(null, currentUser);
       }
+    )
+  );
+
+  passport.use(
+    new LocalStrategy(
+      function(username, password, cb) {
+        User.findOne({ username: username })
+          .then((user) => {
+            if (!user) return cb(null, false);
+            const isValid = user.validPassword(password);
+            if (isValid) {
+              return cb(null, user);
+            } else {
+              return cb(null, false);
+            }
+          })
+          .catch((err) => {
+            return cb(err);
+          });
+      },
     )
   );
 

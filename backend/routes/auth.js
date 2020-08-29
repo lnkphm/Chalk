@@ -15,9 +15,19 @@ router.get("/failed", (req, res) => {
   res.status(401).json("Failed!");
 });
 
+// @desc Auth with local account
+// @route POST /auth/local
+router.post(
+  "/local",
+  passport.authenticate("local", { failureRedirect: "/auth/failed" }),
+  (req, res) => {
+    res.redirect(CLIENT_HOME);
+  }
+);
+
 // @desc Auth with Google
 // @route GET /auth/google
-router.get("/google", passport.authenticate("google", { scope: ["profile"] }));
+router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
 // @desc Google auth callback
 // @route GET /auth/google/callback
