@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const ensureAuth = require("../middleware/ensureAuth");
 
-router.get("/", (req, res) => {
+router.get("/", ensureAuth, (req, res) => {
   User.find()
     .then((users) => res.json(users))
     .catch((err) => res.status(400).json(err));

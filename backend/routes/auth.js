@@ -1,50 +1,50 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-const CLIENT_HOME = "http://localhost:3000/";
+const ensureAuth = require("../middleware/ensureAuth");
+const ensureGuest = require("../middleware/ensureGuest");
 
-// @desc Get Authentical User Info
+// @desc Get current user info
 // @route GET /auth/login
-router.get("/user", (req, res) => {
-  res.send(req.user);
-})
-
-// @desc Login failed
-// @route GET /auth/login/failed
-router.get("/failed", (req, res) => {
-  res.status(401).json("Failed!");
+router.get("/user", ensureAuth, (req, res) => {
+  res.json({
+    username: req.user.username,
+    name: req.user.name,
+    email: req.user.email,
+    avatar: req.user.avatar,
+  });
 });
 
 // @desc Auth with local account
 // @route POST /auth/local
 router.post(
   "/local",
-  passport.authenticate("local", { failureRedirect: "/auth/failed" }),
+  ensureGuest,
+  passport.authenticate("local"),
   (req, res) => {
-    res.redirect(CLIENT_HOME);
+    res.redirect("/");
   }
 );
 
 // @desc Auth with Google
 // @route GET /auth/google
-router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+router.get("/google", ensureGuest, passport.authenticate("google", { scope: ["profile", "email"] }));
 
 // @desc Google auth callback
 // @route GET /auth/google/callback
 router.get(
   "/google/callback",
-  passport.authenticate("google", {
-    failureRedirect: "/auth/failed",
-    successRedirect: CLIENT_HOME,
-  })
+  passport.authenticate("google"),
+  (req, res) => {
+    res.redirect("/");
+  }
 );
 
 // @desc Logout
 // @route GET /auth/logout
-router.get("/logout", (req, res) => {
+router.get("/logout", ensureAuth, (req, res) => {
   req.logout();
-  res.redirect(CLIENT_HOME);
+  res.redirect("/");
 });
-
 
 module.exports = router;
