@@ -6,15 +6,14 @@ const authCheck = (req, res, next) => {
   if (req.isAuthenticated()) {
     next();
   } else {
-    res.status(401).json("User Unauthorized");
-    res.redirect(CLIENT_HOME);
+    res.status(401).json("User Unauthorized!")
   }
 };
 
 // @desc Get user info
 // @route GET /
 router.get("/", authCheck, (req, res) => {
-  res.json("Back to client");
+  res.status(200).json("Back to client");
   res.redirect(CLIENT_HOME);
 })
 

@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require("passport");
 const ensureAuth = require("../middleware/ensureAuth");
 const ensureGuest = require("../middleware/ensureGuest");
+const CLIENT_HOME = "http://localhost:3000";
 
 // @desc Get current user info
 // @route GET /auth/login
@@ -36,7 +37,7 @@ router.get(
   "/google/callback",
   passport.authenticate("google"),
   (req, res) => {
-    res.redirect("/");
+    res.redirect(CLIENT_HOME);
   }
 );
 
