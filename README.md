@@ -1,2 +1,2 @@
-# lms-demo
-Attempt to create LMS from scratch.
+# Chalk
+Attempt to create a LMS from scratch.
