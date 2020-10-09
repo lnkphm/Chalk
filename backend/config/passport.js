@@ -8,7 +8,7 @@ module.exports = function (passport) {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "/auth/google/callback",
+        callbackURL: "/api/auth/google/callback",
       },
       async (accessToken, refreshToken, profile, cb) => {
         console.log(profile);
@@ -32,23 +32,21 @@ module.exports = function (passport) {
   );
 
   passport.use(
-    new LocalStrategy(
-      function(username, password, cb) {
-        User.findOne({ username: username })
-          .then((user) => {
-            if (!user) return cb(null, false);
-            const isValid = user.validPassword(password);
-            if (isValid) {
-              return cb(null, user);
-            } else {
-              return cb(null, false);
-            }
-          })
-          .catch((err) => {
-            return cb(err);
-          });
-      },
-    )
+    new LocalStrategy(function (username, password, cb) {
+      User.findOne({ username: username })
+        .then((user) => {
+          if (!user) return cb(null, false);
+          const isValid = user.validPassword(password);
+          if (isValid) {
+            return cb(null, user);
+          } else {
+            return cb(null, false);
+          }
+        })
+        .catch((err) => {
+          return cb(err);
+        });
+    })
   );
 
   passport.serializeUser(function (user, cb) {

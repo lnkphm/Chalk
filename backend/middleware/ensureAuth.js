@@ -2,6 +2,6 @@ module.exports = function (req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   } else {
-    res.status(401).json("ayy lmao")
+    res.status(401).json("User is not authenticated!");
   }
 };

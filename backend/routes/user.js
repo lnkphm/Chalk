@@ -4,9 +4,9 @@ const User = require("../models/User");
 const ensureAuth = require("../middleware/ensureAuth");
 
 router.get("/", ensureAuth, (req, res) => {
-  User.find()
-    .then((users) => res.json(users))
-    .catch((err) => res.status(400).json(err));
+  User.find().select("_id username email name avatar")
+    .then((users) => res.status(200).send(users))
+    .catch((err) => res.status(400).send(err));
 });
 
 router.post("/add", (req, res) => {
@@ -16,19 +16,23 @@ router.post("/add", (req, res) => {
         const username = req.body.username;
         const password = req.body.password;
         const email = req.body.email;
-        const name = req.body.name;
+        const firstName = req.body.firstName;
+        const lastName = req.body.lastName;
         const newUser = new User({
           username: username,
           email: email,
-          name: name,
-          hash: "",
-          salt: "",
+          firstName: firstName,
+          lastName: lastName,
         });
         newUser.setPassword(password);
         newUser
           .save()
-          .then(() => res.json("User added"))
-          .catch((err) => res.status(400).json(err));
+          .then(() => res.status(201).send({
+            username: newUser.username,
+            email: newUser.email,
+            name: newUser.name
+          }))
+          .catch((err) => res.status(400).send(err));
       } else {
         res.json("User already exist!");
       }
