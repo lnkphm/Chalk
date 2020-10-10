@@ -47,16 +47,16 @@ class NavBar extends React.Component {
 
   render() {
     const { classes } = this.props;
-  
+
     return (
       <div className={classes.root}>
         <AppBar>
           <Toolbar>
             <IconButton
-            className={classes.menuButton}
-            edge="start"
-            color="inherit"
-            onClick={this.toggleDrawer}
+              className={classes.menuButton}
+              edge="start"
+              color="inherit"
+              onClick={this.toggleDrawer}
             >
               <MenuIcon />
             </IconButton>
@@ -69,11 +69,27 @@ class NavBar extends React.Component {
 
         <Drawer open={this.state.isOpened} onClose={this.toggleDrawer}>
           <List>
-            <ListItem className={classes.listItem}>
+            <ListItem
+              button
+              component="a"
+              href="/"
+              className={classes.listItem}
+            >
               <ListItemIcon>
                 <HomeIcon />
               </ListItemIcon>
-              <ListItemText>Home</ListItemText>
+              <ListItemText primary="Home" />
+            </ListItem>
+            <ListItem
+              button
+              component="a"
+              href="/login"
+              className={classes.listItem}
+            >
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary="Login" />
             </ListItem>
           </List>
         </Drawer>
@@ -82,6 +98,4 @@ class NavBar extends React.Component {
   }
 }
 
-export default withStyles(styles, { withTheme: true})(NavBar);
-
-
+export default withStyles(styles, { withTheme: true })(NavBar);
