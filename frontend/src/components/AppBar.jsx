@@ -10,9 +10,13 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import HomeIcon from '@material-ui/icons/Home';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 
 const styles = (theme) => ({
   root: {
@@ -33,15 +37,31 @@ class NavBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpened: false,
+      drawer: false,
+      menu: null,
     };
 
     this.toggleDrawer = this.toggleDrawer.bind(this);
+    this.toggleMenu = this.toggleMenu.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   toggleDrawer() {
     this.setState({
-      isOpened: !this.state.isOpened,
+      drawer: !this.state.drawer,
+    });
+  }
+
+  toggleMenu = (event) => {
+    this.setState({
+      menu: event.currentTarget,
+    });
+  };
+
+  handleClose() {
+    this.setState({
+      drawer: false,
+      menu: null,
     });
   }
 
@@ -49,51 +69,87 @@ class NavBar extends React.Component {
     const { classes } = this.props;
 
     return (
-      <div className={classes.root}>
-        <AppBar>
-          <Toolbar>
-            <IconButton
-              className={classes.menuButton}
-              edge="start"
-              color="inherit"
-              onClick={this.toggleDrawer}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" className={classes.title}>
-              Chalk
-            </Typography>
-            <Button color="inherit">Login</Button>
-          </Toolbar>
-        </AppBar>
-
-        <Drawer open={this.state.isOpened} onClose={this.toggleDrawer}>
-          <List>
-            <ListItem
-              button
-              component="a"
-              href="/"
-              className={classes.listItem}
-            >
-              <ListItemIcon>
-                <HomeIcon />
-              </ListItemIcon>
-              <ListItemText primary="Home" />
-            </ListItem>
-            <ListItem
-              button
-              component="a"
-              href="/login"
-              className={classes.listItem}
-            >
-              <ListItemIcon>
-                <HomeIcon />
-              </ListItemIcon>
-              <ListItemText primary="Login" />
-            </ListItem>
-          </List>
-        </Drawer>
-      </div>
+      <ClickAwayListener onClickAway={this.handleClose}>
+        <div className={classes.root}>
+          <AppBar>
+            <Toolbar>
+              <IconButton
+                className={classes.menuButton}
+                edge="start"
+                color="inherit"
+                onClick={this.toggleDrawer}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" className={classes.title}>
+                Chalk
+              </Typography>
+              <div>
+                <IconButton color="inherit" onClick={this.toggleMenu}>
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  anchorEl={this.state.menu}
+                  keepMounted
+                  open={Boolean(this.state.menu)}
+                  onClose={this.handleClose}
+                >
+                  <MenuItem>Profile</MenuItem>
+                  <MenuItem>Logout</MenuItem>
+                </Menu>
+              </div>
+            </Toolbar>
+          </AppBar>
+          <Drawer variant="persistent" open={this.state.drawer}>
+            <List>
+              <ListItem
+                button
+                component="a"
+                href="/home"
+                className={classes.listItem}
+              >
+                <ListItemIcon>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Home" />
+              </ListItem>
+              <ListItem
+                button
+                component="a"
+                href="/course"
+                className={classes.listItem}
+              >
+                <ListItemIcon>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Course" />
+              </ListItem>
+              <ListItem
+                button
+                component="a"
+                href="/user"
+                className={classes.listItem}
+              >
+                <ListItemIcon>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="User" />
+              </ListItem>
+              <ListItem
+                button
+                component="a"
+                href="/role"
+                className={classes.listItem}
+              >
+                <ListItemIcon>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Role" />
+              </ListItem>
+            </List>
+          </Drawer>
+        </div>
+      </ClickAwayListener>
     );
   }
 }

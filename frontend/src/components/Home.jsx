@@ -3,7 +3,6 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
-  toolbar: theme.mixins.toolbar,
   content: {
     padding: theme.spacing(3),
   },
@@ -13,7 +12,6 @@ function Home(props) {
   const classes = useStyles();
   return (
     <main className={classes.content}>
-      <div className={classes.toolbar} />
       <Typography paragraph>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus

@@ -1,9 +1,9 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const Role = require("../models/Role");
+const Course = require('../models/Course');
 
 router.get("/", (req, res) => {
-  Role.find()
+  Course.find()
     .then((result) => {
       res.status(200).send(result);
     })
@@ -23,7 +23,7 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-
+  
 })
 
 router.put("/:id", (req, res) => {

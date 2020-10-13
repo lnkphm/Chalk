@@ -17,7 +17,7 @@ const QuestionSchema = new Schema(
       },
     ],
     category: { type: Schema.Types.ObjectId, ref: "Category" },
-    tag: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
+    tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
   },
   {
     timestamps: true,
