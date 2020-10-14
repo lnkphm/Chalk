@@ -6,8 +6,4 @@ const RoleSchema = new Schema({
   description: { type: String },
 });
 
-RoleSchema.virtual('url').get(function () {
-  return '/api/role/' + this._id;
-});
-
 module.exports = mongoose.model('Role', RoleSchema);

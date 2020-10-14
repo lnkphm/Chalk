@@ -1,17 +1,17 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const ExamSchema = new Schema(
+const QuizSchema = new Schema(
   {
     name: { type: String },
     description: { type: String },
     timeStart: { type: Date },
     timeEnd: { type: Date },
-    examPaper: [{ type: Schema.Types.ObjectId, ref: "ExamPaper" }],
+    QuizPaper: [{ type: Schema.Types.ObjectId, ref: 'QuizPaper' }],
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("Exam", ExamSchema);
+module.exports = mongoose.model('Quiz', QuizSchema);
