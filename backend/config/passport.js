@@ -1,6 +1,6 @@
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const LocalStrategy = require("passport-local").Strategy;
-const User = require("../models/User");
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
+const User = require('../models/User');
 
 module.exports = function (passport) {
   passport.use(
@@ -8,7 +8,7 @@ module.exports = function (passport) {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "/api/auth/google/callback",
+        callbackURL: '/api/auth/google/callback',
       },
       async (accessToken, refreshToken, profile, cb) => {
         console.log(profile);
@@ -20,7 +20,7 @@ module.exports = function (passport) {
             googleId: profile.id,
             name: profile.displayName,
             avatar: profile.photos[0].value,
-            email: profile.emails[0].value
+            email: profile.emails[0].value,
           }).save();
           if (newUser) {
             cb(null, newUser);
@@ -62,4 +62,3 @@ module.exports = function (passport) {
     });
   });
 };
-

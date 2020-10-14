@@ -7,7 +7,8 @@ const QuizSchema = new Schema(
     description: { type: String },
     timeStart: { type: Date },
     timeEnd: { type: Date },
-    QuizPaper: [{ type: Schema.Types.ObjectId, ref: 'QuizPaper' }],
+    users: [{type: Schema.Types.ObjectId, ref: 'User'}],
+    quizPaper: [{ type: Schema.Types.ObjectId, ref: 'QuizPaper' }],
   },
   {
     timestamps: true,

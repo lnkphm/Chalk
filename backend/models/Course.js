@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Roles = require('./enums/Roles');
 
 const CourseSchema = new Schema(
   {
@@ -12,11 +13,11 @@ const CourseSchema = new Schema(
     users: [
       {
         id: { type: Schema.Types.ObjectId, ref: 'User' },
-        role: { type: Schema.Types.ObjectId, ref: 'Role' },
+        role: { type: String, enums: Roles },
       },
     ],
     category: { type: Schema.Types.ObjectId, ref: 'Category' },
-    tags: [{type: Schema.Types.ObjectId, ref: 'Tag'}]
+    tags: [{ type: Schema.Types.ObjectId, ref: 'Tag' }],
   },
   {
     timestamps: true,

@@ -8,12 +8,13 @@ const UserPaperSchema = new Schema(
     quizPaper: { type: Schema.Types.ObjectId, ref: 'QuizPaper' },
     submit: { type: Boolean },
     timeRemaining: { type: Number },
-    answers: [
-      {
-        question: { type: Schema.Types.ObjectId, ref: 'Question' },
-        text: { type: String },
-      },
-    ],
+    papers: [{
+      id: {type: Schema.Types.ObjectId, ref: 'QuizPaper'},
+      questions: [{
+        id: {type: Schema.Types.ObjectId, ref: 'Question'},
+        answers: [{type: String}]
+      }]
+    }]
   },
   {
     timestamps: true,

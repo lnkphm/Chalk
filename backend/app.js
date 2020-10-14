@@ -1,14 +1,14 @@
-const express = require("express");
-const session = require("express-session");
-const mongoose = require("mongoose");
-const morgan = require("morgan");
-const dotenv = require("dotenv");
-const parser = require("body-parser");
-const cors = require("cors");
-const path = require("path");
-const MongoStore = require("connect-mongo")(session);
-const passport = require("passport");
-const connectDB = require("./config/database");
+const express = require('express');
+const session = require('express-session');
+const mongoose = require('mongoose');
+const morgan = require('morgan');
+const dotenv = require('dotenv');
+const parser = require('body-parser');
+const cors = require('cors');
+const path = require('path');
+const MongoStore = require('connect-mongo')(session);
+const passport = require('passport');
+const connectDB = require('./config/database');
 
 // Load config
 dotenv.config();
@@ -20,12 +20,12 @@ const app = express();
 
 // Middleware
 app.use(cors());
-app.use(morgan("combined"));
+app.use(morgan('combined'));
 app.use(parser.urlencoded({ extended: false }));
 app.use(parser.json());
 app.use(
   session({
-    secret: "keyboard cat",
+    secret: 'keyboard cat',
     resave: false,
     saveUninitialized: false,
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
@@ -33,19 +33,16 @@ app.use(
 );
 
 // Passport config
-require("./config/passport")(passport);
+require('./config/passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
 // Public path
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
-app.use("/api/auth", require("./routes/auth"));
-app.use("/api/user", require("./routes/user"));
-
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/users', require('./routes/users'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, console.log(`Server is running on port ${PORT}`));
-
-
