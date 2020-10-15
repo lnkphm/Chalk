@@ -8,10 +8,10 @@ import Register from './pages/Register';
 import Landing from './pages/Landing';
 
 import Home from './components/Home';
-import Course from './components/Course';
 import User from './components/User';
-import Role from './components/Role';
 import AppBar from './components/AppBar';
+import Profile from './components/Profile';
+import Course from './components/Course';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar
@@ -31,9 +31,9 @@ function App() {
             <div className={classes.toolbar} />
             <Switch>
               <Route path="/home" component={Home} />
-              <Route path="/course" component={Course} />
               <Route path="/user" component={User} />
-              <Route path="/role" component={Role} />
+              <Route path="/profile" component={Profile} />
+              <Route path="/course/:courseId" component={Course} />
             </Switch>
           </Route>
         </Switch>

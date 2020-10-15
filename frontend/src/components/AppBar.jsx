@@ -94,7 +94,7 @@ class NavBar extends React.Component {
                   open={Boolean(this.state.menu)}
                   onClose={this.handleClose}
                 >
-                  <MenuItem>Profile</MenuItem>
+                  <MenuItem component="a" href="/profile">Profile</MenuItem>
                   <MenuItem>Logout</MenuItem>
                 </Menu>
               </div>
@@ -116,13 +116,13 @@ class NavBar extends React.Component {
               <ListItem
                 button
                 component="a"
-                href="/course"
+                href="/courses"
                 className={classes.listItem}
               >
                 <ListItemIcon>
                   <HomeIcon />
                 </ListItemIcon>
-                <ListItemText primary="Course" />
+                <ListItemText primary="Courses" />
               </ListItem>
               <ListItem
                 button
@@ -134,17 +134,6 @@ class NavBar extends React.Component {
                   <HomeIcon />
                 </ListItemIcon>
                 <ListItemText primary="User" />
-              </ListItem>
-              <ListItem
-                button
-                component="a"
-                href="/role"
-                className={classes.listItem}
-              >
-                <ListItemIcon>
-                  <HomeIcon />
-                </ListItemIcon>
-                <ListItemText primary="Role" />
               </ListItem>
             </List>
           </Drawer>
