@@ -19,13 +19,13 @@ class HomeCourseList extends React.Component {
       <Container>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <HomeCourseListItem name="Course 1" />
+            <HomeCourseListItem name="Course 1" url="/course/1" />
           </Grid>
           <Grid item xs={12}>
-            <HomeCourseListItem name="Course 2" />
+            <HomeCourseListItem name="Course 2" url="/course/2" />
           </Grid>
           <Grid item xs={12}>
-            <HomeCourseListItem name="Course 3" />
+            <HomeCourseListItem name="Course 3" url="/course/3" />
           </Grid>
         </Grid>
       </Container>
