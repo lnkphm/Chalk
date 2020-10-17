@@ -20,7 +20,7 @@ export default function AppBarAccount(props) {
   };
   return (
     <div className={classes.root}>
-      <IconButton color="inherit" onClick={handleClick}>
+      <IconButton edge="end" color="inherit" onClick={handleClick}>
         <AccountCircle />
       </IconButton>
       <Menu

@@ -1,5 +1,4 @@
 import React from 'react';
-import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = (theme) => ({
@@ -15,9 +14,9 @@ class Course extends React.Component {
     const { classes } = this.props;
     const {match: {params}} = this.props;
     return (
-      <Container>
+      <div>
         <h1>Course {params.courseId}</h1>
-      </Container>
+      </div>
     );
   }
 }
