@@ -1,36 +1,28 @@
 import React from 'react';
-import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import HomeCourseListItem from './HomeCourseListItem';
 
-const styles = (theme) => ({
-})
+const useStyles = makeStyles((theme) => ({
+  root: {},
+}));
 
-class HomeCourseList extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const { classes } = this.props;
-    return (
-      <Container>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <HomeCourseListItem name="Course 1" url="/course/1" />
-          </Grid>
-          <Grid item xs={12}>
-            <HomeCourseListItem name="Course 2" url="/course/2" />
-          </Grid>
-          <Grid item xs={12}>
-            <HomeCourseListItem name="Course 3" url="/course/3" />
-          </Grid>
+export default function HomeCourseList(props) {
+  const classes = useStyles();
+  return (
+    <div className={classes.root}>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <HomeCourseListItem name="Course 1" url="/course/1" />
         </Grid>
-      </Container>
-    );
-  }
+        <Grid item xs={12}>
+          <HomeCourseListItem name="Course 2" url="/course/2" />
+        </Grid>
+        <Grid item xs={12}>
+          <HomeCourseListItem name="Course 3" url="/course/3" />
+        </Grid>
+      </Grid>
+    </div>
+  );
 }
-
-export default withStyles(styles, {withTheme: true})(HomeCourseList);

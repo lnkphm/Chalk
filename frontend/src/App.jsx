@@ -11,7 +11,10 @@ import Home from './components/Home';
 import User from './components/User';
 import AppBar from './components/AppBar';
 import Profile from './components/Profile';
-import Course from './components/Course';
+import CourseOverview from './components/CourseOverview';
+import CourseExams from './components/CourseExams';
+import CourseUsers from './components/CourseUsers';
+import CourseGrades from './components/CourseGrades';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar
@@ -30,10 +33,13 @@ function App() {
             <AppBar />
             <div className={classes.toolbar} />
             <Switch>
-              <Route path="/home" component={Home} />
-              <Route path="/user" component={User} />
-              <Route path="/profile" component={Profile} />
-              <Route path="/course/:courseId" component={Course} />
+              <Route path="/home" exact component={Home} />
+              <Route path="/user" exact component={User} />
+              <Route path="/profile" exact component={Profile} />
+              <Route path="/course/:courseId" exact component={CourseOverview} />
+              <Route path="/course/:courseId/exams" exact component={CourseExams} />
+              <Route path="/course/:courseId/users" exact component={CourseUsers} />
+              <Route path="/course/:courseId/grades" exact component={CourseGrades} />
             </Switch>
           </Route>
         </Switch>

@@ -15,6 +15,35 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function AppBarCourseNavRoutes() {
+  return (
+    <Router>
+      <Switch>
+        <Route
+          path="/course/:courseId"
+          exact
+          render={(props) => <AppBarCourseNav {...props} value={0} />}
+        />
+        <Route
+          path="/course/:courseId/exams"
+          exact
+          render={(props) => <AppBarCourseNav {...props} value={1} />}
+        />
+        <Route
+          path="/course/:courseId/users"
+          exact
+          render={(props) => <AppBarCourseNav {...props} value={2} />}
+        />
+        <Route
+          path="/course/:courseId/grades"
+          exact
+          render={(props) => <AppBarCourseNav {...props} value={3} />}
+        />
+      </Switch>
+    </Router>
+  );
+}
+
 export default function NavBar() {
   const classes = useStyles();
 
@@ -24,23 +53,7 @@ export default function NavBar() {
         <Toolbar>
           <AppBarDrawer />
           <AppBarTitle text="Chalk" />
-          <Switch>
-            <Route
-              path="/course/:courseId"
-              exact
-              render={(props) => <AppBarCourseNav {...props} value={0} />}
-            />
-            <Route
-              path="/course/:courseId/users"
-              exact
-              render={(props) => <AppBarCourseNav {...props} value={1} />}
-            />
-            <Route
-              path="/course/:courseId/grades"
-              exact
-              render={(props) => <AppBarCourseNav {...props} value={2} />}
-            />
-          </Switch>
+          <AppBarCourseNavRoutes />
           <AppBarAccount />
         </Toolbar>
       </AppBar>

@@ -25,6 +25,11 @@ export default function AppBarCourseNav(props) {
         />
         <Tab
           component="a"
+          href={`/course/${params.courseId}/exams`}
+          label="Exams"
+        />
+        <Tab
+          component="a"
           href={`/course/${params.courseId}/users`}
           label="Users"
         />
