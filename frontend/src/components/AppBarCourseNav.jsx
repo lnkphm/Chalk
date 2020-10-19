@@ -20,22 +20,22 @@ export default function AppBarCourseNav(props) {
       <Tabs value={props.value}>
         <Tab
           component="a"
-          href={`/course/${params.courseId}`}
+          href={`/courses/${params.courseId}`}
           label="Overview"
         />
         <Tab
           component="a"
-          href={`/course/${params.courseId}/exams`}
+          href={`/courses/${params.courseId}/exams`}
           label="Exams"
         />
         <Tab
           component="a"
-          href={`/course/${params.courseId}/users`}
+          href={`/courses/${params.courseId}/users`}
           label="Users"
         />
         <Tab
           component="a"
-          href={`/course/${params.courseId}/grades`}
+          href={`/courses/${params.courseId}/grades`}
           label="Grades"
         />
       </Tabs>

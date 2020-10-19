@@ -36,10 +36,10 @@ function App() {
               <Route path="/home" exact component={Home} />
               <Route path="/user" exact component={User} />
               <Route path="/profile" exact component={Profile} />
-              <Route path="/course/:courseId" exact component={CourseOverview} />
-              <Route path="/course/:courseId/exams" exact component={CourseExams} />
-              <Route path="/course/:courseId/users" exact component={CourseUsers} />
-              <Route path="/course/:courseId/grades" exact component={CourseGrades} />
+              <Route path="/courses/:courseId" exact component={CourseOverview} />
+              <Route path="/courses/:courseId/exams" exact component={CourseExams} />
+              <Route path="/courses/:courseId/users" exact component={CourseUsers} />
+              <Route path="/courses/:courseId/grades" exact component={CourseGrades} />
             </Switch>
           </Route>
         </Switch>

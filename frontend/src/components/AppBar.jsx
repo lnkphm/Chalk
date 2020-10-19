@@ -20,22 +20,22 @@ function AppBarCourseNavRoutes() {
     <Router>
       <Switch>
         <Route
-          path="/course/:courseId"
+          path="/courses/:courseId"
           exact
           render={(props) => <AppBarCourseNav {...props} value={0} />}
         />
         <Route
-          path="/course/:courseId/exams"
+          path="/courses/:courseId/exams"
           exact
           render={(props) => <AppBarCourseNav {...props} value={1} />}
         />
         <Route
-          path="/course/:courseId/users"
+          path="/courses/:courseId/users"
           exact
           render={(props) => <AppBarCourseNav {...props} value={2} />}
         />
         <Route
-          path="/course/:courseId/grades"
+          path="/courses/:courseId/grades"
           exact
           render={(props) => <AppBarCourseNav {...props} value={3} />}
         />

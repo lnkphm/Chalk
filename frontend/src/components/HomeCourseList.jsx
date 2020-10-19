@@ -14,13 +14,13 @@ export default function HomeCourseList(props) {
     <div className={classes.root}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <HomeCourseListItem name="Course 1" url="/course/1" />
+          <HomeCourseListItem name="Course 1" url="/courses/1" />
         </Grid>
         <Grid item xs={12}>
-          <HomeCourseListItem name="Course 2" url="/course/2" />
+          <HomeCourseListItem name="Course 2" url="/courses/2" />
         </Grid>
         <Grid item xs={12}>
-          <HomeCourseListItem name="Course 3" url="/course/3" />
+          <HomeCourseListItem name="Course 3" url="/courses/3" />
         </Grid>
       </Grid>
     </div>

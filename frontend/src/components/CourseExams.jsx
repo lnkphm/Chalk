@@ -1,5 +1,10 @@
 import React from 'react';
+import CourseExamsList from './CourseExamsList';
 
 export default function CourseExams(props) {
-  return (<h1>Course Exams</h1>)
+  return (
+    <div>
+      <CourseExamsList />
+    </div>
+  )
 }
