@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 
-import CourseList from './HomeCourseList';
+import HomeCourseList from './HomeCourseList';
 
 const styles = (theme) => ({
   container: {
@@ -26,10 +26,10 @@ class Course extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <Container maxWidth="lg" className={classes.container}>
+      <Container maxWidth="md" className={classes.container}>
         <Grid container spacing={3}>
           <Grid item xs={9}>
-            <CourseList />
+            <HomeCourseList />
           </Grid>
           <Grid item xs={3}>
               <Grid container spacing={3}>
