@@ -17,6 +17,8 @@ import CourseUsers from './components/CourseUsers';
 import CourseGrades from './components/CourseGrades';
 import Exam from './components/Exam';
 import ExamPaper from './components/ExamPaper';
+import ExamResult from './components/ExamResult';
+import ExamResultDetails from './components/ExamResultDetails';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -67,6 +69,16 @@ function App() {
                 path="/courses/:courseId/exams/:examId/papers/:paperId"
                 exact
                 component={ExamPaper}
+              />
+              <Route
+                path="/courses/:courseId/exams/:examId/papers/:paperId/result"
+                exact
+                component={ExamResult}
+              />
+              <Route
+                path="/courses/:courseId/exams/:examId/papers/:paperId/result/details"
+                exact
+                component={ExamResultDetails}
               />
             </Switch>
           </Route>

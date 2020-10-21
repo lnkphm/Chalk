@@ -12,7 +12,7 @@ export default function ExamResultDetails(props) {
   const classes = useStyles();
 
   return (
-    <div>
+    <div className={classes.root}>
       <h1>Result Details</h1>
     </div>
   )

@@ -5,10 +5,20 @@ const QuizSchema = new Schema(
   {
     name: { type: String },
     description: { type: String },
-    timeStart: { type: Date },
-    timeEnd: { type: Date },
-    users: [{type: Schema.Types.ObjectId, ref: 'User'}],
-    quizPaper: [{ type: Schema.Types.ObjectId, ref: 'QuizPaper' }],
+    dateBegin: { type: Date },
+    dateEnd: { type: Date },
+    duration: { type: Number },
+    shuffle: { type: Boolean },
+    gradingMethod: { type: String },
+    public: { type: Boolean },
+    course: { type: Schema.Types.ObjectId, ref: 'Course' },
+    category: { type: Schema.Types.ObjectId, ref: 'QuizCategory' },
+    questions: [
+      {
+        id: { type: Schema.Types.ObjectId, ref: 'Question' },
+        points: { type: Number },
+      },
+    ],
   },
   {
     timestamps: true,

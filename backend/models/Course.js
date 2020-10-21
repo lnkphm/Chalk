@@ -5,9 +5,9 @@ const Roles = require('./enums/Roles');
 const CourseSchema = new Schema(
   {
     name: { type: String, required: true },
-    startDate: { type: Date },
-    endDate: { type: Date },
     description: { type: String },
+    dateStart: { type: Date },
+    dateFinish: { type: Date }, 
     public: { type: Boolean },
     password: { type: String },
     users: [
@@ -16,8 +16,7 @@ const CourseSchema = new Schema(
         role: { type: String, enums: Roles },
       },
     ],
-    category: { type: Schema.Types.ObjectId, ref: 'Category' },
-    tags: [{ type: Schema.Types.ObjectId, ref: 'Tag' }],
+    tags: [{ type: Schema.Types.ObjectId, ref: 'CourseTag' }],
   },
   {
     timestamps: true,
