@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const ensureAuth = require("../middleware/ensureAuth");
-const ensureGuest = require("../middleware/ensureGuest");
 
 // @desc Get current user info
 // @route GET /api/auth/

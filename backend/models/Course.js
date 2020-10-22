@@ -16,7 +16,7 @@ const CourseSchema = new Schema(
         role: { type: String, enums: Roles },
       },
     ],
-    tags: [{ type: Schema.Types.ObjectId, ref: 'CourseTag' }],
+    category: { type: Schema.Types.ObjectId, ref: 'Category' },
   },
   {
     timestamps: true,

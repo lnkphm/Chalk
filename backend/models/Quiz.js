@@ -12,13 +12,7 @@ const QuizSchema = new Schema(
     gradingMethod: { type: String },
     public: { type: Boolean },
     course: { type: Schema.Types.ObjectId, ref: 'Course' },
-    category: { type: Schema.Types.ObjectId, ref: 'QuizCategory' },
-    questions: [
-      {
-        id: { type: Schema.Types.ObjectId, ref: 'Question' },
-        points: { type: Number },
-      },
-    ],
+    category: { type: Schema.Types.ObjectId, ref: 'Category' },
   },
   {
     timestamps: true,
