@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/user');
 const Course = require('../models/course');
 const Paper = require('../models/paper');
+const Quiz = require('../models/quiz');
 
 router.get('/', (req, res) => {
   User.find()
@@ -31,28 +32,37 @@ router.get('/:id', (req, res) => {
 });
 
 router.get('/:id/courses', (req, res) => {
-  Course.find({ "users.id": req.params.id}, (err, courses) => {
+  Course.find({ 'users.id': req.params.id }, (err, courses) => {
     if (err) res.status(400).send(err);
     if (!courses) {
       res.status(404).send('Not Found!');
     } else {
       res.status(200).send(courses);
     }
-  })
+  });
 });
 
 router.get('/:id/papers', (req, res) => {
-  Paper.find({ user: req.params.id}, (err, papers) => {
+  Paper.find({ user: req.params.id }, (err, papers) => {
     if (err) res.status(400).send(err);
     if (!papers) {
       res.status(404).send('Not Found!');
     } else {
       res.status(200).send(papers);
     }
-  })
+  });
 });
 
-// router.get('/:id/quizzes', (req, res) => {});
+router.get('/:id/quizzes', (req, res) => {
+  Quiz.find({ user: req.params.id }, (err, quizzes) => {
+    if (err) res.status(400).send(err);
+    if (!quizzes) {
+      res.status(404).send('Not Found');
+    } else {
+      res.status(200).send(quizzes);
+    }
+  });
+});
 
 router.post('/', (req, res) => {
   User.findOne({ username: req.body.username }).exec((err, user) => {
@@ -64,6 +74,7 @@ router.post('/', (req, res) => {
         username: req.body.username,
         email: req.body.email,
         name: req.body.name,
+        avatar: req.body.avatar,
       });
       newUser.setPassword(req.body.password);
       newUser.save((err) => {
@@ -75,13 +86,14 @@ router.post('/', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-  const updatedUser = new User({
+  const updatedUser = {
     username: req.body.username,
     email: req.body.email,
     name: req.body.name,
-    avatar: req.body.avatar,
-  });
-  User.findOneAndUpdate({ _id: req.params.id }, updatedUser, (err, user) => {
+    avatar: req.body.avatar
+  };
+  User.setPassword(req.body.password);
+  User.findByIdAndUpdate({ _id: req.params.id }, updatedUser, (err, user) => {
     if (err) res.status(400).send(err);
     if (!user) {
       res.status(404).send('Not Found!');
@@ -92,7 +104,7 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-  User.deleteOne({ _id: req.params.id }, (err) => {
+  User.findByIdAndDelete({ _id: req.params.id }, (err) => {
     if (err) res.status(400).send(err);
     res.status(200).send('User deleted!');
   });
