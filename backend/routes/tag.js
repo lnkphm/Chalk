@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Tag = require('../models/Tag');
+const Tag = require('../models/tag');
 
 router.get('/', (req, res) => {});
 router.get('/:id', (req, res) => {});

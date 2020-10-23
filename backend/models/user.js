@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const crypto = require('crypto');
-const Roles = require('./enums/Roles');
 
 const UserSchema = new Schema(
   {
@@ -12,12 +11,6 @@ const UserSchema = new Schema(
     avatar: { type: String },
     hash: { type: String },
     salt: { type: String },
-    courses: [
-      {
-        id: { type: Schema.Types.ObjectId, ref: 'Course' },
-        role: { type: String, enums: Roles},
-      },
-    ],
   },
   {
     timestamps: true,

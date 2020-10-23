@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Roles = require('./enums/Roles');
+const Roles = require('../enums/Roles');
 
 const CourseSchema = new Schema(
   {

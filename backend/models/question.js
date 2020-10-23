@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const QuestionTypes = require('./enums/QuestionTypes');
+const QuestionTypes = require('../enums/QuestionTypes');
 
 const QuestionSchema = new Schema(
   {
-    title: { type: String, required: true },
+    text: { type: String, required: true },
     type: { type: String, required: true, enum: QuestionTypes },
     quiz: { type: Schema.Types.ObjectId, ref: 'Quiz' },
     shuffle: { type: Boolean, default: true },
