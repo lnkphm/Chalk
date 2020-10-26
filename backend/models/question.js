@@ -6,7 +6,7 @@ const QuestionSchema = new Schema(
   {
     text: { type: String, required: true },
     type: { type: String, required: true, enum: QuestionTypes },
-    quiz: { type: Schema.Types.ObjectId, ref: 'Quiz' },
+    exam: { type: Schema.Types.ObjectId, ref: 'Exam' },
     shuffle: { type: Boolean, default: true },
     feedback: { type: String },
     answers: [

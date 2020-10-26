@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ExamPaper(props) {
   const classes = useStyles();
+  const {match: {params}} = props;
 
   return (
     <Container className={classes.root} maxWidth="lg">
@@ -32,7 +33,7 @@ export default function ExamPaper(props) {
           <ExamPaperQuestionList />
         </Grid>
         <Grid item xs={3}>
-          <ExamPaperNav />
+          <ExamPaperNav course={params.courseId} exam={params.examId} />
         </Grid>
       </Grid>
     </Container>

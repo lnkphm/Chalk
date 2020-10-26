@@ -55,6 +55,7 @@ export default function AppBarDrawer(props) {
           component="a"
           href={item.url}
           className={classes.listItem}
+          key={index}
         >
           <ListItemIcon>
             <HomeIcon />

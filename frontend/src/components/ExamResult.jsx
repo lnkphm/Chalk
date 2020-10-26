@@ -11,11 +11,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ExamResult(props) {
   const classes = useStyles();
+  const {match: {params}} = props;
+  const url = `/courses/${params.courseId}/exams/${params.examId}/review`;
 
   return (
     <div className={classes.root}>
-      <h1>Result</h1>
-      <Button variant="a" href={window.location.href + "/details"}>
+      <h1>Exam Result</h1>
+      <Button variant="a" href={url}>
         Details
       </Button>
     </div>

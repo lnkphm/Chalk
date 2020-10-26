@@ -5,7 +5,7 @@ const ensureAuth = require("../middleware/ensureAuth");
 
 // @desc Get current user info
 // @route GET /api/auth/
-router.get("/", ensureAuth, (req, res) => {
+router.get("/", (req, res) => {
   res.send(req.user);
 });
 

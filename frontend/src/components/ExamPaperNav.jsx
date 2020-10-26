@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ExamPaperQuestionList(props) {
   const classes = useStyles();
+  const url = `/courses/${props.course}/exams/${props.exam}/result`;
 
   return (
     <div>
@@ -24,7 +25,7 @@ export default function ExamPaperQuestionList(props) {
           <Typography>Exam Navigation</Typography>
         </CardContent>
         <CardActions>
-          <Button variant="a" href={window.location.href+"/result"}>Submit</Button>
+          <Button variant="a" href={url}>Submit</Button>
         </CardActions>
       </Card>
     </div>

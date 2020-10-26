@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const PaperSchema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: 'User' },
-    quiz: { type: Schema.Types.ObjectId, ref: 'Quiz' },
+    exam: { type: Schema.Types.ObjectId, ref: 'Exam' },
     submitted: { type: Boolean },
     connected: { type: Boolean },
     timeRemaining: { type: Number },

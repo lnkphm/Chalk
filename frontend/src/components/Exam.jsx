@@ -18,7 +18,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Exam(props) {
   const classes = useStyles();
-  const url = "/courses/1/exams/1/papers/1";
   return (
     <Container className={classes.root} maxWidth="md">
       <Grid container spacing={2}>
@@ -41,22 +40,11 @@ export default function Exam(props) {
           <Divider />
         </Grid>
         <Grid item xs={12}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Link color="inherit" href={url}>
-                  Exam Paper 1
-                </Link>
-              </Paper>
-            </Grid>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Link color="inherit" href={url}>
-                  Exam Paper 2
-                </Link>
-              </Paper>
-            </Grid>
-          </Grid>
+          <Paper className={classes.paper}>
+            <Link color="inherit" href={window.location.href + '/paper'}>
+              Start
+            </Link>
+          </Paper>
         </Grid>
       </Grid>
     </Container>

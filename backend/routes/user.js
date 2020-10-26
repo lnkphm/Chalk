@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/user');
 const Course = require('../models/course');
 const Paper = require('../models/paper');
-const Quiz = require('../models/quiz');
+const Exam = require('../models/exam');
 
 router.get('/', (req, res) => {
   User.find()
@@ -53,13 +53,13 @@ router.get('/:id/papers', (req, res) => {
   });
 });
 
-router.get('/:id/quizzes', (req, res) => {
-  Quiz.find({ user: req.params.id }, (err, quizzes) => {
+router.get('/:id/exams', (req, res) => {
+  Quiz.find({ user: req.params.id }, (err, exams) => {
     if (err) res.status(400).send(err);
-    if (!quizzes) {
+    if (!exams) {
       res.status(404).send('Not Found');
     } else {
-      res.status(200).send(quizzes);
+      res.status(200).send(exams);
     }
   });
 });
@@ -90,7 +90,7 @@ router.put('/:id', (req, res) => {
     username: req.body.username,
     email: req.body.email,
     name: req.body.name,
-    avatar: req.body.avatar
+    avatar: req.body.avatar,
   };
   User.setPassword(req.body.password);
   User.findByIdAndUpdate({ _id: req.params.id }, updatedUser, (err, user) => {

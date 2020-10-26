@@ -1,1 +1,1 @@
-module.exports = ['course', 'quiz', 'question'];
+module.exports = ['course', 'exam', 'question'];
