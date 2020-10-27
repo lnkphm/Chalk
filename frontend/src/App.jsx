@@ -8,9 +8,9 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Landing from './pages/Landing';
 
+import AppBar from './components/AppBar';
 import Home from './components/Home';
 import User from './components/User';
-import AppBar from './components/AppBar';
 import Profile from './components/Profile';
 import CourseOverview from './components/CourseOverview';
 import CourseExams from './components/CourseExams';
@@ -22,6 +22,7 @@ import ExamResult from './components/ExamResult';
 import ExamReview from './components/ExamReview';
 
 import UserProvider from './contexts/UserProvider';
+import ProtectedRouter from './utils/ProtectedRoute';
 
 const styles = (theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -54,7 +55,9 @@ class App extends React.Component {
                 <Switch>
                   <Route path="/home" exact component={Home} />
                   <Route path="/user" exact component={User} />
-                  <Route path="/profile" exact component={Profile} />
+                  <ProtectedRouter path="/profile" exact>
+                    <Profile />
+                  </ProtectedRouter>
                   <Route
                     path="/courses/:courseId"
                     exact

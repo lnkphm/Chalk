@@ -17,11 +17,12 @@ const UserProvider = ({ children }) => {
       });
   }, []);
 
-  return (
-    <UserContext.Provider value={user}>
-      {children}
-    </UserContext.Provider>
-  );
+  const value = {
+    isAuthenticated: Boolean(user),
+    user: user,
+  };
+
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 
 UserProvider.context = UserContext;
