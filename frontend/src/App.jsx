@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import axios from 'axios';
 
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/core/styles';
@@ -22,7 +21,7 @@ import ExamPaper from './components/ExamPaper';
 import ExamResult from './components/ExamResult';
 import ExamReview from './components/ExamReview';
 
-import UserContext from './contexts/UserContext';
+import UserProvider from './contexts/UserProvider';
 
 const styles = (theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -34,43 +33,15 @@ class App extends React.Component {
     this.state = {
       user: {},
     };
-
-    this.login = this.login.bind(this);
-    this.logout = this.logout.bind(this);
   }
 
   componentDidMount() {}
 
-  login() {
-    axios
-      .get('/api/auth')
-      .then((res) => {
-        this.setState({
-          user: res.data,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  logout() {
-    this.setState({
-      user: {},
-    });
-  }
-
   render() {
     const { classes } = this.props;
 
-    const value = {
-      user: this.state.user,
-      login: this.login,
-      logout: this.logout
-    }
-
     return (
-      <UserContext.Provider value={value}>
+      <UserProvider>
         <Container>
           <Router>
             <Switch>
@@ -129,7 +100,7 @@ class App extends React.Component {
             </Switch>
           </Router>
         </Container>
-      </UserContext.Provider>
+      </UserProvider>
     );
   }
 }
