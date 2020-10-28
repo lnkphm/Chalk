@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/user');
-const Course = require('../models/course');
-const Paper = require('../models/paper');
-const Exam = require('../models/exam');
+const User = require('../models/user.model');
+const Course = require('../models/course.model');
+const Paper = require('../models/paper.model');
+const Exam = require('../models/exam.model');
 
 router.get('/', (req, res) => {
   User.find()
@@ -54,7 +54,7 @@ router.get('/:id/papers', (req, res) => {
 });
 
 router.get('/:id/exams', (req, res) => {
-  Quiz.find({ user: req.params.id }, (err, exams) => {
+  Exam.find({ user: req.params.id }, (err, exams) => {
     if (err) res.status(400).send(err);
     if (!exams) {
       res.status(404).send('Not Found');
@@ -96,9 +96,9 @@ router.put('/:id', (req, res) => {
   User.findByIdAndUpdate({ _id: req.params.id }, updatedUser, (err, user) => {
     if (err) res.status(400).send(err);
     if (!user) {
-      res.status(404).send('Not Found!');
+      res.status(404).send({message: 'User not found!'});
     } else {
-      res.status(200).send('User updated!');
+      res.status(200).send({message: 'User updated!'});
     }
   });
 });

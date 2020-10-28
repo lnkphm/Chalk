@@ -29,7 +29,7 @@ router.get("/google/callback", passport.authenticate("google"), (req, res) => {
 // @route GET /api/auth/logout
 router.get("/logout", ensureAuth, (req, res) => {
   req.logout();
-  res.status(200).json("User logged out!");
+  res.send({message: 'User logged out!'});
 });
 
 module.exports = router;

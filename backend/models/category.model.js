@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const CategoryTypes = require('../enums/CategoryTypes')
+const CategoryTypes = require('./enums/CategoryTypes')
 
 const QuestionCategorySchema = new Schema({
   name: { type: String },

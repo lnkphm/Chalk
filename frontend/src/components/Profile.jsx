@@ -14,11 +14,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Profile(props) {
   const classes = useStyles();
-  const userData = React.useContext(UserProvider.context);
+  const user = React.useContext(UserProvider.context);
   return (
     <Container maxWidth="md">
       <Typography className={classes.title} variant="h6">
-        Hello, {userData.isAuthenticated ? userData.user.name:''}
+        Hello, {user.data.name}
       </Typography>
     </Container>
   );

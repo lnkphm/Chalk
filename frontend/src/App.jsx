@@ -22,7 +22,7 @@ import ExamResult from './components/ExamResult';
 import ExamReview from './components/ExamReview';
 
 import UserProvider from './contexts/UserProvider';
-import ProtectedRouter from './utils/ProtectedRoute';
+import ProtectedRoute from './utils/ProtectedRoute';
 
 const styles = (theme) => ({
   toolbar: theme.mixins.toolbar,
@@ -49,15 +49,13 @@ class App extends React.Component {
               <Route path="/" exact component={Landing} />
               <Route path="/login" exact component={Login} />
               <Route path="/register" exact component={Register} />
-              <Route>
+              <ProtectedRoute>
                 <AppBar />
                 <div className={classes.toolbar} />
                 <Switch>
                   <Route path="/home" exact component={Home} />
                   <Route path="/user" exact component={User} />
-                  <ProtectedRouter path="/profile" exact>
-                    <Profile />
-                  </ProtectedRouter>
+                  <ProtectedRoute path="/profile" exact component={Profile} />
                   <Route
                     path="/courses/:courseId"
                     exact
@@ -99,7 +97,7 @@ class App extends React.Component {
                     component={ExamReview}
                   />
                 </Switch>
-              </Route>
+              </ProtectedRoute>
             </Switch>
           </Router>
         </Container>

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const QuestionTypes = require('../enums/QuestionTypes');
+const QuestionTypes = require('./enums/QuestionTypes');
 
 const QuestionSchema = new Schema(
   {

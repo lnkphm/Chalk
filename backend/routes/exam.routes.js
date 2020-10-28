@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const Question = require('../models/question');
+const Exam = require('../models/exam.model');
 
 router.get('/', (req, res) => {
-  Question.find()
+  Exam.find()
     .then((result) => {
       res.send(result);
     })
@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-  Question.findById(req.params.id)
+  Exam.findById(req.params.id)
     .then((result) => {
       res.send(result);
     })

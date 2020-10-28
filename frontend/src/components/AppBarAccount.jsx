@@ -8,7 +8,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import UserProvider from '../contexts/UserProvider';
 import _ from 'lodash';
-import { ListItemIcon, ListItemText } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -27,14 +26,14 @@ export default function AppBarAccount(props) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const userData = React.useContext(UserProvider.context);
+  const user = React.useContext(UserProvider.context);
   return (
     <div className={classes.root}>
       <IconButton edge="end" color="inherit" onClick={handleClick}>
-        {_.isEmpty(userData) ? (
+        {_.isEmpty(user.data.avatar) ? (
           <AccountCircle />
         ) : (
-          <Avatar className={classes.avatar} src={userData.avatar} />
+          <Avatar className={classes.avatar} src={user.data.avatar} />
         )}
       </IconButton>
       <Menu
@@ -47,14 +46,7 @@ export default function AppBarAccount(props) {
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <MenuItem component="a" href="/profile">
-          <ListItemIcon>
-            {_.isEmpty(userData) ? (
-              <AccountCircle />
-            ) : (
-              <Avatar className={classes.avatar} src={userData.avatar} />
-            )}
-          </ListItemIcon>
-          <ListItemText>Profile</ListItemText>
+          Profile
         </MenuItem>
         <MenuItem>Logout</MenuItem>
       </Menu>
