@@ -1,35 +1,51 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const passport = require("passport");
-const ensureAuth = require("../middleware/ensureAuth");
+const passport = require('passport');
+const ensureAuth = require('../middleware/ensureAuth');
 
 // @desc Get current user info
 // @route GET /api/auth/
-router.get("/", (req, res) => {
+router.get('/', (req, res) => {
   res.send(req.user);
 });
 
 // @desc Auth with local account
 // @route POST /api/auth/local
-router.post("/login", passport.authenticate("local"), (req, res) => {
-  res.send(req.user);
+router.post('/login', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.send({ 'message': 'Wrong username/password' });
+    }
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      return res.send(user);
+    });
+  })(req, res, next);
 });
 
 // @desc Auth with Google
 // @route GET /api/auth/google
-router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+router.get(
+  '/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
 
 // @desc Google auth callback
 // @route GET /api/auth/google/callback
-router.get("/google/callback", passport.authenticate("google"), (req, res) => {
-  res.redirect("/api/auth");
+router.get('/google/callback', passport.authenticate('google'), (req, res) => {
+  res.redirect('/api/auth');
 });
 
 // @desc Logout
 // @route GET /api/auth/logout
-router.get("/logout", ensureAuth, (req, res) => {
+router.get('/logout', ensureAuth, (req, res) => {
   req.logout();
-  res.send({message: 'User logged out!'});
+  res.send({ message: 'User logged out!' });
 });
 
 module.exports = router;

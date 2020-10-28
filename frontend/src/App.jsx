@@ -1,5 +1,11 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  useHistory,
+  useLocation,
+} from 'react-router-dom';
 
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/core/styles';

@@ -40,7 +40,7 @@ module.exports = function (passport) {
           if (isValid) {
             return cb(null, user);
           } else {
-            return cb(null, false);
+            return cb(null, false, {msg: 'Wrong password'});
           }
         })
         .catch((err) => {
