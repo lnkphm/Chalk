@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Course = require('../models/course.model');
 
-router.get('/', (req, res) => {});
+router.get('/', (req, res) => {
+
+});
 
 router.get('/:id', (req, res) => {});
 

@@ -55,18 +55,19 @@ app.use('/api/users', require('./routes/user.routes'));
 // app.use('/api/categories', require('./routes/category'));
 // app.use('/api/tags', require('./routes/tag'));
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   res.render('index');
-})
+});
 
-app.use(function(err, req, res, next) {
-  if (!module.parent) console.error(err.stack);
-  res.status(500).render('5xx');
-})
+// Error handle
+app.use(function (err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send({ message: 'Something broke!' });
+});
 
-app.use(function(req, res, next) {
-  res.status(404).render('404')
-})
+app.use(function (req, res, next) {
+  res.status(404).send({ message: 'Not Found!' });
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, console.log(`Server is running on port ${PORT}`));
