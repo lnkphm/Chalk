@@ -17,7 +17,7 @@ router.post('/login', (req, res, next) => {
       return next(err);
     }
     if (!user) {
-      return res.send({ 'message': 'Wrong username/password' });
+      return res.status(401).send({ message: 'Wrong username/password' });
     }
     req.logIn(user, (err) => {
       if (err) {
@@ -38,14 +38,14 @@ router.get(
 // @desc Google auth callback
 // @route GET /api/auth/google/callback
 router.get('/google/callback', passport.authenticate('google'), (req, res) => {
-  res.redirect('/api/auth');
+  
 });
 
 // @desc Logout
 // @route GET /api/auth/logout
-router.get('/logout', ensureAuth, (req, res) => {
+router.get('/logout', (req, res) => {
   req.logout();
-  res.send({ message: 'User logged out!' });
+  res.send({message: 'User logged out'});
 });
 
 module.exports = router;

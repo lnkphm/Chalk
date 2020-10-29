@@ -3,8 +3,6 @@ import {
   BrowserRouter as Router,
   Route,
   Switch,
-  useHistory,
-  useLocation,
 } from 'react-router-dom';
 
 import Container from '@material-ui/core/Container';
@@ -35,14 +33,6 @@ const styles = (theme) => ({
 });
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: {},
-    };
-  }
-
-  componentDidMount() {}
 
   render() {
     const { classes } = this.props;
@@ -61,7 +51,7 @@ class App extends React.Component {
                 <Switch>
                   <Route path="/home" exact component={Home} />
                   <Route path="/user" exact component={User} />
-                  <ProtectedRoute path="/profile" exact component={Profile} />
+                  <Route path="/profile" exact component={Profile} />
                   <Route
                     path="/courses/:courseId"
                     exact

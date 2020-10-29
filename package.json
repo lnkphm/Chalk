@@ -1,0 +1,26 @@
+{
+  "name": "Chalk",
+  "version": "1.0.0",
+  "description": "Attempt to create a LMS from scratch.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"npm run server\" \"npm run client\" ",
+    "server": "cd server && nodemon app.js",
+    "client": "cd client && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lnkphm/lms-demo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lnkphm/lms-demo/issues"
+  },
+  "homepage": "https://github.com/lnkphm/lms-demo#readme",
+  "devDependencies": {
+    "concurrently": "^5.3.0"
+  }
+}

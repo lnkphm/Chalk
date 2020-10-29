@@ -19,10 +19,6 @@ const styles = (theme) => ({
 });
 
 class Course extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { classes } = this.props;
     return (
