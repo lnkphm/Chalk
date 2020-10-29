@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import UserProvider from '../contexts/UserProvider';
 
-export default function ProtectedRoute({ children, ...rest }) {
+export default function PublicRoute({ children, ...rest }) {
   const user = React.useContext(UserProvider.context);
   return (
     <Route
@@ -10,15 +10,15 @@ export default function ProtectedRoute({ children, ...rest }) {
       render={({ location }) =>
         user.isLoading ? (
           <div />
-        ) : user.isAuthenticated ? (
-          children
-        ) : (
+        ) : user.isAuthenticated ? (        
           <Redirect
             to={{
-              pathname: '/',
+              pathname: '/home',
               state: { from: location },
             }}
           />
+        ) : (
+          children
         )
       }
     />

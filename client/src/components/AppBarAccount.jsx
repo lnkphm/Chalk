@@ -1,5 +1,4 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
@@ -22,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
 export default function AppBarAccount(props) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [redirect, setRedirect] = React.useState(false);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -30,39 +28,34 @@ export default function AppBarAccount(props) {
     setAnchorEl(null);
   };
   const logout = () => {
-    axios.get('/api/auth/logout')
-    .then(() => {
-      setRedirect(true);
+    axios.get('/api/auth/logout').then(() => {
+      window.location = '/';
     });
   };
   const user = React.useContext(UserProvider.context);
-  if (redirect) {
-    return <Redirect to="/" />;
-  } else {
-    return (
-      <div className={classes.root}>
-        <IconButton edge="end" color="inherit" onClick={handleClick}>
-          {_.isEmpty(user.data.avatar) ? (
-            <AccountCircle />
-          ) : (
-            <Avatar className={classes.avatar} src={user.data.avatar} />
-          )}
-        </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-          getContentAnchorEl={null}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-        >
-          <MenuItem component="a" href="/profile">
-            Profile
-          </MenuItem>
-          <MenuItem onClick={logout}>Logout</MenuItem>
-        </Menu>
-      </div>
-    );
-  }
+  return (
+    <div className={classes.root}>
+      <IconButton edge="end" color="inherit" onClick={handleClick}>
+        {_.isEmpty(user.data.avatar) ? (
+          <AccountCircle />
+        ) : (
+          <Avatar className={classes.avatar} src={user.data.avatar} />
+        )}
+      </IconButton>
+      <Menu
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        getContentAnchorEl={null}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <MenuItem component="a" href="/profile">
+          Profile
+        </MenuItem>
+        <MenuItem onClick={logout}>Logout</MenuItem>
+      </Menu>
+    </div>
+  );
 }
