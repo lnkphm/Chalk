@@ -18,9 +18,11 @@ module.exports = function (passport) {
         if (!currentUser) {
           const newUser = await new User({
             googleId: profile.id,
+            username: '',
             name: profile.displayName,
             avatar: profile.photos[0].value,
             email: profile.emails[0].value,
+            courses: [],
           }).save();
           if (newUser) {
             cb(null, newUser);

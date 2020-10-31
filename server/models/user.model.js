@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const crypto = require('crypto');
+const Roles = require('./enums/Roles');
 
 const UserSchema = new Schema(
   {
@@ -11,6 +12,12 @@ const UserSchema = new Schema(
     avatar: { type: String },
     hash: { type: String },
     salt: { type: String },
+    courses: [
+      {
+        data: { type: Schema.Types.ObjectId, ref: 'Course' },
+        role: { type: String, enum: Roles },
+      },
+    ],
   },
   {
     timestamps: true,
@@ -18,7 +25,7 @@ const UserSchema = new Schema(
 );
 
 UserSchema.virtual('url').get(function () {
-  return '/api/user/' + this._id;
+  return `/api/users/${this._id}`;
 });
 
 UserSchema.methods.setPassword = function (password) {

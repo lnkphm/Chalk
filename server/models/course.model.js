@@ -7,20 +7,24 @@ const CourseSchema = new Schema(
     name: { type: String, required: true },
     description: { type: String },
     dateStart: { type: Date },
-    dateFinish: { type: Date }, 
+    dateEnd: { type: Date }, 
     public: { type: Boolean },
     password: { type: String },
     users: [
       {
-        id: { type: Schema.Types.ObjectId, ref: 'User' },
+        data: { type: Schema.Types.ObjectId, ref: 'User' },
         role: { type: String, enums: Roles },
       },
     ],
-    category: { type: Schema.Types.ObjectId, ref: 'Category' },
+    // category: { type: Schema.Types.ObjectId, ref: 'Category' },
   },
   {
     timestamps: true,
   }
 );
+
+CourseSchema.virtual('url').get(function() {
+  return `/api/courses/${this._id}`;
+})
 
 module.exports = mongoose.model('Course', CourseSchema);

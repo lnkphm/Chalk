@@ -9,8 +9,12 @@ const PaperSchema = new Schema(
     connected: { type: Boolean },
     timeRemaining: { type: Number },
     questions: [{
-      id: { type: Schema.Types.ObjectId, ref: 'Question' },
-      answer: { type: String }
+      data: { type: Schema.Types.ObjectId, ref: 'Question' },
+      answers: [{
+        id: {type: Number},
+        text: {type: String},
+        choice: {type: Boolean}
+      }]
     }]
   },
   {
@@ -18,4 +22,4 @@ const PaperSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model('UserPaper', PaperSchema);
+module.exports = mongoose.model('Paper', PaperSchema);

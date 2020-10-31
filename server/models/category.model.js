@@ -2,11 +2,10 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const CategoryTypes = require('./enums/CategoryTypes')
 
-const QuestionCategorySchema = new Schema({
+const CategorySchema = new Schema({
   name: { type: String },
-  description: { type: String },
   type: { type: String, enum: CategoryTypes },
-  course: { type: Schema.Types.ObjectId, ref: 'Course' },
+  description: { type: String },
 });
 
-module.exports = mongoose.model("QuestionCategory", QuestionCategorySchema);
+module.exports = mongoose.model("Category", CategorySchema);

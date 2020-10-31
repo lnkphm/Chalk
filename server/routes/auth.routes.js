@@ -37,15 +37,17 @@ router.get(
 
 // @desc Google auth callback
 // @route GET /api/auth/google/callback
-router.get('/google/callback', passport.authenticate('google'), (req, res) => {
-  
-});
+router.get(
+  '/google/callback',
+  passport.authenticate('google'),
+  (req, res) => {}
+);
 
 // @desc Logout
 // @route GET /api/auth/logout
 router.get('/logout', (req, res) => {
   req.logout();
-  res.send({message: 'User logged out'});
+  res.send({ message: 'User logged out' });
 });
 
 module.exports = router;

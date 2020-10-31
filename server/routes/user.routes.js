@@ -14,7 +14,7 @@ router.get('/', (req, res, next) => {
       if (err) {
         return next(err);
       }
-      if (!user) {
+      if (!users) {
         return next();
       }
       return res.send(users);
@@ -26,6 +26,7 @@ router.get('/', (req, res, next) => {
 router.get('/:id', (req, res, next) => {
   User.findById(req.params.id)
     .select('-hash -salt')
+    .populate('courses.data')
     .exec((err, user) => {
       if (err) {
         return next(err);
@@ -40,15 +41,7 @@ router.get('/:id', (req, res, next) => {
 // @desc Get all user's courses
 // @route GET /api/users/:id/courses
 router.get('/:id/courses', (req, res, next) => {
-  Course.find({ 'users.id': req.params.id }, (err, courses) => {
-    if (err) {
-      return next(err);
-    }
-    if (!courses) {
-      return next();
-    }
-    return res.send(courses);
-  });
+
 });
 
 // @desc Get all user's papers
@@ -68,15 +61,7 @@ router.get('/:id/papers', (req, res, next) => {
 // @desc Get all user's exams
 // @route GET /api/users/:id/exams
 router.get('/:id/exams', (req, res, next) => {
-  Exam.find({ user: req.params.id }, (err, exams) => {
-    if (err) {
-      return next(err);
-    }
-    if (!exams) {
-      return next();
-    }
-    return res.send(exams);
-  });
+
 });
 
 // @desc Create new user
@@ -94,14 +79,12 @@ router.post('/', (req, res, next) => {
       email: req.body.email,
       name: req.body.name,
       avatar: req.body.avatar,
+      courses: [],
     });
     newUser.setPassword(req.body.password);
     newUser.save((err, user) => {
       if (err) {
         return next(err);
-      }
-      if (!user) {
-        return next();
       }
       return res.status(201).send(user);
     });
@@ -121,9 +104,6 @@ router.put('/:id', (req, res, next) => {
   User.findByIdAndUpdate({ _id: req.params.id }, updatedUser, (err, user) => {
     if (err) {
       return next(err);
-    }
-    if (!user) {
-      return next();
     }
     return res.send(user);
   });

@@ -3,16 +3,16 @@ const Schema = mongoose.Schema;
 
 const ExamSchema = new Schema(
   {
-    name: { type: String },
+    title: { type: String },
     description: { type: String },
-    dateBegin: { type: Date },
-    dateEnd: { type: Date },
+    dateOpen: { type: Date },
+    dateClose: { type: Date },
     duration: { type: Number },
     shuffle: { type: Boolean },
     gradingMethod: { type: String },
     public: { type: Boolean },
     course: { type: Schema.Types.ObjectId, ref: 'Course' },
-    category: { type: Schema.Types.ObjectId, ref: 'Category' },
+    questions: [{ type: Schema.Types.ObjectId, ref: 'Question' }],
   },
   {
     timestamps: true,
