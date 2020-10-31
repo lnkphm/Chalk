@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import UserProvider from '../contexts/UserProvider';
+import UserContext from '../contexts/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -14,11 +14,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Profile(props) {
   const classes = useStyles();
-  const user = React.useContext(UserProvider.context);
+  const data = React.useContext(UserContext);
   return (
     <Container maxWidth="md">
       <Typography className={classes.title} variant="h6">
-        Hello, {user.data.name}
+        Hello, {data.user.name}
       </Typography>
     </Container>
   );

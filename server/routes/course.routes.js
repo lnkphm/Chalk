@@ -3,6 +3,8 @@ const router = express.Router();
 const Course = require('../models/course.model');
 const User = require('../models/user.model');
 
+// @desc Get all courses
+// @route GET /api/courses
 router.get('/', (req, res, next) => {
   Course.find().exec((err, courses) => {
     if (err) return next(err);
@@ -11,6 +13,8 @@ router.get('/', (req, res, next) => {
   });
 });
 
+// @desc Get course info
+// @route GET /api/courses/:id
 router.get('/:id', (req, res, next) => {
   Course.findById(req.params.id).exec((err, course) => {
     if (err) return next(err);
@@ -19,7 +23,8 @@ router.get('/:id', (req, res, next) => {
   });
 });
 
-
+// @desc Get all user info from course
+// @route GET /api/courses/:id/users
 router.get('/:id/users', (req, res, next) => {
   Course.findById(req.params.id)
     .populate('users.data', '-courses -hash -salt')

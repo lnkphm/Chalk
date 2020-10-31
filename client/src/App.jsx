@@ -1,22 +1,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import axios from 'axios';
+
 import { withStyles } from '@material-ui/core/styles';
 
-import Landing from './pages/Landing';
 import AppBar from './components/AppBar';
-import Home from './components/Home';
-import User from './components/User';
-import Profile from './components/Profile';
-import CourseOverview from './components/CourseOverview';
-import CourseExams from './components/CourseExams';
-import CourseUsers from './components/CourseUsers';
-import CourseGrades from './components/CourseGrades';
-import Exam from './components/Exam';
-import ExamPaper from './components/ExamPaper';
-import ExamResult from './components/ExamResult';
-import ExamReview from './components/ExamReview';
 
-import UserProvider from './contexts/UserProvider';
+import Landing from './pages/Landing';
+import Home from './pages/Home';
+import Profile from './pages/Profile';
+
+import UserContext from './contexts/UserContext';
 import ProtectedRoute from './utils/ProtectedRoute';
 import PublicRoute from './utils/PublicRoute';
 
@@ -25,11 +19,32 @@ const styles = (theme) => ({
 });
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: true,
+      isAuthenticated: false,
+      user: {},
+    };
+  }
+
+  componentDidMount() {
+    const fetchData = async () => {
+      const result = await axios.get('/api/auth');
+      this.setState({
+        isLoading: false,
+        isAuthenticated: Boolean(result.data),
+        user: result.data,
+      });
+    };
+    fetchData();
+  }
+
   render() {
     const { classes } = this.props;
 
     return (
-      <UserProvider>
+      <UserContext.Provider value={this.state}>
         <Router>
           <Switch>
             <PublicRoute path="/" exact>
@@ -40,53 +55,12 @@ class App extends React.Component {
               <div className={classes.toolbar} />
               <Switch>
                 <Route path="/home" exact component={Home} />
-                <Route path="/user" exact component={User} />
                 <Route path="/profile" exact component={Profile} />
-                <Route
-                  path="/courses/:courseId"
-                  exact
-                  component={CourseOverview}
-                />
-                <Route
-                  path="/courses/:courseId/exams"
-                  exact
-                  component={CourseExams}
-                />
-                <Route
-                  path="/courses/:courseId/users"
-                  exact
-                  component={CourseUsers}
-                />
-                <Route
-                  path="/courses/:courseId/grades"
-                  exact
-                  component={CourseGrades}
-                />
-                <Route
-                  path="/courses/:courseId/exams/:examId"
-                  exact
-                  component={Exam}
-                />
-                <Route
-                  path="/courses/:courseId/exams/:examId/paper"
-                  exact
-                  component={ExamPaper}
-                />
-                <Route
-                  path="/courses/:courseId/exams/:examId/result"
-                  exact
-                  component={ExamResult}
-                />
-                <Route
-                  path="/courses/:courseId/exams/:examId/review"
-                  exact
-                  component={ExamReview}
-                />
               </Switch>
             </ProtectedRoute>
           </Switch>
         </Router>
-      </UserProvider>
+      </UserContext.Provider>
     );
   }
 }

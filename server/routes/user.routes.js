@@ -26,7 +26,7 @@ router.get('/', (req, res, next) => {
 router.get('/:id', (req, res, next) => {
   User.findById(req.params.id)
     .select('-hash -salt')
-    .populate('courses.data')
+    .populate('courses.data', '-users')
     .exec((err, user) => {
       if (err) {
         return next(err);
@@ -41,7 +41,14 @@ router.get('/:id', (req, res, next) => {
 // @desc Get all user's courses
 // @route GET /api/users/:id/courses
 router.get('/:id/courses', (req, res, next) => {
-
+  User.findById(req.params.id)
+    .select('-hash -salt')
+    .populate('courses.data')
+    .exec((err, user) => {
+      if (err) return next(err);
+      if (!user) return next();
+      return res.send(user.courses);
+    })
 });
 
 // @desc Get all user's papers
