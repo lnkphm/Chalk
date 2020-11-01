@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRouteMatch } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -16,8 +17,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Exam(props) {
+export default function ExamOverview(props) {
   const classes = useStyles();
+  const { url } = useRouteMatch();
   return (
     <Container className={classes.root} maxWidth="md">
       <Grid container spacing={2}>
@@ -41,7 +43,7 @@ export default function Exam(props) {
         </Grid>
         <Grid item xs={12}>
           <Paper className={classes.paper}>
-            <Link color="inherit" href={window.location.href + '/paper'}>
+            <Link color="inherit" href={`${url}/paper`}>
               Start
             </Link>
           </Paper>

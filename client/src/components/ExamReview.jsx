@@ -1,25 +1,22 @@
 import React from 'react';
-import {makeStyles} from '@material-ui/core/styles';
+import { useParams } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  root: {},
+}));
 
-  },
-
-}))
-
-export default function ExamResultDetails(props) {
+export default function ExamReview(props) {
   const classes = useStyles();
-  const {match: {params}} = props;
-  const url = `/courses/${params.courseId}/exams/${params.examId}/result`
-
+  const { examId } = useParams();
   return (
-    <div className={classes.root}>
+    <Container className={classes.root} maxWidth="md">
       <h1>Exam Review</h1>
-      <Button variant='a' href={url}>
+      <Button variant="a" href={`/exams/${examId}/result`}>
         Back
       </Button>
-    </div>
-  )
+    </Container>
+  );
 }
