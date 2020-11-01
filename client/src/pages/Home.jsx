@@ -3,6 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
+import Link from '@material-ui/core/Link';
+import UserContext from '../contexts/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -16,6 +18,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Home() {
+  const data = React.useContext(UserContext);
+  const courses = data.user.courses;
   const classes = useStyles();
   return (
     <Container maxWidth="md" className={classes.container}>
@@ -32,15 +36,15 @@ export default function Home() {
         </Grid>
         <Grid item xs={9}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>Course 1</Paper>
-            </Grid>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>Course 2</Paper>
-            </Grid>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>Course 3</Paper>
-            </Grid>
+            {courses.map((item, index) => (
+              <Grid key={index} item xs={12}>
+                <Paper className={classes.paper}>
+                  <Link href={`/courses/${item.data._id}`}>
+                    {item.data.name}
+                  </Link>
+                </Paper>
+              </Grid>
+            ))}
           </Grid>
         </Grid>
       </Grid>

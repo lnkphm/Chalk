@@ -9,6 +9,8 @@ import AppBar from './components/AppBar';
 import Landing from './pages/Landing';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
+import Courses from './pages/Courses';
+
 
 import UserContext from './contexts/UserContext';
 import ProtectedRoute from './utils/ProtectedRoute';
@@ -56,6 +58,7 @@ class App extends React.Component {
               <Switch>
                 <Route path="/home" exact component={Home} />
                 <Route path="/profile" exact component={Profile} />
+                <Route path="/courses" component={Courses} />
               </Switch>
             </ProtectedRoute>
           </Switch>

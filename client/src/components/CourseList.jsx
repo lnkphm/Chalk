@@ -6,11 +6,11 @@ const useStyles = makeStyles((theme) => ({
   root: {},
 }));
 
-export default function CourseUsers(props) {
+export default function CourseList(props) {
   const classes = useStyles();
   return (
     <Container className={classes.root} maxWidth="md">
-      <h1>Users</h1>
+      <h1>Course List</h1>
     </Container>
   );
 }

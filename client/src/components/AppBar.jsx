@@ -36,6 +36,8 @@ const useStyles = makeStyles((theme) => ({
   },
   nav: {
     flexGrow: 1,
+    marginRight: theme.spacing(2),
+    marginLeft: theme.spacing(2)
   },
   avatar: {},
   listItem: {
