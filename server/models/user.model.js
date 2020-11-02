@@ -10,14 +10,10 @@ const UserSchema = new Schema(
     email: { type: String },
     name: { type: String },
     avatar: { type: String },
+    role: { type: String, enum: Roles},
     hash: { type: String },
     salt: { type: String },
-    courses: [
-      {
-        data: { type: Schema.Types.ObjectId, ref: 'Course' },
-        role: { type: String, enum: Roles },
-      },
-    ],
+    courses: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
   },
   {
     timestamps: true,

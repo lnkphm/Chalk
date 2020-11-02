@@ -26,7 +26,7 @@ router.get('/', (req, res, next) => {
 router.get('/:id', (req, res, next) => {
   User.findById(req.params.id)
     .select('-hash -salt')
-    .populate('courses.data', '-users')
+    .populate('courses')
     .exec((err, user) => {
       if (err) {
         return next(err);
@@ -43,7 +43,7 @@ router.get('/:id', (req, res, next) => {
 router.get('/:id/courses', (req, res, next) => {
   User.findById(req.params.id)
     .select('-hash -salt')
-    .populate('courses.data')
+    .populate('courses')
     .exec((err, user) => {
       if (err) return next(err);
       if (!user) return next();
@@ -86,6 +86,7 @@ router.post('/', (req, res, next) => {
       email: req.body.email,
       name: req.body.name,
       avatar: req.body.avatar,
+      role: req.body.role,
       courses: [],
     });
     newUser.setPassword(req.body.password);
@@ -106,6 +107,7 @@ router.put('/:id', (req, res, next) => {
     email: req.body.email,
     name: req.body.name,
     avatar: req.body.avatar,
+    role: req.body.role,
   };
   User.setPassword(req.body.password);
   User.findByIdAndUpdate({ _id: req.params.id }, updatedUser, (err, user) => {

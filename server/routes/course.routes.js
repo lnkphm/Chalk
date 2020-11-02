@@ -16,23 +16,24 @@ router.get('/', (req, res, next) => {
 // @desc Get course info
 // @route GET /api/courses/:id
 router.get('/:id', (req, res, next) => {
-  Course.findById(req.params.id).exec((err, course) => {
-    if (err) return next(err);
-    if (!course) return next();
-    return res.send(course);
-  });
+  Course.findById(req.params.id)
+    .populate('users', '-courses -hash -salt')
+    .exec((err, course) => {
+      if (err) return next(err);
+      if (!course) return next();
+      return res.send(course);
+    });
 });
 
 // @desc Get all user info from course
 // @route GET /api/courses/:id/users
 router.get('/:id/users', (req, res, next) => {
   Course.findById(req.params.id)
-    .populate('users.data', '-courses -hash -salt')
+    .populate('users', '-courses -hash -salt')
     .exec((err, course) => {
       if (err) return next(err);
       if (!course) return next();
-      const users = course.users;
-      return res.send(users);
+      return res.send(course.users);
     });
 });
 
@@ -79,21 +80,21 @@ router.put('/:id/users', (req, res, next) => {
   const users = req.body.users;
   Course.findByIdAndUpdate(
     { _id: req.params.id },
-    { $push: { users: { $each: users } } },
-    (err) => {
+    { $addToSet: { users: { $each: users } } },
+    (err, course) => {
       if (err) return next(err);
+      users.forEach((user, index) => {
+        User.findByIdAndUpdate(
+          user,
+          { $addToSet: { courses: req.params.id } },
+          (err) => {
+            if (err) return next(err);
+          }
+        );
+      });
+      res.send({ message: `Users is added to course ${course.name}` });
     }
   );
-  users.forEach((user, index) => {
-    User.findByIdAndUpdate(
-      user.data,
-      { $push: { courses: { data: req.params.id, role: user.role } } },
-      (err) => {
-        if (err) return next(err);
-      }
-    );
-  });
-  return res.send('Users is added to course');
 });
 
 // @desc Delete course

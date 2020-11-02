@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Roles = require('./enums/Roles');
 
 const CourseSchema = new Schema(
   {
@@ -10,12 +9,7 @@ const CourseSchema = new Schema(
     dateEnd: { type: Date }, 
     public: { type: Boolean },
     password: { type: String },
-    users: [
-      {
-        data: { type: Schema.Types.ObjectId, ref: 'User' },
-        role: { type: String, enums: Roles },
-      },
-    ],
+    users: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     // category: { type: Schema.Types.ObjectId, ref: 'Category' },
   },
   {

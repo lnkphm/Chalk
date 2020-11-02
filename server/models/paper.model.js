@@ -8,14 +8,12 @@ const PaperSchema = new Schema(
     submitted: { type: Boolean },
     connected: { type: Boolean },
     timeRemaining: { type: Number },
-    questions: [{
-      data: { type: Schema.Types.ObjectId, ref: 'Question' },
-      answers: [{
-        id: {type: Number},
-        text: {type: String},
-        choice: {type: Boolean}
-      }]
-    }]
+    questions: [
+      {
+        data: { type: Schema.Types.ObjectId, ref: 'Question' },
+        answers: [{ type: String }],
+      },
+    ],
   },
   {
     timestamps: true,

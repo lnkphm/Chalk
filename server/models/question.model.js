@@ -10,7 +10,6 @@ const QuestionSchema = new Schema(
     feedback: { type: String },
     answers: [
       {
-        id: { type: Number },
         text: { type: String },
         points: { type: Number },
       },

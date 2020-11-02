@@ -49,11 +49,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/users', require('./routes/user.routes'));
 app.use('/api/courses', require('./routes/course.routes'));
-// app.use('/api/quizzes', require('./routes/quiz'));
-// app.use('/api/questions', require('./routes/question'));
-// app.use('/api/papers', require('./routes/paper'));
-// app.use('/api/categories', require('./routes/category'));
-// app.use('/api/tags', require('./routes/tag'));
+app.use('/api/exams', require('./routes/exam.routes'));
+app.use('/api/questions', require('./routes/question.routes'));
+app.use('/api/papers', require('./routes/paper.routes'));
 
 app.get('/', function (req, res) {
   res.render('index');
