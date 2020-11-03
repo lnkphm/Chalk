@@ -39,8 +39,8 @@ export default function Home() {
             {courses.map((item, index) => (
               <Grid key={index} item xs={12}>
                 <Paper className={classes.paper}>
-                  <Link href={`/courses/${item.data._id}`}>
-                    {item.data.name}
+                  <Link href={`/courses/${item._id}`}>
+                    {item.name}
                   </Link>
                 </Paper>
               </Grid>

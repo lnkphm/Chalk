@@ -1,4 +1,7 @@
 import React from 'react';
+import axios from 'axios';
+import { useParams, useRouteMatch } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -10,10 +13,17 @@ import Container from '@material-ui/core/Container';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { makeStyles } from '@material-ui/core/styles';
-
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  root: {
+    flexGrow: 1
+  },
+  title: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(1)
+  },
+  examList: {
+    marginTop: theme.spacing(1)
+  },
   detail: {
     display: 'block',
   },
@@ -21,27 +31,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-start',
   },
 }));
-
-const data = [
-  {
-    name: 'Test 1',
-    description: 'Description 1',
-    courseId: '1',
-    examId: '1',
-  },
-  {
-    name: 'Test 2',
-    description: 'Description 2',
-    courseId: '1',
-    examId: '2',
-  },
-  {
-    name: 'Test 3',
-    description: 'Description 3',
-    courseId: '1',
-    examId: '3',
-  },
-];
 
 function ExamAccordion(props) {
   const classes = useStyles();
@@ -66,18 +55,31 @@ function ExamAccordion(props) {
 
 export default function CourseExams(props) {
   const classes = useStyles();
+  const [exams, setExams] = React.useState([]);
+  const { courseId } = useParams();
+  React.useEffect(() => {
+    axios.get(`/api/exams?course=${courseId}`)
+    .then((res) => {
+      setExams(res.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  }, []);
 
   return (
     <Container maxWidth="md" className={classes.root}>
-      <h1>Exams</h1>
-      {data.map((item, index) => (
+      <Typography className={classes.title} variant="h4">Exams</Typography>
+      <Divider />
+      <div className={classes.examList}>
+      {exams.map((item, index) => (
         <ExamAccordion
-          name={item.name}
+          name={item.title}
           description={item.description}
-          courseId={item.courseId}
-          examId={item.examId}
+          examId={item._id}
         />
       ))}
+      </div>
     </Container>
   );
 }

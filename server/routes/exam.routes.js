@@ -5,7 +5,10 @@ const Exam = require('../models/exam.model');
 // @desc Get all exam
 // @route GET /api/exams
 router.get('/', (req, res, next) => {
-  Exam.find()
+  const query = {
+    course: (req.query.course ? req.query.course : ""),
+  }
+  Exam.find(query)
     .select('-questions')
     .exec((err, exams) => {
       if (err) return next(err);

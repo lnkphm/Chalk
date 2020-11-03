@@ -31,15 +31,29 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    const fetchData = async () => {
-      const result = await axios.get('/api/auth');
-      this.setState({
-        isLoading: false,
-        isAuthenticated: Boolean(result.data),
-        user: result.data,
+    axios
+      .get('/api/auth')
+      .then((user) => {
+        this.setState({
+          isLoading: false,
+          isAuthenticated: true,
+          user: user.data,
+        });
+      })
+      .catch((err) => {
+        this.setState({
+          isLoading: false,
+          isAuthenticated: false
+        })
+        if (err.response) {
+          console.log(err.response.status);
+          console.log(err.response.data);
+        } else if (err.request) {
+          console.log(err.request);
+        } else {
+          console.log(`Error: ${err.message}`);
+        }
       });
-    };
-    fetchData();
   }
 
   render() {

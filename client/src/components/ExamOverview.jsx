@@ -1,5 +1,7 @@
 import React from 'react';
-import { useRouteMatch } from 'react-router-dom';
+import { useRouteMatch, useParams } from 'react-router-dom';
+import axios from 'axios';
+import { DateTime } from 'luxon';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -15,27 +17,51 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(3),
   },
+  title: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(1)
+  }
 }));
 
 export default function ExamOverview(props) {
   const classes = useStyles();
+  const [exam, setExam] = React.useState({});
   const { url } = useRouteMatch();
+  const { examId } = useParams();
+  React.useEffect(() => {
+    axios
+      .get(`/api/exams/${examId}`)
+      .then((res) => {
+        setExam(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <Container className={classes.root} maxWidth="md">
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <h1>Title</h1>
+          <Typography className={classes.title} variant="h4">{exam.title}</Typography>
           <Divider />
         </Grid>
         <Grid item xs={12}>
+          <Typography variant="h6">Description</Typography>
+          <Typography>{exam.description}</Typography>
+        </Grid>
+        <Grid item xs={12}>
           <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
+            Open date:{' '}
+            {DateTime.fromISO(exam.dateOpen)
+              .setLocale('vi-VN')
+              .toLocaleString()}
+          </Typography>
+          <Typography>
+            Close date:{' '}
+            {DateTime.fromISO(exam.dateClose)
+              .setLocale('vi-VN')
+              .toLocaleString()}
           </Typography>
         </Grid>
         <Grid item xs={12}>
