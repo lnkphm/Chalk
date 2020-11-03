@@ -1,14 +1,13 @@
 import React from 'react';
-import { useRouteMatch, useParams } from 'react-router-dom';
+import { useRouteMatch, useParams, Link as RouteLink } from 'react-router-dom';
 import axios from 'axios';
 import { DateTime } from 'luxon';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Link from '@material-ui/core/Link';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,8 +18,8 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(1)
-  }
+    marginBottom: theme.spacing(1),
+  },
 }));
 
 export default function ExamOverview(props) {
@@ -28,6 +27,7 @@ export default function ExamOverview(props) {
   const [exam, setExam] = React.useState({});
   const { url } = useRouteMatch();
   const { examId } = useParams();
+
   React.useEffect(() => {
     axios
       .get(`/api/exams/${examId}`)
@@ -37,13 +37,15 @@ export default function ExamOverview(props) {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [examId]);
 
   return (
     <Container className={classes.root} maxWidth="md">
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography className={classes.title} variant="h4">{exam.title}</Typography>
+          <Typography className={classes.title} variant="h4">
+            {exam.title}
+          </Typography>
           <Divider />
         </Grid>
         <Grid item xs={12}>
@@ -55,24 +57,27 @@ export default function ExamOverview(props) {
             Open date:{' '}
             {DateTime.fromISO(exam.dateOpen)
               .setLocale('vi-VN')
-              .toLocaleString()}
+              .toLocaleString(DateTime.DATETIME_SHORT)}
           </Typography>
           <Typography>
             Close date:{' '}
             {DateTime.fromISO(exam.dateClose)
               .setLocale('vi-VN')
-              .toLocaleString()}
+              .toLocaleString(DateTime.DATETIME_SHORT)}
           </Typography>
         </Grid>
         <Grid item xs={12}>
           <Divider />
         </Grid>
         <Grid item xs={12}>
-          <Paper className={classes.paper}>
-            <Link color="inherit" href={`${url}/paper`}>
-              Start
-            </Link>
-          </Paper>
+          <Button
+            variant="outlined"
+            color="primary"
+            component={RouteLink}
+            to={`${url}/paper`}
+          >
+            Start
+          </Button>
         </Grid>
       </Grid>
     </Container>

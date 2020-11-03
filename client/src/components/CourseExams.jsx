@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { useParams, useRouteMatch } from 'react-router-dom';
+import { useParams, Link as RouteLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -15,14 +15,14 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   title: {
     marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(1)
+    marginBottom: theme.spacing(1),
   },
   examList: {
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   detail: {
     display: 'block',
@@ -45,7 +45,7 @@ function ExamAccordion(props) {
       </AccordionDetails>
       <Divider />
       <AccordionAction className={classes.action}>
-        <Button component="a" href={url}>
+        <Button component={RouteLink} to={url}>
           View Exam
         </Button>
       </AccordionAction>
@@ -58,27 +58,34 @@ export default function CourseExams(props) {
   const [exams, setExams] = React.useState([]);
   const { courseId } = useParams();
   React.useEffect(() => {
-    axios.get(`/api/exams?course=${courseId}`)
-    .then((res) => {
-      setExams(res.data);
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-  }, []);
+    const fetchData = async () => {
+      return await axios
+        .get(`/api/exams?course=${courseId}`)
+        .then((res) => {
+          setExams(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+    fetchData();
+  }, [courseId]);
 
   return (
     <Container maxWidth="md" className={classes.root}>
-      <Typography className={classes.title} variant="h4">Exams</Typography>
+      <Typography className={classes.title} variant="h4">
+        Exams
+      </Typography>
       <Divider />
       <div className={classes.examList}>
-      {exams.map((item, index) => (
-        <ExamAccordion
-          name={item.title}
-          description={item.description}
-          examId={item._id}
-        />
-      ))}
+        {exams.map((item, index) => (
+          <ExamAccordion
+            name={item.title}
+            description={item.description}
+            examId={item._id}
+            key={index}
+          />
+        ))}
       </div>
     </Container>
   );

@@ -28,7 +28,7 @@ export default function CourseOverview(props) {
     axios.get(`/api/courses/${courseId}`).then((res) => {
       setCourse(res.data);
     });
-  }, []);
+  }, [courseId]);
 
   return (
     <Container className={classes.root} maxWidth="md">

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link as RouteLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -39,7 +40,7 @@ export default function Home() {
             {courses.map((item, index) => (
               <Grid key={index} item xs={12}>
                 <Paper className={classes.paper}>
-                  <Link href={`/courses/${item._id}`}>
+                  <Link component={RouteLink} to={`/courses/${item._id}`}>
                     {item.name}
                   </Link>
                 </Paper>

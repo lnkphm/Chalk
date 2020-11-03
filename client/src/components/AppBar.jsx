@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Link as RouteLink, useParams } from 'react-router-dom';
 import axios from 'axios';
 import _ from 'lodash';
 
@@ -80,10 +80,11 @@ function AppBarDrawer() {
       {items.map((item, index) => (
         <ListItem
           button
-          component="a"
-          href={item.url}
+          component={RouteLink}
+          to={item.url}
           className={classes.listItem}
           key={index}
+          onClick={handleClose}
         >
           <ListItemIcon>
             <HomeIcon />
@@ -120,31 +121,29 @@ function AppBarDrawer() {
 
 function CourseNav(props) {
   const classes = useStyles();
-  const {
-    match: { params },
-  } = props;
+  const { courseId } = useParams();
 
   return (
     <div className={classes.nav}>
       <Tabs value={props.value}>
         <Tab
-          component="a"
-          href={`/courses/${params.courseId}`}
+          component={RouteLink}
+          to={`/courses/${courseId}`}
           label="Overview"
         />
         <Tab
-          component="a"
-          href={`/courses/${params.courseId}/exams`}
+          component={RouteLink}
+          to={`/courses/${courseId}/exams`}
           label="Exams"
         />
         <Tab
-          component="a"
-          href={`/courses/${params.courseId}/users`}
+          component={RouteLink}
+          to={`/courses/${courseId}/users`}
           label="Users"
         />
         <Tab
-          component="a"
-          href={`/courses/${params.courseId}/grades`}
+          component={RouteLink}
+          to={`/courses/${courseId}/grades`}
           label="Grades"
         />
       </Tabs>
@@ -184,7 +183,7 @@ function Title() {
   return (
     <div className={classes.title}>
       <Typography variant="h6">
-        <Link href="/home" color="inherit">
+        <Link component={RouteLink} to="/home" color="inherit">
           Chalk
         </Link>
       </Typography>
@@ -225,7 +224,7 @@ function Account() {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <MenuItem component="a" href="/profile">
+        <MenuItem component={RouteLink} to="/profile">
           Profile
         </MenuItem>
         <MenuItem onClick={logout}>Logout</MenuItem>
