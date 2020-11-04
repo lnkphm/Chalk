@@ -223,6 +223,7 @@ function Account() {
         getContentAnchorEl={null}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+        onClick={handleClose}
       >
         <MenuItem component={RouteLink} to="/profile">
           Profile

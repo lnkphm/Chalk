@@ -79,7 +79,7 @@ router.put('/:id', (req, res, next) => {
 router.put('/:id/users', (req, res, next) => {
   const users = req.body.users;
   Course.findByIdAndUpdate(
-    { _id: req.params.id },
+    req.params.id,
     { $addToSet: { users: { $each: users } } },
     (err, course) => {
       if (err) return next(err);
@@ -92,7 +92,7 @@ router.put('/:id/users', (req, res, next) => {
           }
         );
       });
-      res.send({ message: `Users is added to course ${course.name}` });
+      return res.send({ message: `Users is added to course ${course.name}` });
     }
   );
 });

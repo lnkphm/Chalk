@@ -5,28 +5,21 @@ const Exam = require('../models/exam.model');
 // @desc Get all exam
 // @route GET /api/exams
 router.get('/', (req, res, next) => {
-  const query = {
-    course: (req.query.course ? req.query.course : ""),
-  }
-  Exam.find(query)
-    .select('-questions')
-    .exec((err, exams) => {
-      if (err) return next(err);
-      if (!exams) return next();
-      return res.send(exams);
-    });
+  Exam.find(req.query).exec((err, exams) => {
+    if (err) return next(err);
+    if (!exams) return next();
+    return res.send(exams);
+  });
 });
 
 // @desc Get exam info
 // @route GET /api/exams/:id
 router.get('/:id', (req, res, next) => {
-  Exam.findById(req.params.id)
-    .select('-questions')
-    .exec((err, exam) => {
-      if (err) return next(err);
-      if (!exam) return next();
-      return res.send(exam);
-    });
+  Exam.findById(req.params.id).exec((err, exam) => {
+    if (err) return next(err);
+    if (!exam) return next();
+    return res.send(exam);
+  });
 });
 
 router.get('/:id/questions', (req, res, next) => {
@@ -77,6 +70,18 @@ router.put('/:id', (req, res, next) => {
     if (!exam) return next();
     return res.send(exam);
   });
+});
+
+router.put('/:id/questions', (req, res, next) => {
+  const questions = req.body.questions;
+  Exam.findByIdAndUpdate(
+    req.params.id,
+    { $addToSet: { questions: { $each: questions } } },
+    (err, exam) => {
+      if (err) return next(err);
+      return res.send(`Questions is added to exam ${exam.title}`);
+    }
+  );
 });
 
 router.delete('/:id', (req, res, next) => {
