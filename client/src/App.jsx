@@ -1,11 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import axios from 'axios';
-
 import { withStyles } from '@material-ui/core/styles';
 
 import AppBar from './components/AppBar';
-
 import Landing from './pages/Landing';
 import Home from './pages/Home';
 import Profile from './pages/Profile';

@@ -1,15 +1,12 @@
 import React from 'react';
 import { Link as RouteLink, useRouteMatch } from 'react-router-dom';
 import axios from 'axios';
-import { DateTime } from 'luxon';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Tabs from '@material-ui/core/Tabs';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Paper from '@material-ui/core/Paper';
 import Select from '@material-ui/core/Select';
@@ -48,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function EditButton(props) {
-  const { url, path } = useRouteMatch();
+  const { path } = useRouteMatch();
   return (
     <IconButton component={RouteLink} to={`${path}/${props.user}/edit`}>
       <EditIcon />
@@ -56,28 +53,60 @@ function EditButton(props) {
   );
 }
 
+function getUserRows(users, role, query) {
+  const rows = [];
+  users.forEach((item, index) => {
+    if (role === 'all' || item.role === role) {
+      if (
+        query === '' ||
+        item.username.indexOf(query) !== -1 ||
+        item.name.indexOf(query) !== -1 ||
+        item.email.indexOf(query) !== -1 ||
+        item.role.indexOf(query) !== -1
+      ) {
+        rows.push({
+          id: index,
+          username: item.username,
+          name: item.name,
+          email: item.email,
+          role: item.role,
+          action: item._id,
+        });
+      }
+    }
+  });
+  return rows;
+}
+
+const columns = [
+  { field: 'id', headerName: '#', width: 50 },
+  { field: 'username', headerName: 'Username', width: 150 },
+  { field: 'name', headerName: 'Name', width: 150 },
+  { field: 'email', headerName: 'Email', width: 200 },
+  { field: 'role', headerName: 'Role', width: 150 },
+  {
+    field: 'action',
+    headerName: 'Actions',
+    renderCell: (params) => <EditButton user={params.value} />,
+  },
+];
+
 export default function User(props) {
   const classes = useStyles();
   const [users, setUsers] = React.useState([]);
-  const [role, setRole] = React.useState('all');
-  const { url, path } = useRouteMatch();
+  const [filter, setFilter] = React.useState({
+    role: 'all',
+    query: '',
+  });
+  const { path } = useRouteMatch();
 
-  const onChangeRole = (event) => {
-    setRole(event.target.value);
+  const onChangeValue = (event) => {
+    const value = event.target.value;
+    setFilter({
+      ...filter,
+      [event.target.name]: value,
+    });
   };
-
-  const columns = [
-    { field: 'id', headerName: '#', width: 50 },
-    { field: 'username', headerName: 'Username', width: 150 },
-    { field: 'name', headerName: 'Name', width: 150 },
-    { field: 'email', headerName: 'Email', width: 200 },
-    { field: 'role', headerName: 'Role', width: 150 },
-    {
-      field: 'action',
-      headerName: 'Actions',
-      renderCell: (params) => <EditButton user={params.value} />,
-    },
-  ];
 
   React.useEffect(() => {
     axios
@@ -89,23 +118,6 @@ export default function User(props) {
         console.log(err);
       });
   }, []);
-
-  const getUserRows = (users, role) => {
-    const rows = [];
-    users.forEach((item, index, array) => {
-      if (role == 'all' || item.role == role) {
-        rows.push({
-          id: index,
-          username: item.username,
-          name: item.name,
-          email: item.email,
-          role: item.role,
-          action: item._id,
-        });
-      }
-    });
-    return rows;
-  };
 
   return (
     <Container className={classes.root} maxWidth="md">
@@ -133,17 +145,25 @@ export default function User(props) {
       <Paper className={classes.paper} variant="outlined">
         <Grid container>
           <Grid item xs>
-            <TextField id="search" label="Search" variant="outlined" />
+            <TextField
+              value={filter.query}
+              onChange={onChangeValue}
+              id="search"
+              label="Search"
+              variant="outlined"
+              name="query"
+            />
           </Grid>
           <Grid item>
             <FormControl variant="outlined" className={classes.formControl}>
               <InputLabel id="role-label">Role</InputLabel>
               <Select
-                value={role}
-                onChange={onChangeRole}
+                value={filter.role}
+                onChange={onChangeValue}
                 labelId="role-label"
                 id="role"
                 label="Role"
+                name="role"
               >
                 <MenuItem value="all">All</MenuItem>
                 <MenuItem value="student">Student</MenuItem>
@@ -155,7 +175,7 @@ export default function User(props) {
         </Grid>
         <div className={classes.table}>
           <DataGrid
-            rows={getUserRows(users, role)}
+            rows={getUserRows(users, filter.role, filter.query)}
             columns={columns}
             pageSize={10}
             checkboxSelection

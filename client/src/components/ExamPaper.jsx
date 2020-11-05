@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, Link as RouteLink } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -16,8 +16,6 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
-
-import UserContext from '../contexts/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,7 +60,6 @@ function Question(props) {
 }
 
 function QuestionList(props) {
-  const classes = useStyles();
   const questions = props.questions;
   console.log(questions);
   return (
@@ -80,7 +77,6 @@ function QuestionList(props) {
 
 function PaperNav(props) {
   const classes = useStyles();
-  const { examId } = useParams();
 
   return (
     <div>
@@ -102,22 +98,10 @@ function PaperNav(props) {
 export default function ExamPaper(props) {
   const classes = useStyles();
   const { examId } = useParams();
-  const userData = React.useContext(UserContext);
   const [state, setState] = React.useState({
     timeRemaining: 0,
     questions: []
   })
-
-  const onSubmit = (event) => {
-    event.preventDefault();
-
-    const paper = {
-      user: userData.user._id,
-      exam: examId,
-      submitted: 'true',
-      timeRemaining: state.timeRemaining,
-    };
-  };
 
   React.useEffect(() => {
     axios
