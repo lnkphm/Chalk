@@ -109,7 +109,7 @@ router.put('/:id', (req, res, next) => {
     avatar: req.body.avatar,
     role: req.body.role,
   };
-  User.setPassword(req.body.password);
+  
   User.findByIdAndUpdate({ _id: req.params.id }, updatedUser, (err, user) => {
     if (err) {
       return next(err);

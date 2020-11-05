@@ -21,7 +21,6 @@ import Tabs from '@material-ui/core/Tabs';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
 
@@ -210,7 +209,7 @@ function Account() {
     <div>
       <IconButton edge="end" color="inherit" onClick={handleClick}>
         {_.isEmpty(data.user.avatar) ? (
-          <AccountCircleIcon />
+          <Avatar className={classes.avatar} src="/images/avatar.jpg" />
         ) : (
           <Avatar className={classes.avatar} src={data.user.avatar} />
         )}
