@@ -25,7 +25,7 @@ router.post('/', (req, res, next) => {
     submitted: req.body.submitted,
     connected: req.body.connected,
     timeRemaining: req.body.timeRemaining,
-    questions: req.body.questions,
+    data: req.body.data,
   });
   newPaper.save((err, paper) => {
     if (err) return next(err);
@@ -41,7 +41,7 @@ router.put('/:id', (req, res, next) => {
     submitted: req.body.submitted,
     connected: req.body.connected,
     timeRemaining: req.body.timeRemaining,
-    questions: req.body.questions,
+    data: req.body.data,
   };
   Paper.findByIdAndUpdate(req.params.id, updatedPaper, (err, paper) => {
     if (err) return next(err);

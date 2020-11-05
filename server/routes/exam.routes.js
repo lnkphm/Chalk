@@ -22,13 +22,13 @@ router.get('/:id', (req, res, next) => {
   });
 });
 
-router.get('/:id/questions', (req, res, next) => {
+router.get('/:id/details', (req, res, next) => {
   Exam.findById(req.params.id)
     .populate('questions')
     .exec((err, exam) => {
       if (err) return next(err);
       if (!exam) return next();
-      return res.send(exam.questions);
+      return res.send(exam);
     });
 });
 

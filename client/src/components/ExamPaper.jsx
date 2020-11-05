@@ -17,6 +17,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 
+import UserContext from '../contexts/UserContext';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -35,19 +37,26 @@ function Question(props) {
   const [value, setValue] = React.useState('');
   const handleChange = (event) => {
     setValue(event.target.value);
-  }
+  };
   return (
     <Paper className={classes.paper}>
       <FormControl component="fieldset">
         <FormLabel component="legend">{props.question.text}</FormLabel>
-        <RadioGroup name={props.question._id} value={value} onChange={handleChange}>
-          {
-            props.question.answers.map((item, index) => (
-              <FormControlLabel key={index} value={item._id} control={<Radio />} label={item.text} />
-            ))
-          }
+        <RadioGroup
+          name={props.question._id}
+          value={value}
+          onChange={handleChange}
+        >
+          {props.question.answers.map((item, index) => (
+            <FormControlLabel
+              key={index}
+              value={item._id}
+              control={<Radio />}
+              label={item.text}
+            />
+          ))}
         </RadioGroup>
-      </FormControl>   
+      </FormControl>
     </Paper>
   );
 }
@@ -59,13 +68,11 @@ function QuestionList(props) {
   return (
     <div>
       <Grid container spacing={3}>
-        {
-          questions.map((item, index) => (
-            <Grid key={index} item xs={12}>
-              <Question question={item} />
-            </Grid>
-          ))
-        }
+        {questions.map((item, index) => (
+          <Grid key={index} item xs={12}>
+            <Question question={item} />
+          </Grid>
+        ))}
       </Grid>
     </div>
   );
@@ -80,6 +87,7 @@ function PaperNav(props) {
       <Card className={classes.card}>
         <CardContent>
           <Typography>Exam Navigation</Typography>
+          <Typography>Time Remaining: {props.time}</Typography>
         </CardContent>
         <CardActions>
           <Button type="submit" fullWidth>
@@ -94,17 +102,37 @@ function PaperNav(props) {
 export default function ExamPaper(props) {
   const classes = useStyles();
   const { examId } = useParams();
-  const [questions, setQuestions] = React.useState([]);
+  const userData = React.useContext(UserContext);
+  const [state, setState] = React.useState({
+    timeRemaining: 0,
+    questions: []
+  })
+
+  const onSubmit = (event) => {
+    event.preventDefault();
+
+    const paper = {
+      user: userData.user._id,
+      exam: examId,
+      submitted: 'true',
+      timeRemaining: state.timeRemaining,
+    };
+  };
+
   React.useEffect(() => {
     axios
-      .get(`/api/exams/${examId}/questions`)
+      .get(`/api/exams/${examId}/details`)
       .then((res) => {
-        setQuestions(res.data);
+        setState({
+          timeRemaining: res.data.timeRemaining,
+          questions: res.data.questions
+        })
       })
       .catch((err) => {
         console.log(err);
       });
   }, [examId]);
+
   return (
     <Container className={classes.root} maxWidth="md">
       <Typography variant="h4">Exam Paper</Typography>
@@ -112,10 +140,10 @@ export default function ExamPaper(props) {
       <form>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={8}>
-            <QuestionList questions={questions} />
+            <QuestionList questions={state.questions} />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <PaperNav />
+            <PaperNav time={state.timeRemaining} />
           </Grid>
         </Grid>
       </form>

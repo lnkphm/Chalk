@@ -11,6 +11,7 @@ import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Courses from './pages/Courses';
 import Exams from './pages/Exams';
+import Users from './pages/Users';
 
 import UserContext from './contexts/UserContext';
 import ProtectedRoute from './utils/ProtectedRoute';
@@ -74,6 +75,7 @@ class App extends React.Component {
                 <Route path="/profile" exact component={Profile} />
                 <Route path="/courses" component={Courses} />
                 <Route path="/exams" component={Exams} />
+                <Route path="/users" exact component={Users} />
               </Switch>
             </ProtectedRoute>
           </Switch>
