@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouteLink, useHistory } from 'react-router-dom';
+import { Link as RouteLink, useHistory, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -38,17 +38,34 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CreateUser(props) {
+export default function EditUser(props) {
   const classes = useStyles();
   const history = useHistory();
+  const { userId } = useParams();
   const [state, setState] = React.useState({
     username: '',
-    password: '',
-    confirmPassword: '',
     name: '',
     email: '',
     role: 'student',
+    password: '',
+    confirmPassword: '',
   });
+
+  React.useEffect(() => {
+    axios.get(`/api/users/${userId}`)
+      .then((res) => {
+        const data = res.data;
+        setState({...state,
+          username: data.username,
+          name: data.name,
+          email: data.email,
+          role: data.role
+        })
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  }, [state, userId])
 
   const onChangeValue = (event) => {
     const value = event.target.value;
@@ -57,17 +74,16 @@ export default function CreateUser(props) {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    const newUser = {
+    const updatedUser = {
       username: state.username,
       email: state.email,
       name: state.name,
-      password: state.password,
       role: state.role,
       avatar: '',
     };
 
     axios
-      .post(`/api/users`, newUser)
+      .put(`/api/users/${userId}`, updatedUser)
       .then((res) => {
         history.push(`/users`);
       })
@@ -84,7 +100,7 @@ export default function CreateUser(props) {
       </Link>
       <Card>
         <form onSubmit={onSubmit}>
-          <CardHeader title="Create New User" />
+          <CardHeader title="Edit User" />
           <Divider />
           <CardContent>
             <Grid container spacing={2}>
@@ -126,6 +142,7 @@ export default function CreateUser(props) {
                   onChange={onChangeValue}
                 />
               </Grid>
+
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Email"
@@ -172,7 +189,7 @@ export default function CreateUser(props) {
               variant="outlined"
               color="primary"
             >
-              Create
+              Update User
             </Button>
           </CardActions>
         </form>

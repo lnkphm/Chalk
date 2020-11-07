@@ -73,7 +73,7 @@ class App extends React.Component {
                 <Route path="/profile" exact component={Profile} />
                 <Route path="/courses" component={Courses} />
                 <Route path="/exams" component={Exams} />
-                <Route path="/users" exact component={Users} />
+                <Route path="/users" component={Users} />
               </Switch>
             </ProtectedRoute>
           </Switch>

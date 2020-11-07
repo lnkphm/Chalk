@@ -14,6 +14,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
 import UserContext from '../contexts/UserContext';
+import DefaultAvatar from '../assets/images/avatar.jpg';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -87,7 +88,7 @@ export default function Profile(props) {
         <Grid item xs={12} sm={4}>
           <Card>
             <CardContent className={classes.content}>
-              <Avatar className={classes.avatar} src="/images/avatar.jpg" />
+              <Avatar className={classes.avatar} src={DefaultAvatar} />
               <Typography variant="h4">{userData.user.name}</Typography>
               <Typography>{userData.user.email}</Typography>
             </CardContent>

@@ -26,6 +26,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import UserContext from '../contexts/UserContext';
 
+import DefaultAvatar from '../assets/images/avatar.jpg';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -124,7 +126,7 @@ function CourseNav(props) {
 
   return (
     <div className={classes.nav}>
-      <Tabs value={props.value}>
+      <Tabs value={props.value} indicatorColor="primary">
         <Tab
           component={RouteLink}
           to={`/courses/${courseId}`}
@@ -209,7 +211,7 @@ function Account() {
     <div>
       <IconButton edge="end" color="inherit" onClick={handleClick}>
         {_.isEmpty(data.user.avatar) ? (
-          <Avatar className={classes.avatar} src="/images/avatar.jpg" />
+          <Avatar className={classes.avatar} src={DefaultAvatar} />
         ) : (
           <Avatar className={classes.avatar} src={data.user.avatar} />
         )}
@@ -238,7 +240,7 @@ export default function NavBar() {
 
   return (
     <div className={classes.root}>
-      <AppBar>
+      <AppBar color="default">
         <Toolbar>
           <AppBarDrawer />
           <Title />

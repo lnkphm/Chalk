@@ -12,6 +12,7 @@ import UserContext from '../contexts/UserContext';
 import Typography from '@material-ui/core/Typography';
 
 import Calendar from 'react-calendar';
+import "../assets/css/Calendar.css";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -31,29 +32,7 @@ export default function Home() {
   return (
     <Container maxWidth="md" className={classes.container}>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={4}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Card>
-                <CardHeader title="Upcoming" />
-                <Divider />
-                <CardContent>
-                  <Typography>There is no upcoming</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12}>
-              <Card>
-                <CardHeader title="Calendar" />
-                <Divider />
-                <CardContent>
-                  <Calendar value={date} onChange={setDate} />
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12} sm={8}>
+      <Grid item xs={12} sm={8}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="h4">Courses</Typography>
@@ -80,6 +59,29 @@ export default function Home() {
             )}
           </Grid>
         </Grid>
+        <Grid item xs={12} sm={4}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Card>
+                <CardHeader title="Upcoming" />
+                <Divider />
+                <CardContent>
+                  <Typography>There is no upcoming</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12}>
+              <Card>
+                <CardHeader title="Calendar" />
+                <Divider />
+                <CardContent>
+                  <Calendar value={date} onChange={setDate} />
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </Grid>
+        
       </Grid>
     </Container>
   );
