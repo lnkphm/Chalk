@@ -40,7 +40,9 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
     marginLeft: theme.spacing(2)
   },
-  avatar: {},
+  avatar: {
+
+  },
   listItem: {
     width: 240,
   },
@@ -155,6 +157,11 @@ function CourseNav(props) {
 function CourseNavRoutes() {
   return (
     <Switch>
+      <Route
+        path="/courses/create"
+        exact
+        render={() => <div />}
+      />
       <Route
         path="/courses/:courseId"
         exact

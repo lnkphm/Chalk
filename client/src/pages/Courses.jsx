@@ -6,12 +6,14 @@ import CourseOverview from '../components/CourseOverview';
 import CourseUsers from '../components/CourseUsers';
 import CourseGrades from '../components/CourseGrades';
 import CourseExams from '../components/CourseExams';
+import CreateCourse from '../components/CreateCourse';
 
 export default function Course(props) {
   const { path } = useRouteMatch();
   return (
     <Switch>
       <Route exact path={path} component={CourseList} />
+      <Route exact path={`${path}/create`} component={CreateCourse} />
       <Route exact path={`${path}/:courseId`} component={CourseOverview} />
       <Route exact path={`${path}/:courseId/exams`} component={CourseExams} />
       <Route exact path={`${path}/:courseId/users`} component={CourseUsers} />

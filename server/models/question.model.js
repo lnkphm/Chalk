@@ -14,6 +14,7 @@ const QuestionSchema = new Schema(
         points: { type: Number },
       },
     ],
+    tags: [{type: Schema.Types.ObjectId, ref: 'Tag'}],
   },
   {
     timestamps: true,

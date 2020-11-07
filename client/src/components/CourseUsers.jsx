@@ -7,6 +7,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
@@ -16,13 +17,14 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-
+import DeleteIcon from '@material-ui/icons/Delete';
 import DefaultAvatar from '../assets/images/avatar.jpg';
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -117,6 +119,8 @@ export default function CourseUsers() {
   const classes = useStyles();
   const { courseId } = useParams();
   const [dialog, setDialog] = React.useState(false);
+  const [dialogRemove, setDialogRemove] = React.useState(false);
+  const [removeUser, setRemoveUser] = React.useState('');
   const [courseUsers, setCourseUsers] = React.useState([]);
   const [selected, setSelected] = React.useState([]);
 
@@ -143,15 +147,34 @@ export default function CourseUsers() {
     setDialog(false);
   };
 
+  const handleClickOpenRemove = () => {
+    setDialogRemove(true);
+  };
+
+  const handleCloseRemove = () => {
+    setDialogRemove(false);
+  };
+
   const onClickSubmit = () => {
     const data = { users: [] };
     selected.forEach((item, index) => {
       data.users.push(item._id);
     });
     axios
-      .put(`/api/courses/${courseId}/users`, data)
+      .post(`/api/courses/${courseId}/users`, data)
       .then(() => {
-        handleClose();
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const onClickRemove = () => {
+    axios
+      .delete(`/api/courses/${courseId}/users/${removeUser}`)
+      .then((res) => {
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);
@@ -160,12 +183,9 @@ export default function CourseUsers() {
 
   return (
     <Container className={classes.root} maxWidth="md">
-      <ButtonGroup>
-        <Button color="primary" onClick={handleClickOpen}>
-          Add Users
-        </Button>
-        <Button color="secondary">Remove Users</Button>
-      </ButtonGroup>
+      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+        Add Users
+      </Button>
 
       <Card className={classes.card}>
         <CardHeader title="Teacher" />
@@ -179,6 +199,17 @@ export default function CourseUsers() {
                     <Avatar src={item.avatar ? item.avatar : DefaultAvatar} />
                   </ListItemAvatar>
                   <ListItemText primary={item.name} />
+                  <ListItemSecondaryAction>
+                    <IconButton
+                      edge="end"
+                      onClick={() => {
+                        setRemoveUser(item._id);
+                        handleClickOpenRemove();
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
                 </ListItem>
               ) : (
                 ''
@@ -199,6 +230,17 @@ export default function CourseUsers() {
                     <Avatar src={item.avatar ? item.avatar : DefaultAvatar} />
                   </ListItemAvatar>
                   <ListItemText primary={item.name} />
+                  <ListItemSecondaryAction>
+                    <IconButton
+                      edge="end"
+                      onClick={() => {
+                        setRemoveUser(item._id);
+                        handleClickOpenRemove();
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
                 </ListItem>
               ) : (
                 ''
@@ -215,6 +257,21 @@ export default function CourseUsers() {
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={onClickSubmit}>Add</Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        maxWidth="sm"
+        fullWidth
+        open={dialogRemove}
+        onClose={handleCloseRemove}
+      >
+        <DialogTitle>Remove User</DialogTitle>
+        <DialogContent className={classes.dialogContent}>
+          <DialogContentText>Remove this user?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseRemove}>Cancel</Button>
+          <Button onClick={onClickRemove}>Remove</Button>
         </DialogActions>
       </Dialog>
     </Container>

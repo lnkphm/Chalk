@@ -1,7 +1,6 @@
 import React from 'react';
 import { useRouteMatch, useParams, Link as RouteLink } from 'react-router-dom';
 import axios from 'axios';
-import { DateTime } from 'luxon';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
@@ -54,16 +53,10 @@ export default function ExamOverview(props) {
         </Grid>
         <Grid item xs={12}>
           <Typography>
-            Open date:{' '}
-            {DateTime.fromISO(exam.dateOpen)
-              .setLocale('vi-VN')
-              .toLocaleString(DateTime.DATETIME_SHORT)}
+            Open date:
           </Typography>
           <Typography>
-            Close date:{' '}
-            {DateTime.fromISO(exam.dateClose)
-              .setLocale('vi-VN')
-              .toLocaleString(DateTime.DATETIME_SHORT)}
+            Close date:
           </Typography>
         </Grid>
         <Grid item xs={12}>

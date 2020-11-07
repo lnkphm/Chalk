@@ -10,7 +10,7 @@ const CourseSchema = new Schema(
     public: { type: Boolean },
     password: { type: String },
     users: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    // category: { type: Schema.Types.ObjectId, ref: 'Category' },
+    category: { type: Schema.Types.ObjectId, ref: 'Category' },
   },
   {
     timestamps: true,

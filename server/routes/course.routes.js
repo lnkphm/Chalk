@@ -56,6 +56,29 @@ router.post('/', (req, res, next) => {
   });
 });
 
+// @desc Add user to course
+// @route PUT /api/courses/:courseId/users
+router.post('/:courseId/users', (req, res, next) => {
+  const users = req.body.users;
+  Course.findByIdAndUpdate(
+    req.params.courseId,
+    { $addToSet: { users: { $each: users } } },
+    (err, course) => {
+      if (err) return next(err);
+      users.forEach((user, index) => {
+        User.findByIdAndUpdate(
+          user,
+          { $addToSet: { courses: req.params.courseId } },
+          (err) => {
+            if (err) return next(err);
+          }
+        );
+      });
+      return res.send({ message: `Users is added to course ${course.name}` });
+    }
+  );
+});
+
 // @desc Update course
 // @route PUT /api/courses/:id
 router.put('/:id', (req, res, next) => {
@@ -74,29 +97,6 @@ router.put('/:id', (req, res, next) => {
   });
 });
 
-// @desc Add user to course
-// @route PUT /api/courses/:id/users
-router.put('/:id/users', (req, res, next) => {
-  const users = req.body.users;
-  Course.findByIdAndUpdate(
-    req.params.id,
-    { $addToSet: { users: { $each: users } } },
-    (err, course) => {
-      if (err) return next(err);
-      users.forEach((user, index) => {
-        User.findByIdAndUpdate(
-          user,
-          { $addToSet: { courses: req.params.id } },
-          (err) => {
-            if (err) return next(err);
-          }
-        );
-      });
-      return res.send({ message: `Users is added to course ${course.name}` });
-    }
-  );
-});
-
 // @desc Delete course
 // @route DELETE /api/courses/:id
 router.delete('/:id', (req, res, next) => {
@@ -104,6 +104,26 @@ router.delete('/:id', (req, res, next) => {
     if (err) return next(err);
     return res.send({ message: 'Course deleted' });
   });
+});
+
+// @desc Remove user from course
+// @route DELETE /api/courses/:courseId/users/:userId
+router.delete('/:courseId/users/:userId', (req, res, next) => {
+  Course.findByIdAndUpdate(
+    req.params.courseId,
+    { $pull: { users: req.params.userId } },
+    (err, course) => {
+      if (err) return next(err);
+      User.findByIdAndUpdate(
+        req.body.user,
+        { $pull: { courses: req.params.courseId } },
+        (err) => {
+          if (err) return next(err);
+          return res.send({ message: `Users is removed from course ${course.name}` });
+        }
+      );
+    }
+  );
 });
 
 module.exports = router;

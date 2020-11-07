@@ -126,12 +126,6 @@ export default function UserList(props) {
       </Typography>
       <Grid className={classes.toolbar} container>
         <Grid item xs>
-          <ButtonGroup>
-            <Button>Import</Button>
-            <Button>Export</Button>
-          </ButtonGroup>
-        </Grid>
-        <Grid item>
           <Button
             variant="outlined"
             color="primary"
@@ -140,6 +134,12 @@ export default function UserList(props) {
           >
             Create new user
           </Button>
+        </Grid>
+        <Grid item>
+          <ButtonGroup>
+            <Button>Import</Button>
+            <Button>Export</Button>
+          </ButtonGroup>
         </Grid>
       </Grid>
       <Paper className={classes.paper} variant="outlined">

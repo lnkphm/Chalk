@@ -51,7 +51,12 @@ export default function CourseList(props) {
           <Card>
             <CardHeader title="Courses" />
             <CardActions>
-              <Button variant="outlined" color="primary">
+              <Button
+                variant="outlined"
+                color="primary"
+                component={RouteLink}
+                to={`/courses/create`}
+              >
                 Create new course
               </Button>
             </CardActions>
