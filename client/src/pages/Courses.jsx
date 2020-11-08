@@ -7,6 +7,7 @@ import CourseUsers from '../components/CourseUsers';
 import CourseGrades from '../components/CourseGrades';
 import CourseExams from '../components/CourseExams';
 import CreateCourse from '../components/CreateCourse';
+import EditCourse from '../components/EditCourse';
 
 export default function Course(props) {
   const { path } = useRouteMatch();
@@ -15,6 +16,7 @@ export default function Course(props) {
       <Route exact path={path} component={CourseList} />
       <Route exact path={`${path}/create`} component={CreateCourse} />
       <Route exact path={`${path}/:courseId`} component={CourseOverview} />
+      <Route exact path={`${path}/:courseId/edit`} component={EditCourse} />
       <Route exact path={`${path}/:courseId/exams`} component={CourseExams} />
       <Route exact path={`${path}/:courseId/users`} component={CourseUsers} />
       <Route exact path={`${path}/:courseId/grades`} component={CourseGrades} />

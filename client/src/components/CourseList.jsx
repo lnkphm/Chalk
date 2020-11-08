@@ -15,6 +15,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Link from '@material-ui/core/Link';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -105,6 +106,9 @@ export default function CourseList(props) {
                       </IconButton>
                     }
                   />
+                  <CardContent>
+                    <Typography>{item.description}</Typography>
+                  </CardContent>
                 </Card>
               </Grid>
             ))}

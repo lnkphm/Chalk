@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouteLink, useHistory } from 'react-router-dom';
+import { Link as RouteLink, useHistory, useParams } from 'react-router-dom';
 import axios from 'axios';
 import DateFnsUtils from '@date-io/date-fns';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
 export default function EditCourse(props) {
   const classes = useStyles();
   const history = useHistory();
+  const { courseId } = useParams();
   const [state, setState] = React.useState({
     name: '',
     description: '',
@@ -61,6 +62,25 @@ export default function EditCourse(props) {
     category: '',
   });
 
+  React.useEffect(() => {
+    axios.get(`/api/courses/${courseId}`)
+      .then((res) => {
+        const course = res.data;
+        setState({
+          name: course.name,
+          description: course.description,
+          dateStart: course.dateStart,
+          dateEnd: course.dateEnd,
+          public: course.public,
+          password: course.password,
+          category: '',
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [courseId])
+
   const onChangeValue = (event) => {
     const value = event.target.value;
     setState({ ...state, [event.target.name]: value });
@@ -69,9 +89,9 @@ export default function EditCourse(props) {
   const onSubmit = (event) => {
     event.preventDefault();
     axios
-      .post(`/api/courses`, state)
+      .put(`/api/courses/${courseId}`, state)
       .then((res) => {
-        history.push(`/courses`);
+        history.push(`/courses/${courseId}`);
       })
       .catch((err) => {
         console.log(err);
@@ -81,7 +101,7 @@ export default function EditCourse(props) {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Container className={classes.root} maxWidth="md">
-        <Link className={classes.back} component={RouteLink} to="/courses">
+        <Link className={classes.back} component={RouteLink} to={`/courses/${courseId}`}>
           <ArrowBackIcon />
           <Typography>Back to course page</Typography>
         </Link>
@@ -173,6 +193,7 @@ export default function EditCourse(props) {
                       value={state.category}
                       onChange={onChangeValue}
                     >
+                      <MenuItem value="">Choose category</MenuItem>
                       <MenuItem value="cat1">Category 1</MenuItem>
                       <MenuItem value="cat2">Category 2</MenuItem>
                       <MenuItem value="cat3">Category 3</MenuItem>
@@ -189,7 +210,7 @@ export default function EditCourse(props) {
                 variant="outlined"
                 color="primary"
               >
-                Create
+                Edit
               </Button>
             </CardActions>
           </form>
