@@ -5,8 +5,7 @@ const Category = require('../models/category.model');
 //@desc Get all categories
 //@route GET /api/categories
 router.get('/', (req, res, next) => {
-  Category.find()
-  .exec((err, categories) => {
+  Category.find().exec((err, categories) => {
     if (err) {
       return next(err);
     }
@@ -17,10 +16,8 @@ router.get('/', (req, res, next) => {
   });
 });
 
-
 router.get('/:id', (req, res, next) => {
-  Category.findById(req.params.id)
-  .exec((err, category) => {
+  Category.findById(req.params.id).exec((err, category) => {
     if (err) {
       return next(err);
     }
@@ -28,27 +25,50 @@ router.get('/:id', (req, res, next) => {
       return next();
     }
     return res.send(category);
-  })
+  });
 });
 
-
-router.get('/courses', (req, res) => {
-  const query = {
-    type: 'course'
-  }
-  Category.find(query, (err, categories) => {
+router.post('/', (req, res, next) => {
+  const newCategory = new Category({
+    name: req.body.name,
+    description: req.body.description,
+  });
+  newCategory.save((err, category) => {
     if (err) {
       return next(err);
     }
-  })
+    if (!category) {
+      return next();
+    }
+    return res.status(201).send(category);
+  });
 });
 
-router.get('/exams', (req, res) => {});
+router.put('/:id', (req, res, next) => {
+  const updatedCategory = {
+    name: req.body.name,
+    description: req.body.description,
+  };
+  Category.findByIdAndUpdate(
+    req.params.id,
+    updatedCategory,
+    (err, category) => {
+      if (err) {
+        return next(err);
+      }
+      if (!category) {
+        return next();
+      }
+      return res.send(category);
+    }
+  );
+});
 
-router.get('/questions', (req, res) => {});
-
-router.post('/', (req, res) => {});
-router.put('/', (req, res) => {});
-router.delete('/', (req, res) => {});
+router.delete('/:id', (req, res, next) => {
+  Category.findByIdAndDelete(req.params.id, (err) => {
+    if (err) return next(err);
+    return res.send({ message: 'Category deleted' });
+  });
+});
 
 module.exports = router;

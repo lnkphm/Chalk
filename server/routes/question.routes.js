@@ -11,11 +11,13 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/:id', (req, res, next) => {
-  Question.findById(req.params.id).exec((err, question) => {
-    if (err) return next(err);
-    if (!question) return next();
-    return res.send(question);
-  });
+  Question.findById(req.params.id)
+    .populate('tags')
+    .exec((err, question) => {
+      if (err) return next(err);
+      if (!question) return next();
+      return res.send(question);
+    });
 });
 
 router.post('/', (req, res, next) => {
@@ -25,6 +27,7 @@ router.post('/', (req, res, next) => {
     shuffle: req.body.shuffle,
     feedback: req.body.feedback,
     answers: req.body.answers,
+    tags: req.body.tags,
   });
   newQuestion.save((err, question) => {
     if (err) return next(err);
@@ -40,6 +43,7 @@ router.put('/:id', (req, res, next) => {
     shuffle: req.body.shuffle,
     feedback: req.body.feedback,
     answers: req.body.answers,
+    tags: req.body.tags,
   };
   Question.findByIdAndUpdate(
     req.params.id,

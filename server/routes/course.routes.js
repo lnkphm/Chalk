@@ -17,6 +17,7 @@ router.get('/', (req, res, next) => {
 // @route GET /api/courses/:id
 router.get('/:id', (req, res, next) => {
   Course.findById(req.params.id)
+    .populate('category')
     .populate('users', '-courses -hash -salt')
     .exec((err, course) => {
       if (err) return next(err);
@@ -47,6 +48,7 @@ router.post('/', (req, res, next) => {
     dateEnd: Date.parse(req.body.dateEnd),
     public: req.body.public,
     password: req.body.password,
+    category: req.body.category,
     users: [],
   });
   newCourse.save((err, course) => {
@@ -88,6 +90,7 @@ router.put('/:id', (req, res, next) => {
     dateStart: Date.parse(req.body.dateStart),
     dateEnd: Date.parse(req.body.dateEnd),
     public: req.body.public,
+    category: req.body.category,
     password: req.body.password,
   };
   Course.findByIdAndUpdate(req.params.id, updatedCourse, (err, course) => {
@@ -119,9 +122,9 @@ router.delete('/:courseId/users/:userId', (req, res, next) => {
         { $pull: { courses: req.params.courseId } },
         (err) => {
           if (err) return next(err);
-          return res.send({ message: `Users is removed from course ${course.name}` });
         }
       );
+      return res.send({ message: `Users is removed from course ${course.name}` });
     }
   );
 });
