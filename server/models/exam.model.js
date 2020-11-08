@@ -11,6 +11,7 @@ const ExamSchema = new Schema(
     shuffle: { type: Boolean },
     gradingMethod: { type: String },
     public: { type: Boolean },
+    password: { type: String },
     course: { type: Schema.Types.ObjectId, ref: 'Course' },
     questions: [{ type: Schema.Types.ObjectId, ref: 'Question' }],
   },

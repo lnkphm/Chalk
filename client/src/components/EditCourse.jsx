@@ -33,8 +33,11 @@ const useStyles = makeStyles((theme) => ({
   breadcrumbs: {
     marginBottom: theme.spacing(2),
   },
-  submitButton: {
+  action: {
     marginLeft: 'auto',
+  },
+  submitButton: {
+    marginLeft: theme.spacing(1),
   },
   back: {
     display: 'flex',
@@ -44,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   checkbox: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 }));
 
@@ -52,6 +55,7 @@ export default function EditCourse(props) {
   const classes = useStyles();
   const history = useHistory();
   const { courseId } = useParams();
+  const [options, setOptions] = React.useState([]);
   const [state, setState] = React.useState({
     name: '',
     description: '',
@@ -63,7 +67,8 @@ export default function EditCourse(props) {
   });
 
   React.useEffect(() => {
-    axios.get(`/api/courses/${courseId}`)
+    axios
+      .get(`/api/courses/${courseId}`)
       .then((res) => {
         const course = res.data;
         setState({
@@ -73,21 +78,31 @@ export default function EditCourse(props) {
           dateEnd: course.dateEnd,
           public: course.public,
           password: course.password,
-          category: '',
-        })
+          category: course.category._id,
+        });
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
+      });
+  }, [courseId]);
+
+  React.useEffect(() => {
+    axios
+      .get(`/api/categories`)
+      .then((res) => {
+        setOptions(res.data);
       })
-  }, [courseId])
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const onChangeValue = (event) => {
     const value = event.target.value;
     setState({ ...state, [event.target.name]: value });
   };
 
-  const onSubmit = (event) => {
-    event.preventDefault();
+  const onClickSave = () => {
     axios
       .put(`/api/courses/${courseId}`, state)
       .then((res) => {
@@ -98,122 +113,126 @@ export default function EditCourse(props) {
       });
   };
 
+  const onClickCancel = () => {
+    history.push(`/courses/${courseId}`);
+  };
+
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Container className={classes.root} maxWidth="md">
-        <Link className={classes.back} component={RouteLink} to={`/courses/${courseId}`}>
-          <ArrowBackIcon />
-          <Typography>Back to course page</Typography>
-        </Link>
         <Card>
-          <form onSubmit={onSubmit}>
-            <CardHeader title="Create New Course" />
-            <Divider />
-            <CardContent>
-              <Grid container spacing={3}>
-                <Grid item xs={8} sm={9} md={10}>
-                  <TextField
-                    label="Name"
-                    variant="outlined"
-                    fullWidth
-                    required
-                    name="name"
-                    value={state.name}
-                    onChange={onChangeValue}
-                  />
-                </Grid>
-                <Grid className={classes.checkbox} item xs={4} sm={3} md={2}>
-                  <FormControlLabel
-                    control={
-                      <CheckBox
-                        name="public"
-                        checked={state.public}
-                        onChange={(event) => {
-                          setState({ ...state, public: event.target.checked });
-                        }}
-                        color="secondary"
-                      />
-                    }
-                    label="Public"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Description"
-                    variant="outlined"
-                    fullWidth
-                    name="description"
-                    value={state.description}
-                    onChange={onChangeValue}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <DateTimePicker
-                    label="Date Start"
-                    inputVariant="outlined"
-                    name="dateStart"
-                    fullWidth
-                    ampm={false}
-                    value={state.dateStart}
-                    onChange={(value) => {
-                      setState({ ...state, dateStart: value });
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <DateTimePicker
-                    label="Date End"
-                    inputVariant="outlined"
-                    name="dateEnd"
-                    fullWidth
-                    ampm={false}
-                    value={state.dateEnd}
-                    onChange={(value) => {
-                      setState({ ...state, dateEnd: value });
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Password"
-                    variant="outlined"
-                    fullWidth
-                    name="password"
-                    value={state.password}
-                    onChange={onChangeValue}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl variant="outlined" fullWidth>
-                    <InputLabel id="labelRole">Category</InputLabel>
-                    <Select
-                      labelId="labelRole"
-                      label="Category"
-                      name="category"
-                      value={state.category}
-                      onChange={onChangeValue}
-                    >
-                      <MenuItem value="">Choose category</MenuItem>
-                      <MenuItem value="cat1">Category 1</MenuItem>
-                      <MenuItem value="cat2">Category 2</MenuItem>
-                      <MenuItem value="cat3">Category 3</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
+          <CardHeader title="Create New Course" />
+          <Divider />
+          <CardContent>
+            <Grid container spacing={3}>
+              <Grid item xs={8} sm={9} md={10}>
+                <TextField
+                  label="Name"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  name="name"
+                  value={state.name}
+                  onChange={onChangeValue}
+                />
               </Grid>
-            </CardContent>
-            <Divider />
-            <CardActions>
+              <Grid className={classes.checkbox} item xs={4} sm={3} md={2}>
+                <FormControlLabel
+                  control={
+                    <CheckBox
+                      name="public"
+                      checked={state.public}
+                      onChange={(event) => {
+                        setState({ ...state, public: event.target.checked });
+                      }}
+                      color="secondary"
+                    />
+                  }
+                  label="Public"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Description"
+                  variant="outlined"
+                  fullWidth
+                  name="description"
+                  value={state.description}
+                  onChange={onChangeValue}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <DateTimePicker
+                  label="Date Start"
+                  inputVariant="outlined"
+                  name="dateStart"
+                  fullWidth
+                  ampm={false}
+                  value={state.dateStart}
+                  onChange={(value) => {
+                    setState({ ...state, dateStart: value });
+                  }}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <DateTimePicker
+                  label="Date End"
+                  inputVariant="outlined"
+                  name="dateEnd"
+                  fullWidth
+                  ampm={false}
+                  value={state.dateEnd}
+                  onChange={(value) => {
+                    setState({ ...state, dateEnd: value });
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Password"
+                  variant="outlined"
+                  fullWidth
+                  name="password"
+                  value={state.password}
+                  onChange={onChangeValue}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl variant="outlined" fullWidth>
+                  <InputLabel id="labelRole">Category</InputLabel>
+                  <Select
+                    labelId="labelRole"
+                    label="Category"
+                    name="category"
+                    value={state.category}
+                    onChange={onChangeValue}
+                  >
+                    {options.map((item, index) => (
+                      <MenuItem key={index} value={item._id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
+          </CardContent>
+          <Divider />
+          <CardActions>
+            <div className={classes.action}>
+              <Button variant="outlined" onClick={onClickCancel}>
+                Cancel
+              </Button>
               <Button
                 className={classes.submitButton}
-                type="submit"
                 variant="outlined"
                 color="primary"
+                onClick={onClickSave}
               >
-                Edit
+                Update
               </Button>
-            </CardActions>
-          </form>
+            </div>
+          </CardActions>
         </Card>
       </Container>
     </MuiPickersUtilsProvider>

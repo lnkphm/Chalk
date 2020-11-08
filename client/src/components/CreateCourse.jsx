@@ -3,7 +3,6 @@ import { Link as RouteLink, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import DateFnsUtils from '@date-io/date-fns';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -44,22 +43,34 @@ const useStyles = makeStyles((theme) => ({
   checkbox: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 }));
 
 export default function EditCourse(props) {
   const classes = useStyles();
   const history = useHistory();
+  const [options, setOptions] = React.useState([]);
   const [state, setState] = React.useState({
     name: '',
     description: '',
     dateStart: new Date(),
     dateEnd: new Date(),
-    public: false,
+    public: true,
     password: '',
     category: '',
   });
+
+  React.useEffect(() => {
+    axios
+      .get(`/api/categories`)
+      .then((res) => {
+        setOptions(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const onChangeValue = (event) => {
     const value = event.target.value;
@@ -173,9 +184,11 @@ export default function EditCourse(props) {
                       value={state.category}
                       onChange={onChangeValue}
                     >
-                      <MenuItem value="cat1">Category 1</MenuItem>
-                      <MenuItem value="cat2">Category 2</MenuItem>
-                      <MenuItem value="cat3">Category 3</MenuItem>
+                      {options.map((item, index) => (
+                        <MenuItem key={index} value={item._id}>
+                          {item.name}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </Grid>

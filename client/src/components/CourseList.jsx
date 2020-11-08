@@ -29,10 +29,6 @@ const useStyles = makeStyles((theme) => ({
 export default function CourseList(props) {
   const classes = useStyles();
   const [courses, setCourses] = React.useState([]);
-  const [filter, setFilter] = React.useState({
-    category: '',
-    query: '',
-  });
 
   React.useEffect(() => {
     axios

@@ -13,9 +13,12 @@ import Container from '@material-ui/core/Container';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+import CreateExamDialog from './CreateExamDialog';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    marginTop: theme.spacing(3),
   },
   title: {
     marginTop: theme.spacing(2),
@@ -30,6 +33,10 @@ const useStyles = makeStyles((theme) => ({
   action: {
     justifyContent: 'flex-start',
   },
+  toolbar: {
+    marginBottom: theme.spacing(2),
+  }
+
 }));
 
 function ExamAccordion(props) {
@@ -73,10 +80,9 @@ export default function CourseExams(props) {
 
   return (
     <Container maxWidth="md" className={classes.root}>
-      <Typography className={classes.title} variant="h4">
-        Exams
-      </Typography>
-      <Divider />
+      <div className={classes.toolbar}>
+        <CreateExamDialog />
+      </div>    
       <div className={classes.examList}>
         {exams.map((item, index) => (
           <ExamAccordion

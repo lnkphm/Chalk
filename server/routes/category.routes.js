@@ -5,7 +5,7 @@ const Category = require('../models/category.model');
 //@desc Get all categories
 //@route GET /api/categories
 router.get('/', (req, res, next) => {
-  Category.find().exec((err, categories) => {
+  Category.find(req.query).exec((err, categories) => {
     if (err) {
       return next(err);
     }

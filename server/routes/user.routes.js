@@ -1,14 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user.model');
-const Course = require('../models/course.model');
-const Paper = require('../models/paper.model');
-const Exam = require('../models/exam.model');
 
 // @desc Get all users info
 // @route GET /api/users
 router.get('/', (req, res, next) => {
-  User.find()
+  User.find(req.query)
     .select('-hash -salt')
     .exec((err, users) => {
       if (err) {
@@ -51,26 +48,6 @@ router.get('/:id/courses', (req, res, next) => {
     })
 });
 
-// @desc Get all user's papers
-// @route GET /api/users/:id/papers
-router.get('/:id/papers', (req, res, next) => {
-  Paper.find({ user: req.params.id }, (err, papers) => {
-    if (err) {
-      return next(err);
-    }
-    if (!papers) {
-      return next();
-    }
-    return res.send(papers);
-  });
-});
-
-// @desc Get all user's exams
-// @route GET /api/users/:id/exams
-router.get('/:id/exams', (req, res, next) => {
-
-});
-
 // @desc Create new user
 // @route POST /api/users
 router.post('/', (req, res, next) => {
@@ -103,7 +80,6 @@ router.post('/', (req, res, next) => {
 // @route PUT /api/users/:id
 router.put('/:id', (req, res, next) => {
   const updatedUser = {
-    username: req.body.username,
     email: req.body.email,
     name: req.body.name,
     avatar: req.body.avatar,
@@ -114,6 +90,10 @@ router.put('/:id', (req, res, next) => {
     if (err) {
       return next(err);
     }
+    if (!user) {
+      return next();
+    }
+    user.setPassword(req.body.password);
     return res.send(user);
   });
 });

@@ -1,5 +1,10 @@
 import React from 'react';
-import { useParams, Link as RouteLink, useRouteMatch } from 'react-router-dom';
+import {
+  useParams,
+  Link as RouteLink,
+  useRouteMatch,
+  useHistory,
+} from 'react-router-dom';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -14,12 +19,15 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
-import { Card, CardHeader, IconButton, CardContent } from '@material-ui/core';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
   title: {
     marginTop: theme.spacing(2),
@@ -31,9 +39,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function SettingMenu() {
-  const {path, url} = useRouteMatch();
+  const { url } = useRouteMatch();
+  const { courseId } = useParams();
+  const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [dialog, setDialog] = React.useState(false);
+  const [linkDialog, setLinkDialog] = React.useState(false);
+  const [deleteDialog, setDeleteDialog] = React.useState(false);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -43,14 +54,34 @@ function SettingMenu() {
     setAnchorEl(null);
   };
 
-  const handleClickDialog = () => {
-    setDialog(true);
+  const openLinkDialog = () => {
+    setLinkDialog(true);
     handleClose();
-  }
+  };
 
-  const handleCloseDialog = () => {
-    setDialog(false);
-  }
+  const closeLinkDialog = () => {
+    setLinkDialog(false);
+  };
+
+  const openDeleteDialog = () => {
+    setDeleteDialog(true);
+    handleClose();
+  };
+
+  const closeDeleteDialog = () => {
+    setDeleteDialog(false);
+  };
+
+  const deleteCourse = () => {
+    axios
+      .delete(`/api/courses/${courseId}`)
+      .then((res) => {
+        history.push('/courses');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <div>
@@ -64,11 +95,22 @@ function SettingMenu() {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClickDialog}>Copy link</MenuItem>
-        <MenuItem component={RouteLink} to={`${url}/edit`} onClick={handleClose}>Edit</MenuItem>
-        <MenuItem onClick={handleClose}>Delete</MenuItem>
+        <MenuItem onClick={openLinkDialog}>Copy link</MenuItem>
+        <MenuItem
+          component={RouteLink}
+          to={`${url}/edit`}
+          onClick={handleClose}
+        >
+          Edit
+        </MenuItem>
+        <MenuItem onClick={openDeleteDialog}>Delete</MenuItem>
       </Menu>
-      <Dialog open={dialog} onClose={handleCloseDialog} fullWidth={true} maxWidth="sm">
+      <Dialog
+        open={linkDialog}
+        onClose={closeLinkDialog}
+        fullWidth={true}
+        maxWidth="sm"
+      >
         <DialogTitle>Copy Link</DialogTitle>
         <DialogContent>
           <TextField
@@ -81,10 +123,24 @@ function SettingMenu() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
+          <Button onClick={closeLinkDialog} color="primary">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={deleteDialog}
+        onClose={closeDeleteDialog}
+        fullWidth={true}
+        maxWidth="sm"
+      >
+        <DialogTitle>Delete Course</DialogTitle>
+        <DialogContent>Are you sure?</DialogContent>
+        <DialogActions>
+          <Button onClick={closeDeleteDialog} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleCloseDialog} color="primary">
+          <Button onClick={deleteCourse} color="primary">
             OK
           </Button>
         </DialogActions>
@@ -107,17 +163,10 @@ export default function CourseOverview(props) {
   return (
     <Container className={classes.root} maxWidth="md">
       <Card>
-        <CardHeader
-          title={course.name}
-          action={
-            <SettingMenu />
-          }
-        />
+        <CardHeader title={course.name} action={<SettingMenu />} />
         <Divider />
         <CardContent>
-          <Typography>
-            {course.description}
-          </Typography>
+          <Typography>{course.description}</Typography>
         </CardContent>
       </Card>
     </Container>

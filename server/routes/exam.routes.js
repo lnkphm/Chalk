@@ -42,6 +42,7 @@ router.post('/', (req, res, next) => {
     shuffle: req.body.shuffle,
     gradingMethod: req.body.gradingMethod,
     public: req.body.public,
+    password: req.body.password,
     course: req.body.course,
     questions: [],
   });
@@ -50,6 +51,18 @@ router.post('/', (req, res, next) => {
     if (!exam) return next();
     res.status(201).send(exam);
   });
+});
+
+router.post('/:id/questions', (req, res, next) => {
+  const questions = req.body.questions;
+  Exam.findByIdAndUpdate(
+    req.params.id,
+    { $addToSet: { questions: { $each: questions } } },
+    (err, exam) => {
+      if (err) return next(err);
+      return res.send(exam);
+    }
+  );
 });
 
 router.put('/:id', (req, res, next) => {
@@ -61,9 +74,9 @@ router.put('/:id', (req, res, next) => {
     duration: req.body.duration,
     shuffle: req.body.shuffle,
     gradingMethod: req.body.gradingMethod,
+    password: req.body.password,
     public: req.body.public,
     course: req.body.course,
-    questions: [],
   };
   Exam.findByIdAndUpdate(req.params.id, updatedExam, (err, exam) => {
     if (err) return next(err);
@@ -72,23 +85,26 @@ router.put('/:id', (req, res, next) => {
   });
 });
 
-router.put('/:id/questions', (req, res, next) => {
-  const questions = req.body.questions;
-  Exam.findByIdAndUpdate(
-    req.params.id,
-    { $addToSet: { questions: { $each: questions } } },
-    (err, exam) => {
-      if (err) return next(err);
-      return res.send(`Questions is added to exam ${exam.title}`);
-    }
-  );
-});
-
+// @desc Delete exam
+// @route DELETE /api/exams/:examId
 router.delete('/:id', (req, res, next) => {
   Exam.findByIdAndDelete(req.params.id, (err) => {
     if (err) return next(err);
     return res.send({ message: 'Exam deleted' });
   });
+});
+
+// @desc Remove question from exam
+// @route DELETE /api/exams/:examId/questions/:questionId
+router.delete('/:examId/questions/:questionId', (req, res, next) => {
+  Exam.findByIdAndUpdate(
+    req.params.examId,
+    { $pull: { questions: req.params.questionId } },
+    (err, exam) => {
+      if (err) return next(err);
+      return res.send(exam);
+    }
+  );
 });
 
 module.exports = router;

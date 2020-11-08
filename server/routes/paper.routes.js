@@ -3,7 +3,7 @@ const router = express.Router();
 const Paper = require('../models/paper.model');
 
 router.get('/', (req, res, next) => {
-  Paper.find().exec((err, papers) => {
+  Paper.find(req.query).exec((err, papers) => {
     if (err) return next(err);
     if (!papers) return next();
     return res.send(papers);

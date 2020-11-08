@@ -5,7 +5,7 @@ const Tag = require('../models/tag.model');
 //@desc Get all tags
 //@route GET /api/tags
 router.get('/', (req, res, next) => {
-  Tag.find().exec((err, tags) => {
+  Tag.find(req.query).exec((err, tags) => {
     if (err) {
       return next(err);
     }

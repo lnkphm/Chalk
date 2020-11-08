@@ -3,7 +3,7 @@ const router = express.Router();
 const Question = require('../models/question.model');
 
 router.get('/', (req, res, next) => {
-  Question.find().exec((err, questions) => {
+  Question.find(req.query).exec((err, questions) => {
     if (err) return next(err);
     if (!questions) return next();
     return res.send(questions);
@@ -36,6 +36,18 @@ router.post('/', (req, res, next) => {
   });
 });
 
+router.post('/:id/tags', (req, res, next) => {
+  const tags = req.body.tags;
+  Question.findByIdAndUpdate(
+    req.params.id,
+    { $addToSet: { tags: { $each: tags } } },
+    (err, question) => {
+      if (err) return next(err);
+      return res.send(question);
+    }
+  );
+});
+
 router.put('/:id', (req, res, next) => {
   const updatedQuestion = {
     text: req.body.text,
@@ -60,6 +72,17 @@ router.delete('/:id', (req, res, next) => {
     if (err) return next(err);
     return res.send({ message: 'Question deleted!' });
   });
+});
+
+router.delete('/:questionId/tags/:tagId', (req, res, next) => {
+  Question.findByIdAndUpdate(
+    req.params.questionId,
+    { $pull: { tags: req.params.tagId } },
+    (err, question) => {
+      if (err) return next(err);
+      return res.send(question);
+    }
+  );
 });
 
 module.exports = router;

@@ -52,6 +52,8 @@ app.use('/api/courses', require('./routes/course.routes'));
 app.use('/api/exams', require('./routes/exam.routes'));
 app.use('/api/questions', require('./routes/question.routes'));
 app.use('/api/papers', require('./routes/paper.routes'));
+app.use('/api/categories', require('./routes/category.routes'));
+app.use('/api/tags', require('./routes/tag.routes'));
 
 app.get('/', function (req, res) {
   res.render('index');

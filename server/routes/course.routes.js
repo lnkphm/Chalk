@@ -6,7 +6,7 @@ const User = require('../models/user.model');
 // @desc Get all courses
 // @route GET /api/courses
 router.get('/', (req, res, next) => {
-  Course.find().exec((err, courses) => {
+  Course.find(req.query).exec((err, courses) => {
     if (err) return next(err);
     if (!courses) return next();
     return res.send(courses);
@@ -76,7 +76,7 @@ router.post('/:courseId/users', (req, res, next) => {
           }
         );
       });
-      return res.send({ message: `Users is added to course ${course.name}` });
+      return res.send(course);
     }
   );
 });
@@ -118,13 +118,13 @@ router.delete('/:courseId/users/:userId', (req, res, next) => {
     (err, course) => {
       if (err) return next(err);
       User.findByIdAndUpdate(
-        req.body.user,
+        req.params.userId,
         { $pull: { courses: req.params.courseId } },
         (err) => {
           if (err) return next(err);
         }
       );
-      return res.send({ message: `Users is removed from course ${course.name}` });
+      return res.send(course);
     }
   );
 });
