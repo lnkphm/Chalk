@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Exam = require('../models/exam.model');
+const Question = require('../models/question.model');
 
 // @desc Get all exam
 // @route GET /api/exams
@@ -58,8 +59,18 @@ router.post('/:id/questions', (req, res, next) => {
   Exam.findByIdAndUpdate(
     req.params.id,
     { $addToSet: { questions: { $each: questions } } },
+    { new: true },
     (err, exam) => {
       if (err) return next(err);
+      questions.forEach((item, index) => {
+        Question.findByIdAndUpdate(
+          item,
+          { $addToSet: { exams: req.params.id } },
+          (err) => {
+            if (err) return next(err);
+          }
+        );
+      });
       return res.send(exam);
     }
   );
@@ -76,13 +87,19 @@ router.put('/:id', (req, res, next) => {
     gradingMethod: req.body.gradingMethod,
     password: req.body.password,
     public: req.body.public,
+    questions: req.body.questions,
     course: req.body.course,
   };
-  Exam.findByIdAndUpdate(req.params.id, updatedExam, (err, exam) => {
-    if (err) return next(err);
-    if (!exam) return next();
-    return res.send(exam);
-  });
+  Exam.findByIdAndUpdate(
+    req.params.id,
+    updatedExam,
+    { new: true },
+    (err, exam) => {
+      if (err) return next(err);
+      if (!exam) return next();
+      return res.send(exam);
+    }
+  );
 });
 
 // @desc Delete exam
@@ -100,8 +117,16 @@ router.delete('/:examId/questions/:questionId', (req, res, next) => {
   Exam.findByIdAndUpdate(
     req.params.examId,
     { $pull: { questions: req.params.questionId } },
+    { new: true },
     (err, exam) => {
       if (err) return next(err);
+      Question.findByIdAndUpdate(
+        req.params.questionId,
+        { $pull: { exams: req.params.examId } },
+        (err) => {
+          if (err) return next(err);
+        }
+      );
       return res.send(exam);
     }
   );

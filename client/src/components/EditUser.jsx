@@ -6,19 +6,15 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,7 +42,7 @@ export default function EditUser(props) {
     username: '',
     name: '',
     email: '',
-    role: 'student',
+    role: '',
     password: '',
     confirmPassword: '',
   });
@@ -55,17 +51,19 @@ export default function EditUser(props) {
     axios.get(`/api/users/${userId}`)
       .then((res) => {
         const data = res.data;
-        setState({...state,
+        setState({
           username: data.username,
           name: data.name,
           email: data.email,
-          role: data.role
+          role: data.role,
+          password: "",
+          confirmPassword: ""
         })
       })
       .catch((err) => {
         console.log(err);
       })
-  }, [state, userId])
+  }, [userId])
 
   const onChangeValue = (event) => {
     const value = event.target.value;
@@ -75,11 +73,10 @@ export default function EditUser(props) {
   const onSubmit = (event) => {
     event.preventDefault();
     const updatedUser = {
-      username: state.username,
       email: state.email,
       name: state.name,
       role: state.role,
-      avatar: '',
+      password: state.password,
     };
 
     axios
@@ -94,10 +91,6 @@ export default function EditUser(props) {
 
   return (
     <Container className={classes.root} maxWidth="md">
-      <Link className={classes.back} component={RouteLink} to="/users">
-        <ArrowBackIcon />
-        <Typography>Back to users page</Typography>
-      </Link>
       <Card>
         <form onSubmit={onSubmit}>
           <CardHeader title="Edit User" />
@@ -138,8 +131,8 @@ export default function EditUser(props) {
                   fullWidth
                   required
                   name="username"
+                  disabled
                   value={state.username}
-                  onChange={onChangeValue}
                 />
               </Grid>
 
@@ -160,7 +153,6 @@ export default function EditUser(props) {
                   label="Password"
                   variant="outlined"
                   fullWidth
-                  required
                   name="password"
                   type="password"
                   value={state.password}
@@ -172,7 +164,6 @@ export default function EditUser(props) {
                   label="Confirm Password"
                   variant="outlined"
                   fullWidth
-                  required
                   name="confirmPassword"
                   type="password"
                   value={state.confirmPassword}
@@ -187,9 +178,18 @@ export default function EditUser(props) {
               className={classes.submitButton}
               type="submit"
               variant="outlined"
+              component={RouteLink}
+              to='/users'
+            >
+              Cancel
+            </Button>
+            <Button
+              className={classes.submitButton}
+              type="submit"
+              variant="outlined"
               color="primary"
             >
-              Update User
+              Save
             </Button>
           </CardActions>
         </form>

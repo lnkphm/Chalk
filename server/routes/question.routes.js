@@ -27,7 +27,9 @@ router.post('/', (req, res, next) => {
     shuffle: req.body.shuffle,
     feedback: req.body.feedback,
     answers: req.body.answers,
-    tags: req.body.tags,
+    points: req.body.points,
+    exams: [],
+    tags: req.body.tags
   });
   newQuestion.save((err, question) => {
     if (err) return next(err);
@@ -54,8 +56,9 @@ router.put('/:id', (req, res, next) => {
     type: req.body.type,
     shuffle: req.body.shuffle,
     feedback: req.body.feedback,
+    points: req.body.points,
     answers: req.body.answers,
-    tags: req.body.tags,
+    tags: req.body.tags
   };
   Question.findByIdAndUpdate(
     req.params.id,
@@ -78,6 +81,7 @@ router.delete('/:questionId/tags/:tagId', (req, res, next) => {
   Question.findByIdAndUpdate(
     req.params.questionId,
     { $pull: { tags: req.params.tagId } },
+    { new: true},
     (err, question) => {
       if (err) return next(err);
       return res.send(question);

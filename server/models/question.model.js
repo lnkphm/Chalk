@@ -8,13 +8,15 @@ const QuestionSchema = new Schema(
     type: { type: String, required: true, enum: QuestionTypes },
     shuffle: { type: Boolean, default: true },
     feedback: { type: String },
+    points: { type: Number },
     answers: [
       {
         text: { type: String },
-        points: { type: Number },
+        correct: { type: Boolean },
       },
     ],
-    tags: [{type: Schema.Types.ObjectId, ref: 'Tag'}],
+    exams: [{ type: Schema.Types.ObjectId, ref: 'Exam' }],
+    tags: [{ type: Schema.Types.ObjectId, ref: 'Tag' }],
   },
   {
     timestamps: true,

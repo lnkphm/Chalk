@@ -181,6 +181,7 @@ export default function EditCourse(props) {
                       labelId="labelRole"
                       label="Category"
                       name="category"
+                      required
                       value={state.category}
                       onChange={onChangeValue}
                     >

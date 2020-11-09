@@ -51,15 +51,20 @@ router.put('/:id', (req, res, next) => {
     name: req.body.name,
     description: req.body.description,
   };
-  Tag.findByIdAndUpdate(req.params.id, updatedTag, (err, tag) => {
-    if (err) {
-      return next(err);
+  Tag.findByIdAndUpdate(
+    req.params.id,
+    updatedTag,
+    { new: true },
+    (err, tag) => {
+      if (err) {
+        return next(err);
+      }
+      if (!tag) {
+        return next();
+      }
+      return res.send(tag);
     }
-    if (!tag) {
-      return next();
-    }
-    return res.send(tag);
-  });
+  );
 });
 
 router.delete('/:id', (req, res, next) => {

@@ -52,6 +52,7 @@ router.put('/:id', (req, res, next) => {
   Category.findByIdAndUpdate(
     req.params.id,
     updatedCategory,
+    { new: true },
     (err, category) => {
       if (err) {
         return next(err);

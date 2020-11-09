@@ -65,6 +65,7 @@ router.post('/:courseId/users', (req, res, next) => {
   Course.findByIdAndUpdate(
     req.params.courseId,
     { $addToSet: { users: { $each: users } } },
+    { new: true },
     (err, course) => {
       if (err) return next(err);
       users.forEach((user, index) => {
@@ -93,11 +94,16 @@ router.put('/:id', (req, res, next) => {
     category: req.body.category,
     password: req.body.password,
   };
-  Course.findByIdAndUpdate(req.params.id, updatedCourse, (err, course) => {
-    if (err) return next(err);
-    if (!course) return next();
-    return res.send(course);
-  });
+  Course.findByIdAndUpdate(
+    req.params.id,
+    updatedCourse,
+    { new: true },
+    (err, course) => {
+      if (err) return next(err);
+      if (!course) return next();
+      return res.send(course);
+    }
+  );
 });
 
 // @desc Delete course
@@ -115,6 +121,7 @@ router.delete('/:courseId/users/:userId', (req, res, next) => {
   Course.findByIdAndUpdate(
     req.params.courseId,
     { $pull: { users: req.params.userId } },
+    { new: true },
     (err, course) => {
       if (err) return next(err);
       User.findByIdAndUpdate(

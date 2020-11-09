@@ -23,6 +23,8 @@ import Typography from '@material-ui/core/Typography';
 
 import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
+import PersonIcon from '@material-ui/icons/Person';
+import FolderIcon from '@material-ui/icons/Folder';
 
 import UserContext from '../contexts/UserContext';
 
@@ -63,38 +65,44 @@ function AppBarDrawer() {
     setOpen(false);
   };
 
-  const items = [
-    {
-      text: 'Home',
-      url: '/home',
-    },
-    {
-      text: 'Courses',
-      url: '/courses',
-    },
-    {
-      text: 'Users',
-      url: '/users',
-    },
-  ];
-
   const list = (
     <List>
-      {items.map((item, index) => (
-        <ListItem
-          button
-          component={RouteLink}
-          to={item.url}
-          className={classes.listItem}
-          key={index}
-          onClick={handleClose}
-        >
-          <ListItemIcon>
-            <HomeIcon />
-          </ListItemIcon>
-          <ListItemText primary={item.text} />
-        </ListItem>
-      ))}
+      <ListItem
+        button
+        component={RouteLink}
+        to="/home"
+        className={classes.listItem}
+        onClick={handleClose}
+      >
+        <ListItemIcon>
+          <HomeIcon />
+        </ListItemIcon>
+        <ListItemText primary="Home" />
+      </ListItem>
+      <ListItem
+        button
+        component={RouteLink}
+        to="/users"
+        className={classes.listItem}
+        onClick={handleClose}
+      >
+        <ListItemIcon>
+          <PersonIcon />
+        </ListItemIcon>
+        <ListItemText primary="Users" />
+      </ListItem>
+      <ListItem
+        button
+        component={RouteLink}
+        to="/courses"
+        className={classes.listItem}
+        onClick={handleClose}
+      >
+        <ListItemIcon>
+          <FolderIcon />
+        </ListItemIcon>
+        <ListItemText primary="Courses" />
+      </ListItem>
     </List>
   );
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouteLink, useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import axios from 'axios';
 import DateFnsUtils from '@date-io/date-fns';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -9,21 +9,17 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import CheckBox from '@material-ui/core/Checkbox';
-
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -78,7 +74,7 @@ export default function EditCourse(props) {
           dateEnd: course.dateEnd,
           public: course.public,
           password: course.password,
-          category: course.category._id,
+          category: (course.category) ? (course.category._id) : (''),
         });
       })
       .catch((err) => {
@@ -204,6 +200,7 @@ export default function EditCourse(props) {
                     labelId="labelRole"
                     label="Category"
                     name="category"
+                    required
                     value={state.category}
                     onChange={onChangeValue}
                   >

@@ -43,11 +43,16 @@ router.put('/:id', (req, res, next) => {
     timeRemaining: req.body.timeRemaining,
     data: req.body.data,
   };
-  Paper.findByIdAndUpdate(req.params.id, updatedPaper, (err, paper) => {
-    if (err) return next(err);
-    if (!paper) return next();
-    return res.send(paper);
-  });
+  Paper.findByIdAndUpdate(
+    req.params.id,
+    updatedPaper,
+    { new: true },
+    (err, paper) => {
+      if (err) return next(err);
+      if (!paper) return next();
+      return res.send(paper);
+    }
+  );
 });
 
 router.delete('/:id', (req, res, next) => {

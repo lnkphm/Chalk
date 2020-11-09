@@ -45,7 +45,7 @@ router.get('/:id/courses', (req, res, next) => {
       if (err) return next(err);
       if (!user) return next();
       return res.send(user.courses);
-    })
+    });
 });
 
 // @desc Create new user
@@ -85,17 +85,22 @@ router.put('/:id', (req, res, next) => {
     avatar: req.body.avatar,
     role: req.body.role,
   };
-  
-  User.findByIdAndUpdate({ _id: req.params.id }, updatedUser, (err, user) => {
-    if (err) {
-      return next(err);
+
+  User.findByIdAndUpdate(
+    { _id: req.params.id },
+    updatedUser,
+    { new: true },
+    (err, user) => {
+      if (err) {
+        return next(err);
+      }
+      if (!user) {
+        return next();
+      }
+      user.setPassword(req.body.password);
+      return res.send(user);
     }
-    if (!user) {
-      return next();
-    }
-    user.setPassword(req.body.password);
-    return res.send(user);
-  });
+  );
 });
 
 // @desc Delete user

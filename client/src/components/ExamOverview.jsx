@@ -88,6 +88,7 @@ function SettingMenu(props) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
+        <MenuItem component={RouteLink} to={`${url}/questions`}>Questions</MenuItem>
         <MenuItem component={RouteLink} to={`${url}/edit`}>Edit</MenuItem>
         <MenuItem onClick={handleClickDialog}>Delete</MenuItem>
       </Menu>
