@@ -44,10 +44,14 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     marginBottom: theme.spacing(2),
   },
+  flex: {
+    display: 'flex',
+  }
 }));
 
 function Answers(props) {
   const [state, setState] = React.useState(props.answers);
+  const classes = useStyles();
 
   const handleChangeText = (event, index) => {
     const newState = state;
@@ -83,25 +87,25 @@ function Answers(props) {
       </Grid>
       {state.map((item, index) => (
         <Grid item xs={12} key={index}>
-          <Grid container spacing={2} alignItems="center" justify="center">
-            <Grid item xs={1}>
-              <IconButton
-                onClick={() => {
-                  return removeAnswer(index);
-                }}
-              >
-                <ClearIcon />
-              </IconButton>
-            </Grid>
-            <Grid item xs={9}>
-              <TextField
-                variant="outlined"
-                fullWidth
-                value={item.text}
-                onChange={(event) => {
-                  return handleChangeText(event, index);
-                }}
-              />
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={10}>
+              <div className={classes.flex}>
+                <IconButton
+                  onClick={() => {
+                    return removeAnswer(index);
+                  }}
+                >
+                  <ClearIcon />
+                </IconButton>
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  value={item.text}
+                  onChange={(event) => {
+                    return handleChangeText(event, index);
+                  }}
+                />
+              </div>
             </Grid>
             <Grid item xs={2}>
               <FormControlLabel
@@ -134,7 +138,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow ref={ref} {...props} />;
 });
 
-export default function CreateExamDialog(props) {
+export default function CreateQuestionDialog(props) {
   const classes = useStyles();
   const { examId } = useParams();
   const [open, setOpen] = React.useState(false);
@@ -195,8 +199,8 @@ export default function CreateExamDialog(props) {
 
   return (
     <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Create new question
+      <Button variant="outlined" onClick={handleClickOpen}>
+        Add new
       </Button>
       <Dialog
         fullScreen

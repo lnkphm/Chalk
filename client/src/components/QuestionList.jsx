@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { Link as RouteLink, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -100,10 +100,13 @@ export default function UserList(props) {
       </Typography>
       <Grid className={classes.toolbar} container>
         <Grid item xs>
-          <CreateQuestionDialog />
+          <Button variant="outlined" component={RouteLink} to={`/exams/${examId}`}>
+            Back to exam
+          </Button>
         </Grid>
         <Grid item>
           <ButtonGroup>
+            <CreateQuestionDialog />
             <Button>Import</Button>
             <Button>Export</Button>
           </ButtonGroup>

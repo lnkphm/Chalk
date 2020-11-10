@@ -3,27 +3,45 @@ const router = express.Router();
 const Paper = require('../models/paper.model');
 
 router.get('/', (req, res, next) => {
-  Paper.find(req.query).exec((err, papers) => {
-    if (err) return next(err);
-    if (!papers) return next();
-    return res.send(papers);
-  });
+  Paper.find(req.query)
+    .exec((err, papers) => {
+      if (err) return next(err);
+      if (!papers) return next();
+      return res.send(papers);
+    });
 });
 
 router.get('/:id', (req, res, next) => {
-  Paper.findById(req.params.id).exec((err, paper) => {
-    if (err) return next(err);
-    if (!paper) return next();
-    return res.send(paper);
-  });
+  Paper.findById(req.params.id)
+    .exec((err, paper) => {
+      if (err) return next(err);
+      if (!paper) return next();
+      return res.send(paper);
+    });
 });
+
+router.get('/:id/details', (req, res, next) => {
+  Paper.findById(req.params.id)
+    .populate('user')
+    .populate({
+      path: 'exam',
+      populate: {
+        path: 'questions',
+      },
+    })
+    .exec((err, paper) => {
+      if (err) return next(err);
+      if (!paper) return next();
+      return res.send(paper);
+    });
+});
+
 
 router.post('/', (req, res, next) => {
   const newPaper = new Paper({
     user: req.body.user,
     exam: req.body.exam,
     submitted: req.body.submitted,
-    connected: req.body.connected,
     timeRemaining: req.body.timeRemaining,
     data: req.body.data,
   });
@@ -39,7 +57,6 @@ router.put('/:id', (req, res, next) => {
     user: req.body.user,
     exam: req.body.exam,
     submitted: req.body.submitted,
-    connected: req.body.connected,
     timeRemaining: req.body.timeRemaining,
     data: req.body.data,
   };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link as RouteLink, useRouteMatch } from 'react-router-dom';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -17,6 +17,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 
+import UserContext from '../contexts/UserContext';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -32,20 +34,19 @@ const useStyles = makeStyles((theme) => ({
 
 function Question(props) {
   const classes = useStyles();
-  const [value, setValue] = React.useState('');
+  const [state, setState] = React.useState(props.question);
+  const [answer, setAnswer] = React.useState('');
+
   const handleChange = (event) => {
-    setValue(event.target.value);
+    setAnswer(event.target.value);
   };
+
   return (
     <Paper className={classes.paper}>
       <FormControl component="fieldset">
-        <FormLabel component="legend">{props.question.text}</FormLabel>
-        <RadioGroup
-          name={props.question._id}
-          value={value}
-          onChange={handleChange}
-        >
-          {props.question.answers.map((item, index) => (
+        <FormLabel component="legend">{state.text}</FormLabel>
+        <RadioGroup name={state._id} value={answer} onChange={handleChange}>
+          {state.answers.map((item, index) => (
             <FormControlLabel
               key={index}
               value={item._id}
@@ -61,7 +62,6 @@ function Question(props) {
 
 function QuestionList(props) {
   const questions = props.questions;
-  console.log(questions);
   return (
     <div>
       <Grid container spacing={3}>
@@ -77,6 +77,7 @@ function QuestionList(props) {
 
 function PaperNav(props) {
   const classes = useStyles();
+  const { examId } = useParams();
 
   return (
     <div>
@@ -86,7 +87,12 @@ function PaperNav(props) {
           <Typography>Time Remaining: {props.time}</Typography>
         </CardContent>
         <CardActions>
-          <Button type="submit" fullWidth>
+          <Button
+            type="submit"
+            fullWidth
+            component={RouteLink}
+            to={`/exams/${examId}/result`}
+          >
             Submit
           </Button>
         </CardActions>
@@ -98,39 +104,68 @@ function PaperNav(props) {
 export default function ExamPaper(props) {
   const classes = useStyles();
   const { examId } = useParams();
-  const [state, setState] = React.useState({
-    timeRemaining: 0,
-    questions: []
-  })
+  const userData = React.useContext(UserContext);
+  const [exam, setExam] = React.useState(null);
+  const [paper, setPaper] = React.useState(null);
 
   React.useEffect(() => {
     axios
       .get(`/api/exams/${examId}/details`)
       .then((res) => {
-        setState({
-          timeRemaining: res.data.timeRemaining,
-          questions: res.data.questions
-        })
+        const examData = res.data;
+        setExam(res.data)
+        axios.get(`/api/papers?user=${userData.user._id}`).then((res) => {
+          const paperData = res.data;
+          if (paperData.length !== 0) {
+            setPaper(paperData[0]);
+          } else {
+            const paper = {
+              user: userData.user._id,
+              exam: examData._id,
+              submitted: false,
+              timeRemaining: examData.duration,
+              data: examData.questions.map((item, index) => {
+                return {
+                  question: item,
+                  answers: [],
+                };
+              }),
+            };
+            axios
+              .post(`/api/papers`, paper)
+              .then((res) => {
+                setPaper(res.data);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }
+        });
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [examId]);
+  }, [examId, userData.user._id]);
 
+  console.log(paper);
   return (
     <Container className={classes.root} maxWidth="md">
       <Typography variant="h4">Exam Paper</Typography>
       <Divider />
-      <form>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={8}>
-            <QuestionList questions={state.questions} />
+      {paper ? (
+        <form>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={8}>
+              <QuestionList questions={exam.questions} />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <PaperNav time={paper.timeRemaining} />
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <PaperNav time={state.timeRemaining} />
-          </Grid>
-        </Grid>
-      </form>
+        </form>
+      ) : (
+        <div />
+      )}
     </Container>
   );
 }
