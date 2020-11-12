@@ -1,6 +1,13 @@
 import React from 'react';
-import { useParams, Link as RouteLink, useRouteMatch } from 'react-router-dom';
+import {
+  useParams,
+  Link as RouteLink,
+  useRouteMatch,
+  useHistory,
+  Redirect,
+} from 'react-router-dom';
 import axios from 'axios';
+import { Duration } from 'luxon';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
@@ -23,51 +30,57 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
-  title: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2),
-  },
   paper: {
     padding: theme.spacing(3),
   },
+  main: {
+    marginTop: theme.spacing(1),
+  },
+  title: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(1),
+  },
 }));
 
-function Question(props) {
+function QuestionList(props) {
   const classes = useStyles();
-  const [state, setState] = React.useState(props.question);
-  const [answer, setAnswer] = React.useState('');
+  const [answers, setAnswers] = React.useState(props.answers);
 
-  const handleChange = (event) => {
-    setAnswer(event.target.value);
+  const handleChange = (type, index) => (event) => {
+    let newAnswers = [...answers];
+    if (type === 'single') {
+      newAnswers[index].answers = [event.target.value];
+    }
+    setAnswers(newAnswers);
+    props.callback(answers);
   };
 
-  return (
-    <Paper className={classes.paper}>
-      <FormControl component="fieldset">
-        <FormLabel component="legend">{state.text}</FormLabel>
-        <RadioGroup name={state._id} value={answer} onChange={handleChange}>
-          {state.answers.map((item, index) => (
-            <FormControlLabel
-              key={index}
-              value={item._id}
-              control={<Radio />}
-              label={item.text}
-            />
-          ))}
-        </RadioGroup>
-      </FormControl>
-    </Paper>
-  );
-}
+  console.log(answers[0]);
 
-function QuestionList(props) {
-  const questions = props.questions;
   return (
     <div>
       <Grid container spacing={3}>
-        {questions.map((item, index) => (
+        {props.questions.map((item, index) => (
           <Grid key={index} item xs={12}>
-            <Question question={item} />
+            <Paper className={classes.paper}>
+              <FormControl component="fieldset">
+                <FormLabel component="legend">{item.text}</FormLabel>
+                <RadioGroup
+                  name={item._id}
+                  value={answers[index].answers[0]}
+                  onChange={handleChange('single', index)}
+                >
+                  {item.answers.map((item, index) => (
+                    <FormControlLabel
+                      key={index}
+                      value={item._id}
+                      control={<Radio />}
+                      label={item.text}
+                    />
+                  ))}
+                </RadioGroup>
+              </FormControl>
+            </Paper>
           </Grid>
         ))}
       </Grid>
@@ -76,23 +89,30 @@ function QuestionList(props) {
 }
 
 function PaperNav(props) {
+  const [time, setTime] = React.useState(props.paper.timeRemaining * 60);
   const classes = useStyles();
-  const { examId } = useParams();
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setTime((time) => time - 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const displayTime = (time) => {
+    return Duration.fromObject({ seconds: time }).toFormat('mm:ss');
+  };
 
   return (
     <div>
       <Card className={classes.card}>
         <CardContent>
-          <Typography>Exam Navigation</Typography>
-          <Typography>Time Remaining: {props.time}</Typography>
+          <Typography>Navigation</Typography>
+
+          <Typography>Time Remaining: {displayTime(time)}</Typography>
         </CardContent>
         <CardActions>
-          <Button
-            type="submit"
-            fullWidth
-            component={RouteLink}
-            to={`/exams/${examId}/result`}
-          >
+          <Button type="submit" fullWidth>
             Submit
           </Button>
         </CardActions>
@@ -104,6 +124,8 @@ function PaperNav(props) {
 export default function ExamPaper(props) {
   const classes = useStyles();
   const { examId } = useParams();
+  const history = useHistory();
+  const { url } = useRouteMatch();
   const userData = React.useContext(UserContext);
   const [exam, setExam] = React.useState(null);
   const [paper, setPaper] = React.useState(null);
@@ -113,7 +135,7 @@ export default function ExamPaper(props) {
       .get(`/api/exams/${examId}/details`)
       .then((res) => {
         const examData = res.data;
-        setExam(res.data)
+        setExam(res.data);
         axios.get(`/api/papers?user=${userData.user._id}`).then((res) => {
           const paperData = res.data;
           if (paperData.length !== 0) {
@@ -127,7 +149,7 @@ export default function ExamPaper(props) {
               data: examData.questions.map((item, index) => {
                 return {
                   question: item,
-                  answers: [],
+                  answers: [''],
                 };
               }),
             };
@@ -147,22 +169,85 @@ export default function ExamPaper(props) {
       });
   }, [examId, userData.user._id]);
 
-  console.log(paper);
+  const updatePaper = () => {
+    return axios
+      .put(`/api/papers/${paper._id}`, paper)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const submitPaper = () => {
+    const data = {
+      ...paper,
+      submitted: true,
+    };
+
+    axios
+      .put(`/api/papers/${paper._id}`, data)
+      .then((res) => {
+        history.push(`/exams/${examId}/result`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      if (paper) {
+        setPaper({ ...paper, timeRemaining: paper.timeRemaining - 1 });
+        if (paper.timeRemaining > 0) {
+          updatePaper();
+        } else {
+          submitPaper();
+        }
+      }
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [paper]);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    submitPaper();
+  };
+
+  const questionCallback = (data) => {
+    setPaper({ ...paper, data: data });
+  };
+
   return (
     <Container className={classes.root} maxWidth="md">
-      <Typography variant="h4">Exam Paper</Typography>
+      {exam ? (
+        <Typography className={classes.title} variant="h4">
+          {exam.title}
+        </Typography>
+      ) : (
+        <div />
+      )}
       <Divider />
       {paper ? (
-        <form>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={8}>
-              <QuestionList questions={exam.questions} />
+        paper.submitted ? (
+          <Redirect to={`/exams/${examId}/result`} />
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <Grid className={classes.main} container spacing={3}>
+              <Grid item xs={12} sm={8}>
+                <QuestionList
+                  questions={exam.questions}
+                  answers={paper.data}
+                  callback={questionCallback}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <PaperNav paper={paper} />
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={4}>
-              <PaperNav time={paper.timeRemaining} />
-            </Grid>
-          </Grid>
-        </form>
+          </form>
+        )
       ) : (
         <div />
       )}

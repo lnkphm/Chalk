@@ -3,21 +3,19 @@ const router = express.Router();
 const Paper = require('../models/paper.model');
 
 router.get('/', (req, res, next) => {
-  Paper.find(req.query)
-    .exec((err, papers) => {
-      if (err) return next(err);
-      if (!papers) return next();
-      return res.send(papers);
-    });
+  Paper.find(req.query).exec((err, papers) => {
+    if (err) return next(err);
+    if (!papers) return next();
+    return res.send(papers);
+  });
 });
 
 router.get('/:id', (req, res, next) => {
-  Paper.findById(req.params.id)
-    .exec((err, paper) => {
-      if (err) return next(err);
-      if (!paper) return next();
-      return res.send(paper);
-    });
+  Paper.findById(req.params.id).exec((err, paper) => {
+    if (err) return next(err);
+    if (!paper) return next();
+    return res.send(paper);
+  });
 });
 
 router.get('/:id/details', (req, res, next) => {
@@ -35,7 +33,6 @@ router.get('/:id/details', (req, res, next) => {
       return res.send(paper);
     });
 });
-
 
 router.post('/', (req, res, next) => {
   const newPaper = new Paper({
