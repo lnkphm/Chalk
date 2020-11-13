@@ -14,8 +14,10 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
+import DeleteUserDialog from './DeleteUserDialog';
 
 import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import { DataGrid } from '@material-ui/data-grid';
 
@@ -44,15 +46,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function EditButton(props) {
-  const { path } = useRouteMatch();
-  return (
-    <IconButton component={RouteLink} to={`${path}/${props.user}/edit`}>
-      <EditIcon />
-    </IconButton>
-  );
-}
-
 function getUserRows(users, role, query) {
   const rows = [];
   users.forEach((item, index) => {
@@ -78,6 +71,24 @@ function getUserRows(users, role, query) {
   return rows;
 }
 
+function ActionButtons(props) {
+  const { url } = useRouteMatch();
+  return (
+    <div>
+      <Grid container>
+        <Grid item xs={6}>
+          <IconButton component={RouteLink} to={`${url}/${props.user}/edit`} >
+            <EditIcon />
+          </IconButton>
+        </Grid>
+        <Grid item xs={6}>
+          <DeleteUserDialog id={props.user} />
+        </Grid>
+      </Grid>
+    </div>
+  );
+}
+
 const columns = [
   { field: 'id', headerName: '#', width: 50 },
   { field: 'username', headerName: 'Username', width: 150 },
@@ -87,7 +98,7 @@ const columns = [
   {
     field: 'action',
     headerName: 'Actions',
-    renderCell: (params) => <EditButton user={params.value} />,
+    renderCell: (params) => <ActionButtons user={params.value} />,
   },
 ];
 

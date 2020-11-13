@@ -23,6 +23,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import Link from '@material-ui/core/Link';
 
 import UserContext from '../contexts/UserContext';
 
@@ -40,6 +41,24 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(1),
   },
+  nav: {
+    marginBottom: theme.spacing(1),
+  },
+  navItem: {
+    padding: theme.spacing(1),
+    textAlign: 'center',
+  },
+  navItemChecked: {
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    backgroundColor: '#dc004e',
+  },
+  linkChecked: {
+    color: '#FFF',
+  },
+  timeRemaining: {
+    marginTop: theme.spacing(1)
+  }
 }));
 
 function QuestionList(props) {
@@ -55,8 +74,6 @@ function QuestionList(props) {
     props.callback(answers);
   };
 
-  console.log(answers[0]);
-
   return (
     <div>
       <Grid container spacing={3}>
@@ -68,6 +85,7 @@ function QuestionList(props) {
                 <RadioGroup
                   name={item._id}
                   value={answers[index].answers[0]}
+                  id={item._id}
                   onChange={handleChange('single', index)}
                 >
                   {item.answers.map((item, index) => (
@@ -88,6 +106,8 @@ function QuestionList(props) {
   );
 }
 
+
+
 function PaperNav(props) {
   const [time, setTime] = React.useState(props.paper.timeRemaining * 60);
   const classes = useStyles();
@@ -107,10 +127,32 @@ function PaperNav(props) {
     <div>
       <Card className={classes.card}>
         <CardContent>
-          <Typography>Navigation</Typography>
-
-          <Typography>Time Remaining: {displayTime(time)}</Typography>
+          <Grid className={classes.nav} container spacing={1}>
+            {props.paper.data.map((item, index) => (
+              <Grid item xs={2} key={index}>
+                {item.answers[0] === '' ? (
+                  <Paper className={classes.navItem}>
+                    <Link color="inherit" href={`#${item.question}`}>
+                      {index+1}
+                    </Link>
+                  </Paper>
+                ) : (
+                  <Paper className={classes.navItemChecked}>
+                    <Link
+                      className={classes.linkChecked}
+                      href={`#${item.question}`}
+                    >
+                      {index+1}
+                    </Link>
+                  </Paper>
+                )}
+              </Grid>
+            ))}
+          </Grid>
+          <Divider />
+          <Typography className={classes.timeRemaining}>Time Remaining: {displayTime(time)}</Typography>
         </CardContent>
+        <Divider />
         <CardActions>
           <Button type="submit" fullWidth>
             Submit
@@ -197,17 +239,19 @@ export default function ExamPaper(props) {
   };
 
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      if (paper) {
+    if (!paper) {
+      return;
+    } else {
+      const interval = setInterval(() => {
         setPaper({ ...paper, timeRemaining: paper.timeRemaining - 1 });
         if (paper.timeRemaining > 0) {
           updatePaper();
         } else {
           submitPaper();
         }
-      }
-    }, 60000);
-    return () => clearInterval(interval);
+      }, 60000);
+      return () => clearInterval(interval);
+    }
   }, [paper]);
 
   const handleSubmit = (event) => {

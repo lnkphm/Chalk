@@ -95,55 +95,94 @@ export default function Profile(props) {
           </Card>
         </Grid>
         <Grid item xs={12} sm={8}>
-          <Card>
-            <CardHeader title="Profile" />
-            <Divider />
-            <CardContent>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    label="ID"
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Card>
+                <CardHeader title="Profile" />
+                <Divider />
+                <CardContent>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={12}>
+                      <TextField
+                        label="ID"
+                        variant="outlined"
+                        fullWidth
+                        name="_id"
+                        disabled
+                        value={state._id}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        label="Name"
+                        variant="outlined"
+                        fullWidth
+                        name="name"
+                        value={state.name}
+                        onChange={onChangeValue}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        label="Email"
+                        variant="outlined"
+                        fullWidth
+                        name="email"
+                        value={state.email}
+                        onChange={onChangeValue}
+                      />
+                    </Grid>
+                  </Grid>
+                </CardContent>
+                <Divider />
+                <CardActions>
+                  <Button
+                    color="primary"
+                    className={classes.save}
                     variant="outlined"
-                    fullWidth
-                    name="_id"
-                    disabled
-                    value={state._id}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    label="Name"
+                    onClick={onClickSave}
+                  >
+                    Save changes
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+            <Grid item xs={12}>
+              <Card>
+                <CardHeader title="Change password" />
+                <Divider />
+                <CardContent>
+                  <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                      <TextField
+                        label="New password"
+                        variant="outlined"
+                        fullWidth
+                        name="newPassword"
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <TextField
+                        label="Confirm password"
+                        variant="outlined"
+                        fullWidth
+                        name="confirmPassword"
+                      />
+                    </Grid>
+                  </Grid>
+                </CardContent>
+                <CardActions>
+                  <Button
+                    color="primary"
+                    className={classes.save}
                     variant="outlined"
-                    fullWidth
-                    name="name"
-                    value={state.name}
-                    onChange={onChangeValue}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    label="Email"
-                    variant="outlined"
-                    fullWidth
-                    name="email"
-                    value={state.email}
-                    onChange={onChangeValue}
-                  />
-                </Grid>
-              </Grid>
-            </CardContent>
-            <Divider />
-            <CardActions>
-              <Button
-                color="primary"
-                className={classes.save}
-                variant="outlined"
-                onClick={onClickSave}
-              >
-                Save changes
-              </Button>
-            </CardActions>
-          </Card>
+                  >
+                    Update password
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </Container>

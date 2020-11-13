@@ -12,7 +12,7 @@ import UserContext from '../contexts/UserContext';
 import Typography from '@material-ui/core/Typography';
 
 import Calendar from 'react-calendar';
-import "../assets/css/Calendar.css";
+import '../assets/css/Calendar.css';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -32,23 +32,31 @@ export default function Home() {
   return (
     <Container maxWidth="md" className={classes.container}>
       <Grid container spacing={2}>
-      <Grid item xs={12} sm={8}>
+        <Grid item xs={12} sm={8}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="h4">Courses</Typography>
               <Divider />
             </Grid>
-            {(courses.length > 0) ? courses.map((item, index) => (
-              <Grid key={index} item xs={12}>
-                <Card>
-                  <CardHeader title={<Link component={RouteLink} to={`/courses/${item._id}`}>{item.name}</Link>} />
-                  <Divider />
-                  <CardContent>
-                    {item.description}
-                  </CardContent>
-                </Card>
-              </Grid>
-            )) : (
+            {courses.length > 0 ? (
+              courses.map((item, index) => (
+                <Grid key={index} item xs={12}>
+                  <Card>
+                    <CardHeader
+                      title={
+                        <Link component={RouteLink} to={`/courses/${item._id}`}>
+                          {item.name}
+                        </Link>
+                      }
+                    />
+                    <Divider />
+                    <CardContent>
+                      <Typography noWrap>{item.description}</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))
+            ) : (
               <Grid item xs={12}>
                 <Card>
                   <CardContent>
@@ -81,7 +89,6 @@ export default function Home() {
             </Grid>
           </Grid>
         </Grid>
-        
       </Grid>
     </Container>
   );

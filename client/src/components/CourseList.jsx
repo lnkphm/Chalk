@@ -103,7 +103,7 @@ export default function CourseList(props) {
                     }
                   />
                   <CardContent>
-                    <Typography>{item.description}</Typography>
+                    <Typography noWrap>{item.description}</Typography>
                   </CardContent>
                 </Card>
               </Grid>
