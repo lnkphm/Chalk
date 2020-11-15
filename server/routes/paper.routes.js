@@ -23,10 +23,11 @@ router.get('/:id', (req, res, next) => {
 router.get('/:id/details', (req, res, next) => {
   Paper.findById(req.params.id)
     .populate('user')
+    .populate('exam')
     .populate({
-      path: 'exam',
+      path: 'data',
       populate: {
-        path: 'questions',
+        path: 'question',
       },
     })
     .exec((err, paper) => {
