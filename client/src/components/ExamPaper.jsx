@@ -57,8 +57,8 @@ const useStyles = makeStyles((theme) => ({
     color: '#FFF',
   },
   timeRemaining: {
-    marginTop: theme.spacing(1)
-  }
+    marginTop: theme.spacing(1),
+  },
 }));
 
 function QuestionList(props) {
@@ -106,8 +106,6 @@ function QuestionList(props) {
   );
 }
 
-
-
 function PaperNav(props) {
   const [time, setTime] = React.useState(props.paper.timeRemaining * 60);
   const classes = useStyles();
@@ -133,7 +131,7 @@ function PaperNav(props) {
                 {item.answers[0] === '' ? (
                   <Paper className={classes.navItem}>
                     <Link color="inherit" href={`#${item.question}`}>
-                      {index+1}
+                      {index + 1}
                     </Link>
                   </Paper>
                 ) : (
@@ -142,7 +140,7 @@ function PaperNav(props) {
                       className={classes.linkChecked}
                       href={`#${item.question}`}
                     >
-                      {index+1}
+                      {index + 1}
                     </Link>
                   </Paper>
                 )}
@@ -150,7 +148,9 @@ function PaperNav(props) {
             ))}
           </Grid>
           <Divider />
-          <Typography className={classes.timeRemaining}>Time Remaining: {displayTime(time)}</Typography>
+          <Typography className={classes.timeRemaining}>
+            Time Remaining: {displayTime(time)}
+          </Typography>
         </CardContent>
         <Divider />
         <CardActions>
@@ -178,33 +178,36 @@ export default function ExamPaper(props) {
       .then((res) => {
         const examData = res.data;
         setExam(res.data);
-        axios.get(`/api/papers?user=${userData.user._id}`).then((res) => {
-          const paperData = res.data;
-          if (paperData.length !== 0) {
-            setPaper(paperData[0]);
-          } else {
-            const paper = {
-              user: userData.user._id,
-              exam: examData._id,
-              submitted: false,
-              timeRemaining: examData.duration,
-              data: examData.questions.map((item, index) => {
-                return {
-                  question: item,
-                  answers: [''],
-                };
-              }),
-            };
-            axios
-              .post(`/api/papers`, paper)
-              .then((res) => {
-                setPaper(res.data);
-              })
-              .catch((err) => {
-                console.log(err);
-              });
-          }
-        });
+        axios
+          .get(`/api/papers?user=${userData.user._id}&exam=${examData._id}`)
+          .then((res) => {
+            const paperData = res.data;
+            if (paperData.length !== 0) {
+              setPaper(paperData[0]);
+            } else {
+              const paper = {
+                user: userData.user._id,
+                exam: examData._id,
+                submitted: false,
+                timeRemaining: examData.duration,
+                data: examData.questions.map((item, index) => {
+                  return {
+                    question: item,
+                    answers: [''],
+                    points: 0,
+                  };
+                }),
+              };
+              axios
+                .post(`/api/papers`, paper)
+                .then((res) => {
+                  setPaper(res.data);
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }
+          });
       })
       .catch((err) => {
         console.log(err);
