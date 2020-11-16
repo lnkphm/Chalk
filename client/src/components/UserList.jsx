@@ -15,6 +15,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteUserDialog from './DeleteUserDialog';
+import CardActions from '@material-ui/core/CardActions';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
 
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -29,9 +32,8 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
   },
-  toolbar: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
+  header: {
+    marginTop: theme.spacing(2),
   },
   table: {
     marginTop: theme.spacing(2),
@@ -40,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
+    marginTop: theme.spacing(2),
   },
   formControl: {
     minWidth: 200,
@@ -132,10 +135,10 @@ export default function UserList(props) {
 
   return (
     <Container className={classes.root} maxWidth="md">
-      <Typography className={classes.title} variant="h4">
-        Users
-      </Typography>
-      <Grid className={classes.toolbar} container>
+      <Card className={classes.header}>
+        <CardHeader title="Users" />
+        <CardActions>
+        <Grid className={classes.toolbar} container>
         <Grid item xs>
           <Button
             variant="outlined"
@@ -153,6 +156,8 @@ export default function UserList(props) {
           </ButtonGroup>
         </Grid>
       </Grid>
+        </CardActions>
+      </Card>
       <Paper className={classes.paper} variant="outlined">
         <Grid container>
           <Grid item xs>

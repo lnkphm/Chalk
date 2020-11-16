@@ -96,11 +96,6 @@ export default function CourseList(props) {
                         {item.name}
                       </Link>
                     }
-                    action={
-                      <IconButton>
-                        <MoreVertIcon />
-                      </IconButton>
-                    }
                   />
                   <CardContent>
                     <Typography noWrap>{item.description}</Typography>

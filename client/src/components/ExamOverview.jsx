@@ -6,6 +6,7 @@ import {
   useHistory,
 } from 'react-router-dom';
 import axios from 'axios';
+import { DateTime } from 'luxon';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -141,7 +142,26 @@ export default function ExamOverview(props) {
         />
         <Divider />
         <CardContent>
-          <Typography>Description: {exam.description}</Typography>
+          <Typography>
+          <strong>Open Date:</strong>{' '}
+            {DateTime.fromISO(exam.dateOpen).toLocaleString(
+              DateTime.DATETIME_MED
+            )}
+          </Typography>
+          <Typography>
+            <strong>Close Date:</strong>{' '}
+            {DateTime.fromISO(exam.dateClose).toLocaleString(
+              DateTime.DATETIME_MED
+            )}
+          </Typography>
+          <Typography>
+            <strong>Duration:</strong> {exam.duration} minutes
+          </Typography>
+          <Typography>
+            <strong>Description:</strong>
+            <br />
+            {exam.description}
+          </Typography>
         </CardContent>
         <Divider />
         <CardActions>

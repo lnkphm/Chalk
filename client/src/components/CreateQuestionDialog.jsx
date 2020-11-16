@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     flexGrow: 1,
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(3),
   },
   breadcrumbs: {
     marginBottom: theme.spacing(2),
@@ -46,6 +46,10 @@ const useStyles = makeStyles((theme) => ({
   },
   flex: {
     display: 'flex',
+  },
+  checkbox: {
+    display: 'flex',
+    alignItems: 'center',
   }
 }));
 
@@ -146,7 +150,7 @@ export default function CreateQuestionDialog(props) {
     text: 'Question',
     type: 'multiple_choice',
     shuffle: true,
-    feedback: '',
+    feedback: 'No feedback',
     points: 1,
     answers: [
       {
@@ -220,7 +224,7 @@ export default function CreateQuestionDialog(props) {
                 <CloseIcon />
               </IconButton>
               <Typography variant="h6" className={classes.title}>
-                Exam
+                New question
               </Typography>
               <Button autoFocus color="inherit" type="submit">
                 Save
@@ -229,18 +233,7 @@ export default function CreateQuestionDialog(props) {
           </AppBar>
           <Container className={classes.root}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  label="Text"
-                  variant="outlined"
-                  fullWidth
-                  required
-                  name="text"
-                  value={state.text}
-                  onChange={onChangeValue}
-                />
-              </Grid>
-              <Grid item xs={12}>
+            <Grid item xs={12}>
                 <FormControl variant="outlined" fullWidth>
                   <InputLabel id="labelType">Type</InputLabel>
                   <Select
@@ -254,7 +247,41 @@ export default function CreateQuestionDialog(props) {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid className={classes.checkbox} item xs={12}>
+              <Grid item xs={12}>
+                <TextField
+                  label="Text"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  name="text"
+                  multiline
+                  rows={4}
+                  value={state.text}
+                  onChange={onChangeValue}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Feedback"
+                  variant="outlined"
+                  fullWidth
+                  name="feedback"
+                  value={state.feedback}
+                  onChange={onChangeValue}
+                />
+              </Grid>
+              <Grid item xs={11}>
+                <TextField
+                  label="Points"
+                  variant="outlined"
+                  fullWidth
+                  name="points"
+                  type="number"
+                  value={state.points}
+                  onChange={onChangeValue}
+                />
+              </Grid>
+              <Grid className={classes.checkbox} item xs={1}>
                 <FormControlLabel
                   control={
                     <CheckBox
@@ -270,27 +297,6 @@ export default function CreateQuestionDialog(props) {
                     />
                   }
                   label="Shuffle"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Feedback"
-                  variant="outlined"
-                  fullWidth
-                  name="feedback"
-                  value={state.feedback}
-                  onChange={onChangeValue}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Points"
-                  variant="outlined"
-                  fullWidth
-                  name="points"
-                  type="number"
-                  value={state.points}
-                  onChange={onChangeValue}
                 />
               </Grid>
               <Grid item xs={12}>

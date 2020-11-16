@@ -139,11 +139,64 @@ export default function EditExam() {
                   variant="outlined"
                   fullWidth
                   name="description"
+                  multiline
+                  rows={8}
                   value={state.description}
                   onChange={onChangeValue}
                 />
               </Grid>
-              <Grid className={classes.checkbox} item xs={12}>
+              <Grid item xs={6}>
+                <DateTimePicker
+                  label="Date Open"
+                  inputVariant="outlined"
+                  name="dateOpen"
+                  fullWidth
+                  ampm={false}
+                  value={state.dateOpen}
+                  onChange={(value) => {
+                    setState({ ...state, dateOpen: value });
+                  }}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <DateTimePicker
+                  label="Date Close"
+                  inputVariant="outlined"
+                  name="dateClose"
+                  fullWidth
+                  ampm={false}
+                  value={state.dateClose}
+                  onChange={(value) => {
+                    setState({ ...state, dateClose: value });
+                  }}
+                />
+              </Grid>
+              <Grid item xs={5}>
+                <FormControl variant="outlined" fullWidth>
+                  <InputLabel id="labelMethod">Grading Method</InputLabel>
+                  <Select
+                    labelId="labelMethod"
+                    label="Grading Method"
+                    name="gradingMethod"
+                    value={state.gradingMethod}
+                    onChange={onChangeValue}
+                  >
+                    <MenuItem value="normal">Normal</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={5}>
+                <TextField
+                  label="Duration"
+                  variant="outlined"
+                  fullWidth
+                  name="duration"
+                  type="number"
+                  value={state.duration}
+                  onChange={onChangeValue}
+                />
+              </Grid>
+              <Grid className={classes.checkbox} item xs={1}>
                 <FormControlLabel
                   control={
                     <CheckBox
@@ -161,44 +214,7 @@ export default function EditExam() {
                   label="Public"
                 />
               </Grid>
-              <Grid item xs={12}>
-                <DateTimePicker
-                  label="Date Open"
-                  inputVariant="outlined"
-                  name="dateOpen"
-                  fullWidth
-                  ampm={false}
-                  value={state.dateOpen}
-                  onChange={(value) => {
-                    setState({ ...state, dateOpen: value });
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <DateTimePicker
-                  label="Date Close"
-                  inputVariant="outlined"
-                  name="dateClose"
-                  fullWidth
-                  ampm={false}
-                  value={state.dateClose}
-                  onChange={(value) => {
-                    setState({ ...state, dateClose: value });
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Duration"
-                  variant="outlined"
-                  fullWidth
-                  name="duration"
-                  type="number"
-                  value={state.duration}
-                  onChange={onChangeValue}
-                />
-              </Grid>
-              <Grid className={classes.checkbox} item xs={12}>
+              <Grid className={classes.checkbox} item xs={1}>
                 <FormControlLabel
                   control={
                     <CheckBox
@@ -215,20 +231,6 @@ export default function EditExam() {
                   }
                   label="Shuffle"
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl variant="outlined" fullWidth>
-                  <InputLabel id="labelMethod">Grading Method</InputLabel>
-                  <Select
-                    labelId="labelMethod"
-                    label="Grading Method"
-                    name="gradingMethod"
-                    value={state.gradingMethod}
-                    onChange={onChangeValue}
-                  >
-                    <MenuItem value="normal">Normal</MenuItem>
-                  </Select>
-                </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <TextField

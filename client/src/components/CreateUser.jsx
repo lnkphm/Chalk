@@ -6,13 +6,11 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -78,10 +76,6 @@ export default function CreateUser(props) {
 
   return (
     <Container className={classes.root} maxWidth="md">
-      <Link className={classes.back} component={RouteLink} to="/users">
-        <ArrowBackIcon />
-        <Typography>Back to users page</Typography>
-      </Link>
       <Card>
         <form onSubmit={onSubmit}>
           <CardHeader title="Create New User" />
@@ -166,6 +160,14 @@ export default function CreateUser(props) {
           </CardContent>
           <Divider />
           <CardActions>
+          <Button
+              className={classes.submitButton}
+              variant="outlined"
+              component={RouteLink}
+              to="/users"
+            >
+              Cancel
+            </Button>
             <Button
               className={classes.submitButton}
               type="submit"

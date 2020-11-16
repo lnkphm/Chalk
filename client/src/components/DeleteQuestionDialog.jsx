@@ -36,13 +36,13 @@ export default function DeleteQuestionDialog(props) {
       <Dialog
         open={open}
         onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
+        fullWidth
+        maxWidth="sm"
       >
         <DialogTitle id="alert-dialog-title">{'Delete question'}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {props.id}
+            Are you sure?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

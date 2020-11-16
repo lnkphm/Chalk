@@ -12,7 +12,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 export default function DeleteUserDialog(props) {
   const [open, setOpen] = React.useState(false);
-  const { examId } = useParams();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -33,16 +32,10 @@ export default function DeleteUserDialog(props) {
       <IconButton onClick={handleClickOpen}>
         <DeleteIcon />
       </IconButton>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
+      <Dialog open={open} onClose={handleClose} fullWidth={true} maxWidth="sm">
+        <DialogTitle>Delete User</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Delete user?
-          </DialogContentText>
+          <DialogContentText>Are you sure?</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

@@ -8,21 +8,17 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import CheckBox from '@material-ui/core/Checkbox';
-
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -92,10 +88,6 @@ export default function EditCourse(props) {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Container className={classes.root} maxWidth="md">
-        <Link className={classes.back} component={RouteLink} to="/courses">
-          <ArrowBackIcon />
-          <Typography>Back to course page</Typography>
-        </Link>
         <Card>
           <form onSubmit={onSubmit}>
             <CardHeader title="Create New Course" />
@@ -197,6 +189,14 @@ export default function EditCourse(props) {
             </CardContent>
             <Divider />
             <CardActions>
+              <Button
+                className={classes.submitButton}
+                variant="outlined"
+                component={RouteLink}
+                to="/courses"
+              >
+                Cancel
+              </Button>
               <Button
                 className={classes.submitButton}
                 type="submit"
