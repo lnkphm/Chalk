@@ -79,16 +79,9 @@ router.post('/', (req, res, next) => {
 // @desc Update user
 // @route PUT /api/users/:id
 router.put('/:id', (req, res, next) => {
-  const updatedUser = {
-    email: req.body.email,
-    name: req.body.name,
-    avatar: req.body.avatar,
-    role: req.body.role,
-  };
-
   User.findByIdAndUpdate(
     { _id: req.params.id },
-    updatedUser,
+    req.body,
     { new: true },
     (err, user) => {
       if (err) {
@@ -97,10 +90,25 @@ router.put('/:id', (req, res, next) => {
       if (!user) {
         return next();
       }
-      user.setPassword(req.body.password);
       return res.send(user);
     }
   );
+});
+
+router.put('/:id/password', (req, res, next) => {
+  User.findById(req.params.id, (err, user) => {
+    if (err) return next(err);
+    if (!user) return next();
+    if (user.validPassword(req.body.currentPassword)) {
+      user.setPassword(req.body.newPassword);
+      user.save((err) => {
+        if (err) return next(err);
+        return res.send({ message: 'Password updated' });
+      });
+    } else {
+      return res.send({ message: 'Wrong Password' });
+    }
+  });
 });
 
 // @desc Delete user

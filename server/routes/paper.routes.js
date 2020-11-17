@@ -5,7 +5,7 @@ const Question = require('../models/question.model');
 const Exam = require('../models/exam.model');
 
 router.get('/', (req, res, next) => {
-  Paper.find(req.query).exec((err, papers) => {
+  Paper.find(req.query).populate('user').exec((err, papers) => {
     if (err) return next(err);
     if (!papers) return next();
     return res.send(papers);

@@ -1,8 +1,6 @@
 import React from 'react';
 import {
   useParams,
-  Link as RouteLink,
-  useRouteMatch,
   useHistory,
   Redirect,
 } from 'react-router-dom';
@@ -167,7 +165,6 @@ export default function ExamPaper(props) {
   const classes = useStyles();
   const { examId } = useParams();
   const history = useHistory();
-  const { url } = useRouteMatch();
   const userData = React.useContext(UserContext);
   const [exam, setExam] = React.useState(null);
   const [paper, setPaper] = React.useState(null);
@@ -215,7 +212,7 @@ export default function ExamPaper(props) {
   }, [examId, userData.user._id]);
 
   const updatePaper = () => {
-    return axios
+    axios
       .put(`/api/papers/${paper._id}`, paper)
       .then((res) => {
         console.log(res.data);

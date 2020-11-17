@@ -47,16 +47,18 @@ export default function Profile(props) {
     _id: '',
     name: '',
     email: '',
+    currentPassword: '',
+    newPassword: '',
   });
 
   React.useEffect(() => {
-    const user = userData.user;
     setState({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
+      ...state,
+      _id: userData.user._id,
+      name: userData.user.name,
+      email: userData.user.email,
     });
-  }, [userData.user]);
+  }, [state, userData.user._id, userData.user.name, userData.user.email]);
 
   const onChangeValue = (event) => {
     const value = event.target.value;
@@ -74,6 +76,22 @@ export default function Profile(props) {
     };
     axios
       .put(`/api/users/${state._id}`, data)
+      .then((res) => {
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const onClickUpdatePassword = (event) => {
+    event.preventDefault();
+    const password = {
+      currentPassword: state.currentPassword,
+      newPassword: state.newPassword,
+    };
+    axios
+      .put(`/api/users/${state._id}/password`, password)
       .then((res) => {
         window.location.reload();
       })
@@ -153,29 +171,46 @@ export default function Profile(props) {
                 <Divider />
                 <CardContent>
                   <Grid container spacing={2}>
-                    <Grid item xs={6}>
+                    <Grid item xs={12}>
+                      <TextField
+                        label="Current password"
+                        variant="outlined"
+                        fullWidth
+                        name="currentPassword"
+                        type="password"
+                        value={state.currentPassword}
+                        onChange={onChangeValue}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
                       <TextField
                         label="New password"
                         variant="outlined"
                         fullWidth
                         name="newPassword"
+                        type="password"
+                        value={state.newPassword}
+                        onChange={onChangeValue}
                       />
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={12}>
                       <TextField
                         label="Confirm password"
                         variant="outlined"
                         fullWidth
+                        type="password"
                         name="confirmPassword"
                       />
                     </Grid>
                   </Grid>
                 </CardContent>
+                <Divider />
                 <CardActions>
                   <Button
                     color="primary"
                     className={classes.save}
                     variant="outlined"
+                    onClick={onClickUpdatePassword}
                   >
                     Update password
                   </Button>

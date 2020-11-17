@@ -11,10 +11,8 @@ import CardActions from '@material-ui/core/CardActions';
 import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
 import Link from '@material-ui/core/Link';
 
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({

@@ -2,12 +2,8 @@ import React from 'react';
 import {
   useParams,
   Link as RouteLink,
-  useRouteMatch,
-  useHistory,
-  Redirect,
 } from 'react-router-dom';
 import axios from 'axios';
-import { Duration } from 'luxon';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
@@ -26,7 +22,6 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Link from '@material-ui/core/Link';
 
 import UserContext from '../contexts/UserContext';
-import { Checkbox } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {

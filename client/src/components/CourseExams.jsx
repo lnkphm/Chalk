@@ -35,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
   },
   toolbar: {
     marginBottom: theme.spacing(2),
+  },
+  button: {
+    marginLeft: 'auto',
   }
 
 }));
@@ -52,7 +55,7 @@ function ExamAccordion(props) {
       </AccordionDetails>
       <Divider />
       <AccordionAction className={classes.action}>
-        <Button component={RouteLink} to={url}>
+        <Button variant="outlined" component={RouteLink} to={url}>
           View Exam
         </Button>
       </AccordionAction>

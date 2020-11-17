@@ -11,17 +11,17 @@ export default function Course(props) {
   const userData = React.useContext(UserContext);
   return (
     <Switch>
-    {
-      (userData.user.role === 'admin') ? (
-      <div>
-      <Route exact path={path} component={UserList} />
-      <Route exact path={`${path}/create`} component={CreateUser} />
-      <Route exact path={`${path}/:userId/edit`} component={EditUser} />
-      </div>
+      {userData.user.role === 'admin' ? (
+        <Route>
+          <Switch>
+            <Route exact path={path} component={UserList} />
+            <Route exact path={`${path}/create`} component={CreateUser} />
+            <Route exact path={`${path}/:userId/edit`} component={EditUser} />
+          </Switch>
+        </Route>
       ) : (
-        <Redirect to='/401' />
-      )
-    }
+        <Redirect to="/401" />
+      )}
     </Switch>
   );
 }
