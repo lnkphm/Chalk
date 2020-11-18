@@ -40,42 +40,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Profile(props) {
+function UpdatePassword(props) {
   const classes = useStyles();
-  const userData = React.useContext(UserContext);
   const [state, setState] = React.useState({
-    _id: '',
-    name: '',
-    email: '',
-    currentPassword: '',
-    newPassword: '',
-  });
-
-  React.useEffect(() => {
-    setState({
-      ...state,
-      _id: userData.user._id,
-      name: userData.user.name,
-      email: userData.user.email,
-    });
-  }, [state, userData.user._id, userData.user.name, userData.user.email]);
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  })
 
   const onChangeValue = (event) => {
     const value = event.target.value;
     setState({ ...state, [event.target.name]: value });
   };
 
-  const onClickSave = (event) => {
+  const onSubmit = (event) => {
     event.preventDefault();
-    const data = {
-      username: userData.user.username,
-      email: state.email,
-      name: state.name,
-      avatar: userData.user.avatar,
-      role: userData.user.role,
+    const password = {
+      currentPassword: state.currentPassword,
+      newPassword: state.newPassword,
     };
     axios
-      .put(`/api/users/${state._id}`, data)
+      .put(`/api/users/${props.userId}/password`, password)
       .then((res) => {
         window.location.reload();
       })
@@ -84,14 +69,82 @@ export default function Profile(props) {
       });
   };
 
-  const onClickUpdatePassword = (event) => {
+  return (
+    <Card>
+      <form onSubmit={onSubmit}>
+      <CardHeader title="Change password" />
+      <Divider />
+      <CardContent>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              label="Current password"
+              variant="outlined"
+              fullWidth
+              name="currentPassword"
+              type="password"
+              value={state.currentPassword}
+              onChange={onChangeValue}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="New password"
+              variant="outlined"
+              fullWidth
+              name="newPassword"
+              type="password"
+              value={state.newPassword}
+              onChange={onChangeValue}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Confirm password"
+              variant="outlined"
+              fullWidth
+              type="password"
+              name="confirmPassword"
+              value={state.confirmPassword}
+              onChange={onChangeValue}
+            />
+          </Grid>
+        </Grid>
+      </CardContent>
+      <Divider />
+      <CardActions>
+        <Button
+          color="primary"
+          className={classes.save}
+          variant="outlined"
+          type="submit"
+        >
+          Update password
+        </Button>
+      </CardActions>
+      </form>
+    </Card>
+  );
+}
+
+export default function Profile(props) {
+  const classes = useStyles();
+  const userData = React.useContext(UserContext);
+  const [state, setState] = React.useState(null);
+
+  React.useEffect(() => {
+    setState(userData.user);
+  }, [userData.user]);
+
+  const onChangeValue = (event) => {
+    const value = event.target.value;
+    setState({ ...state, [event.target.name]: value });
+  };
+
+  const onClickSave = (event) => {
     event.preventDefault();
-    const password = {
-      currentPassword: state.currentPassword,
-      newPassword: state.newPassword,
-    };
     axios
-      .put(`/api/users/${state._id}/password`, password)
+      .put(`/api/users/${state._id}`, state)
       .then((res) => {
         window.location.reload();
       })
@@ -102,124 +155,81 @@ export default function Profile(props) {
 
   return (
     <Container className={classes.root} maxWidth="md">
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={4}>
-          <Card>
-            <CardContent className={classes.content}>
-              <Avatar className={classes.avatar} src={DefaultAvatar} />
-              <Typography variant="h4">{userData.user.name}</Typography>
-              <Typography>{userData.user.email}</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={8}>
+      {state ? (
+        <div>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={4}>
               <Card>
-                <CardHeader title="Profile" />
-                <Divider />
-                <CardContent>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={12}>
-                      <TextField
-                        label="ID"
-                        variant="outlined"
-                        fullWidth
-                        name="_id"
-                        disabled
-                        value={state._id}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        label="Name"
-                        variant="outlined"
-                        fullWidth
-                        name="name"
-                        value={state.name}
-                        onChange={onChangeValue}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        label="Email"
-                        variant="outlined"
-                        fullWidth
-                        name="email"
-                        value={state.email}
-                        onChange={onChangeValue}
-                      />
-                    </Grid>
-                  </Grid>
+                <CardContent className={classes.content}>
+                  <Avatar className={classes.avatar} src={DefaultAvatar} />
+                  <Typography variant="h4">{userData.user.name}</Typography>
+                  <Typography>{userData.user.email}</Typography>
                 </CardContent>
-                <Divider />
-                <CardActions>
-                  <Button
-                    color="primary"
-                    className={classes.save}
-                    variant="outlined"
-                    onClick={onClickSave}
-                  >
-                    Save changes
-                  </Button>
-                </CardActions>
               </Card>
             </Grid>
-            <Grid item xs={12}>
-              <Card>
-                <CardHeader title="Change password" />
-                <Divider />
-                <CardContent>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                      <TextField
-                        label="Current password"
+            <Grid item xs={12} sm={8}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Card>
+                    <CardHeader title="Profile" />
+                    <Divider />
+                    <CardContent>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12} sm={12}>
+                          <TextField
+                            label="ID"
+                            variant="outlined"
+                            fullWidth
+                            name="_id"
+                            disabled
+                            value={state._id}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <TextField
+                            label="Name"
+                            variant="outlined"
+                            fullWidth
+                            name="name"
+                            value={state.name}
+                            onChange={onChangeValue}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <TextField
+                            label="Email"
+                            variant="outlined"
+                            fullWidth
+                            name="email"
+                            value={state.email}
+                            onChange={onChangeValue}
+                          />
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                    <Divider />
+                    <CardActions>
+                      <Button
+                        color="primary"
+                        className={classes.save}
                         variant="outlined"
-                        fullWidth
-                        name="currentPassword"
-                        type="password"
-                        value={state.currentPassword}
-                        onChange={onChangeValue}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        label="New password"
-                        variant="outlined"
-                        fullWidth
-                        name="newPassword"
-                        type="password"
-                        value={state.newPassword}
-                        onChange={onChangeValue}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        label="Confirm password"
-                        variant="outlined"
-                        fullWidth
-                        type="password"
-                        name="confirmPassword"
-                      />
-                    </Grid>
-                  </Grid>
-                </CardContent>
-                <Divider />
-                <CardActions>
-                  <Button
-                    color="primary"
-                    className={classes.save}
-                    variant="outlined"
-                    onClick={onClickUpdatePassword}
-                  >
-                    Update password
-                  </Button>
-                </CardActions>
-              </Card>
+                        onClick={onClickSave}
+                      >
+                        Save changes
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+                <Grid item xs={12}>
+                  <UpdatePassword userId={state._id} />
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-      </Grid>
+        </div>
+      ) : (
+        <div />
+      )}
     </Container>
   );
 }

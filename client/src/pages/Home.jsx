@@ -25,10 +25,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Home() {
-  const data = React.useContext(UserContext);
-  const courses = data.user.courses;
+  const { user } = React.useContext(UserContext);
   const [date, setDate] = React.useState(new Date());
   const classes = useStyles();
+
   return (
     <Container maxWidth="md" className={classes.container}>
       <Grid container spacing={2}>
@@ -38,8 +38,8 @@ export default function Home() {
               <Typography variant="h4">Courses</Typography>
               <Divider />
             </Grid>
-            {courses.length > 0 ? (
-              courses.map((item, index) => (
+            {user.courses.length > 0 ? (
+              user.courses.map((item, index) => (
                 <Grid key={index} item xs={12}>
                   <Card>
                     <CardHeader

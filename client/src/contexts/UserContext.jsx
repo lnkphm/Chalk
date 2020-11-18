@@ -1,9 +1,9 @@
 import React from 'react';
 
 const userContext = React.createContext({
-  isLoading: true,
-  isAuthenticated: false,
-  user: {}
+  loading: true,
+  auth: false,
+  user: {},
 });
 
 export default userContext;

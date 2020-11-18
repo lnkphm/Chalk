@@ -128,37 +128,24 @@ function GradeTable(props) {
 export default function CourseGrades(props) {
   const classes = useStyles();
   const { courseId } = useParams();
-  const [examId, setExamId] = useState(null);
   const [exam, setExam] = useState(null);
   const [papers, setPapers] = useState(null);
 
-  const fetchData = () => {
-    if (examId) {
-      const getData = async () => {
-        const exam = await axios.get(`/api/exams/${examId}/details`);
-        setExam(exam.data);
-        const papers = await axios.get(`/api/papers?exam=${examId}`);
-        setPapers(papers.data);
-
-      }
-      getData();
+  const examSelectCallback = (examId) => {
+    const getData = async () => {
+      const exam = await axios.get(`/api/exams/${examId}/details`);
+      setExam(exam.data);
+      const papers = await axios.get(`/api/papers?exam=${examId}`);
+      setPapers(papers.data);
     }
-  }
-
-  const examSelectCallback = (id) => {
-    setExamId(id);
+    getData();
   }
 
   return (
     <Container className={classes.root} maxWidth="md">
       <Grid container spacing={2}>
-        <Grid item xs={10}>
+        <Grid item xs={12}>
           <ExamSelect courseId={courseId} callback={examSelectCallback} />
-        </Grid>
-        <Grid item xs={2}>
-          <Button variant="outlined" onClick={fetchData}>
-            Search
-          </Button>
         </Grid>
         <Grid item xs={12}>
           {papers ? <GradeTable exam={exam} papers={papers} /> : <div />}

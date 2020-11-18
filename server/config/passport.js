@@ -36,7 +36,9 @@ module.exports = function (passport) {
   passport.use(
     new LocalStrategy(function (username, password, cb) {
       User.findOne({ username: username })
-        .then((user) => {
+        .populate('courses')
+        .exec((err, user) => {
+          if (err) return cb(err);
           if (!user) return cb(null, false);
           const isValid = user.validPassword(password);
           if (isValid) {
@@ -44,9 +46,6 @@ module.exports = function (passport) {
           } else {
             return cb(null, false);
           }
-        })
-        .catch((err) => {
-          return cb(err);
         });
     })
   );

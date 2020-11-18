@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import UserContext from '../contexts/UserContext';
 
-function PublicRoute({ children, ...rest }) {
+export default function PublicRoute({ children, ...rest }) {
   return (
     <UserContext.Consumer>
-      {({ isLoading, isAuthenticated, user }) => (
+      {({ loading, auth, user }) => (
         <Route
           {...rest}
           render={({ location }) =>
-            isLoading ? (
+            loading ? (
               <div />
-            ) : isAuthenticated ? (
+            ) : auth ? (
               <Redirect
                 to={{
                   pathname: '/home',
@@ -27,5 +27,3 @@ function PublicRoute({ children, ...rest }) {
     </UserContext.Consumer>
   );
 }
-
-export default PublicRoute;

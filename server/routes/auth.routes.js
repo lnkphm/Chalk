@@ -6,7 +6,7 @@ const ensureAuth = require('../middleware/ensureAuth');
 // @desc Get current user info
 // @route GET /api/auth/
 router.get('/', ensureAuth, (req, res, next) => {
-  res.redirect(`/api/users/${req.user._id}`);
+  res.send(req.user);
 });
 
 // @desc Auth with local account

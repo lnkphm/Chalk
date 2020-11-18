@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useContext} from 'react';
+import { useHistory } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,12 +14,14 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
+import { useSnackbar } from 'notistack';
+import UserContext from '../contexts/UserContext';
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
+      <Link color="inherit" href="#">
         Chalk
       </Link>{' '}
       {new Date().getFullYear()}
@@ -62,6 +65,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignInSide() {
   const classes = useStyles();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
 
@@ -83,10 +87,15 @@ export default function SignInSide() {
     axios
       .post('/api/auth/login', user)
       .then(() => {
-        window.location = '/home';
+        window.location = '/home'
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response) {
+          enqueueSnackbar(err.response.data.message, {
+            variant: 'error',
+          });
+        }
+        
       });
   };
 
