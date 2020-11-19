@@ -1,9 +1,9 @@
 import React from 'react';
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 
-import UserList from '../components/UserList';
-import CreateUser from '../components/CreateUser';
-import EditUser from '../components/EditUser';
+import UserList from '../components/Users/UserList';
+import CreateUser from '../components/Users/CreateUser';
+import EditUser from '../components/Users/EditUser';
 import UserContext from '../contexts/UserContext';
 
 export default function Course(props) {
@@ -20,7 +20,7 @@ export default function Course(props) {
           </Switch>
         </Route>
       ) : (
-        <Redirect to="/401" />
+        <Redirect to="/" />
       )}
     </Switch>
   );

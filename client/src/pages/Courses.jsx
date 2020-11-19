@@ -1,13 +1,13 @@
 import React from 'react';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 
-import CourseList from '../components/CourseList';
-import CourseOverview from '../components/CourseOverview';
-import CourseUsers from '../components/CourseUsers';
-import CourseGrades from '../components/CourseGrades';
-import CourseExams from '../components/CourseExams';
-import CreateCourse from '../components/CreateCourse';
-import EditCourse from '../components/EditCourse';
+import CourseList from '../components/Courses/CourseList';
+import CourseOverview from '../components/Courses/CourseOverview';
+import CourseUsers from '../components/Courses/CourseUsers';
+import CourseGrades from '../components/Courses/CourseGrades';
+import CourseExams from '../components/Courses/CourseExams';
+import CreateCourse from '../components/Courses/CreateCourse';
+import EditCourse from '../components/Courses/EditCourse';
 
 export default function Course(props) {
   const { path } = useRouteMatch();

@@ -1,5 +1,4 @@
-import React, {useContext} from 'react';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -15,7 +14,6 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
-import UserContext from '../contexts/UserContext';
 
 function Copyright() {
   return (
@@ -65,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignInSide() {
   const classes = useStyles();
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
 

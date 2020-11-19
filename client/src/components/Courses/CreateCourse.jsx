@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link as RouteLink, useHistory } from 'react-router-dom';
 import axios from 'axios';
-import DateFnsUtils from '@date-io/date-fns';
+import LuxonUtils from '@date-io/luxon';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -23,7 +23,8 @@ import CheckBox from '@material-ui/core/Checkbox';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3),
   },
   breadcrumbs: {
     marginBottom: theme.spacing(2),
@@ -46,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 export default function EditCourse(props) {
   const classes = useStyles();
   const history = useHistory();
-  const [options, setOptions] = React.useState([]);
+  const [categories, setCategories] = React.useState([]);
   const [state, setState] = React.useState({
     name: '',
     description: '',
@@ -61,7 +62,7 @@ export default function EditCourse(props) {
     axios
       .get(`/api/categories`)
       .then((res) => {
-        setOptions(res.data);
+        setCategories(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -86,10 +87,10 @@ export default function EditCourse(props) {
   };
 
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    <MuiPickersUtilsProvider utils={LuxonUtils}>
       <Container className={classes.root} maxWidth="md">
+      <form onSubmit={onSubmit}>
         <Card>
-          <form onSubmit={onSubmit}>
             <CardHeader title="Create New Course" />
             <Divider />
             <CardContent>
@@ -100,6 +101,7 @@ export default function EditCourse(props) {
                     variant="outlined"
                     fullWidth
                     required
+                    autoFocus
                     name="name"
                     value={state.name}
                     onChange={onChangeValue}
@@ -125,6 +127,8 @@ export default function EditCourse(props) {
                     label="Description"
                     variant="outlined"
                     fullWidth
+                    multiline
+                    rows={5}
                     name="description"
                     value={state.description}
                     onChange={onChangeValue}
@@ -177,7 +181,7 @@ export default function EditCourse(props) {
                       value={state.category}
                       onChange={onChangeValue}
                     >
-                      {options.map((item, index) => (
+                      {categories.map((item, index) => (
                         <MenuItem key={index} value={item._id}>
                           {item.name}
                         </MenuItem>
@@ -200,14 +204,15 @@ export default function EditCourse(props) {
               <Button
                 className={classes.submitButton}
                 type="submit"
-                variant="outlined"
+                variant="contained"
                 color="primary"
               >
                 Create
               </Button>
             </CardActions>
-          </form>
         </Card>
+        </form>
+
       </Container>
     </MuiPickersUtilsProvider>
   );

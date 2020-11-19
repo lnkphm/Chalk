@@ -36,7 +36,6 @@ module.exports = function (passport) {
   passport.use(
     new LocalStrategy(function (username, password, cb) {
       User.findOne({ username: username })
-        .populate('courses')
         .exec((err, user) => {
           if (err) return cb(err);
           if (!user) return cb(null, false);
@@ -50,16 +49,16 @@ module.exports = function (passport) {
     })
   );
 
-  passport.serializeUser(function (user, cb) {
-    cb(null, user.id);
+  passport.serializeUser((user, callback) => {
+    callback(null, user.id);
   });
 
-  passport.deserializeUser(function (id, cb) {
-    User.findById(id, function (err, user) {
+  passport.deserializeUser((id, callback) => {
+    User.findById(id).select('-hash -salt').populate('courses').exec((err, user) => {
       if (err) {
-        cb(err);
+        callback(err);
       }
-      cb(null, user);
+      callback(null, user);
     });
   });
 };

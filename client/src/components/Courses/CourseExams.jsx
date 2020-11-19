@@ -10,6 +10,7 @@ import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
+import { useSnackbar } from 'notistack';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
@@ -38,13 +39,11 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginLeft: 'auto',
-  }
-
+  },
 }));
 
 function ExamAccordion(props) {
   const classes = useStyles();
-  const url = `/exams/${props.examId}`;
   return (
     <Accordion>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -55,7 +54,12 @@ function ExamAccordion(props) {
       </AccordionDetails>
       <Divider />
       <AccordionAction className={classes.action}>
-        <Button variant="outlined" component={RouteLink} to={url}>
+        <Button
+          variant="outlined"
+          color="primary"
+          component={RouteLink}
+          to={`/exams/${props.examId}`}
+        >
           View Exam
         </Button>
       </AccordionAction>
@@ -66,26 +70,37 @@ function ExamAccordion(props) {
 export default function CourseExams(props) {
   const classes = useStyles();
   const [exams, setExams] = React.useState([]);
+  const { enqueueSnackbar } = useSnackbar();
   const { courseId } = useParams();
-  React.useEffect(() => {
-    const fetchData = async () => {
-      return await axios
-        .get(`/api/exams?course=${courseId}`)
-        .then((res) => {
-          setExams(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    };
+
+  const fetchData = () => {
+    axios
+      .get(`/api/exams?course=${courseId}`)
+      .then((res) => {
+        setExams(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const callbackCreateExam = (exam) => {
     fetchData();
-  }, [courseId]);
+    enqueueSnackbar(`Exam ${exam.title} created.`, {
+      variant: 'success',
+    });
+  };
+
+  React.useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Container maxWidth="md" className={classes.root}>
       <div className={classes.toolbar}>
-        <CreateExamDialog />
-      </div>    
+        <CreateExamDialog callback={callbackCreateExam} />
+      </div>
       <div className={classes.examList}>
         {exams.map((item, index) => (
           <ExamAccordion

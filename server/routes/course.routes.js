@@ -26,18 +26,6 @@ router.get('/:id', (req, res, next) => {
     });
 });
 
-// @desc Get all user info from course
-// @route GET /api/courses/:id/users
-router.get('/:id/users', (req, res, next) => {
-  Course.findById(req.params.id)
-    .populate('users', '-courses -hash -salt')
-    .exec((err, course) => {
-      if (err) return next(err);
-      if (!course) return next();
-      return res.send(course.users);
-    });
-});
-
 // @desc Create new course
 // @route POST /api/courses
 router.post('/', (req, res, next) => {

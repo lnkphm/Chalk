@@ -34,10 +34,6 @@ export default function Home() {
       <Grid container spacing={2}>
         <Grid item xs={12} sm={8}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="h4">Courses</Typography>
-              <Divider />
-            </Grid>
             {user.courses.length > 0 ? (
               user.courses.map((item, index) => (
                 <Grid key={index} item xs={12}>

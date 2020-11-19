@@ -13,9 +13,6 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
-import CardActions from '@material-ui/core/CardActions';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
 import EditIcon from '@material-ui/icons/Edit';
 import { DataGrid } from '@material-ui/data-grid';
 
@@ -24,13 +21,8 @@ import DeleteUserDialog from './DeleteUserDialog';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-  },
-  title: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2),
-  },
-  header: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3),
   },
   table: {
     marginTop: theme.spacing(2),
@@ -44,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     minWidth: 200,
   },
+  actionButtons: {
+    display: 'flex',
+  }
 }));
 
 function getUserRows(users, role, query) {
@@ -72,19 +67,14 @@ function getUserRows(users, role, query) {
 }
 
 function ActionButtons(props) {
+  const classes = useStyles();
   const { url } = useRouteMatch();
   return (
-    <div>
-      <Grid container>
-        <Grid item xs={6}>
-          <IconButton component={RouteLink} to={`${url}/${props.user}/edit`} >
-            <EditIcon />
-          </IconButton>
-        </Grid>
-        <Grid item xs={6}>
-          <DeleteUserDialog id={props.user} />
-        </Grid>
-      </Grid>
+    <div className={classes.actionButtons}>
+      <IconButton component={RouteLink} to={`${url}/${props.user}/edit`}>
+        <EditIcon />
+      </IconButton>
+      <DeleteUserDialog id={props.user} />
     </div>
   );
 }
@@ -97,6 +87,7 @@ const columns = [
   { field: 'role', headerName: 'Role', width: 150 },
   {
     field: 'action',
+    width: 120,
     headerName: 'Actions',
     renderCell: (params) => <ActionButtons user={params.value} />,
   },
@@ -132,29 +123,20 @@ export default function UserList(props) {
 
   return (
     <Container className={classes.root} maxWidth="md">
-      <Card className={classes.header}>
-        <CardHeader title="Users" />
-        <CardActions>
-        <Grid className={classes.toolbar} container>
-        <Grid item xs>
-          <Button
-            variant="outlined"
-            color="primary"
-            component={RouteLink}
-            to={`${path}/create`}
-          >
-            Create new user
-          </Button>
-        </Grid>
-        <Grid item>
-          <ButtonGroup>
-            <Button>Import</Button>
-            <Button>Export</Button>
-          </ButtonGroup>
-        </Grid>
-      </Grid>
-        </CardActions>
-      </Card>
+      <div className={classes.toolbar}>
+        <Button
+          variant="contained"
+          color="primary"
+          component={RouteLink}
+          to={`${path}/create`}
+        >
+          Create new user
+        </Button>
+        <ButtonGroup>
+          <Button>Import</Button>
+          <Button>Export</Button>
+        </ButtonGroup>
+      </div>
       <Paper className={classes.paper} variant="outlined">
         <Grid container>
           <Grid item xs>

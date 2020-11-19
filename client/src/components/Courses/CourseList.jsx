@@ -13,13 +13,22 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 
-import { Typography } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import AddIcon from '@material-ui/icons/Add';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   },
-  buttonSearch: {
+  title: {
+    display: 'inline-block',
+  },
+  toolbar: {
+    display: 'flex',
+    justifyContent: 'space-between'
+  },
+  createButton: {
     marginLeft: 'auto',
   },
 }));
@@ -43,24 +52,21 @@ export default function CourseList(props) {
     <Container className={classes.root} maxWidth="md">
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12}>
-          <Card>
-            <CardHeader title="Courses" />
-            <CardActions>
-              <Button
-                variant="outlined"
-                color="primary"
-                component={RouteLink}
-                to={`/courses/create`}
-              >
-                Create new course
-              </Button>
-            </CardActions>
-          </Card>
+          <div className={classes.toolbar}>
+            <Typography variant="h4" className={classes.title}>Courses</Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<AddIcon />}
+              component={RouteLink}
+              to={`/courses/create`}
+            >
+              Create
+            </Button>
+            </div>
         </Grid>
         <Grid item xs={12} sm={4}>
           <Card>
-            <CardHeader title="Search" />
-            <Divider />
             <CardContent>
               <Grid container spacing={1}>
                 <Grid item xs={12}>
@@ -73,11 +79,7 @@ export default function CourseList(props) {
             </CardContent>
             <Divider />
             <CardActions>
-              <Button
-                className={classes.buttonSearch}
-                color="primary"
-                variant="outlined"
-              >
+              <Button className={classes.buttonSearch} fullWidth>
                 Search
               </Button>
             </CardActions>
