@@ -38,6 +38,10 @@ const useStyles = makeStyles((theme) => ({
   },
   actionButtons: {
     display: 'flex',
+  },
+  toolbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
   }
 }));
 

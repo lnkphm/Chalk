@@ -26,7 +26,8 @@ const useStyles = makeStyles((theme) => ({
   },
   toolbar: {
     display: 'flex',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    marginBottom: theme.spacing(2),
   },
   createButton: {
     marginLeft: 'auto',
@@ -53,7 +54,9 @@ export default function CourseList(props) {
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12}>
           <div className={classes.toolbar}>
-            <Typography variant="h4" className={classes.title}>Courses</Typography>
+            <Typography variant="h4" className={classes.title}>
+              Courses
+            </Typography>
             <Button
               variant="contained"
               color="primary"
@@ -63,7 +66,8 @@ export default function CourseList(props) {
             >
               Create
             </Button>
-            </div>
+          </div>
+          <Divider />
         </Grid>
         <Grid item xs={12} sm={4}>
           <Card>

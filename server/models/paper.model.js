@@ -11,7 +11,7 @@ const PaperSchema = new Schema(
     data: [
       {
         question: { type: Schema.Types.ObjectId, ref: 'Question' },
-        answers: [{ type: String }],
+        answer: { type: String },
         points: { type: Number },
       },
     ],

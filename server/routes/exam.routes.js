@@ -87,7 +87,6 @@ router.put('/:id', (req, res, next) => {
     gradingMethod: req.body.gradingMethod,
     password: req.body.password,
     public: req.body.public,
-    questions: req.body.questions,
     course: req.body.course,
   };
   Exam.findByIdAndUpdate(

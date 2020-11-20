@@ -116,7 +116,7 @@ function GradeTable(props) {
   return (
     <div className={classes.table}>
       <DataGrid
-        rows={getPaperRows(props.exam, props.papers)}
+        rows={getPaperRows(props.exam, props.papers, props.users)}
         columns={columns}
         pageSize={10}
       />
@@ -129,6 +129,7 @@ export default function CourseGrades(props) {
   const { courseId } = useParams();
   const [exam, setExam] = useState(null);
   const [papers, setPapers] = useState(null);
+  const [course, setCourse] = useState(null);
 
   const examSelectCallback = (examId) => {
     const getData = async () => {
@@ -136,6 +137,8 @@ export default function CourseGrades(props) {
       setExam(exam.data);
       const papers = await axios.get(`/api/papers?exam=${examId}`);
       setPapers(papers.data);
+      const course = await axios.get(`/api/courses/${courseId}`);
+      setCourse(course.data);
     }
     getData();
   }
@@ -147,7 +150,11 @@ export default function CourseGrades(props) {
           <ExamSelect courseId={courseId} callback={examSelectCallback} />
         </Grid>
         <Grid item xs={12}>
-          {papers ? <GradeTable exam={exam} papers={papers} /> : <div />}
+          {exam && papers && course ? (
+            <GradeTable exam={exam} papers={papers} users={course.users} />
+          ) : (
+            <div />
+          )}
         </Grid>
       </Grid>
     </Container>

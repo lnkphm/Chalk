@@ -25,6 +25,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+import UserContext from '../../contexts/UserContext';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -118,7 +120,10 @@ function SettingMenu(props) {
 
 export default function ExamOverview(props) {
   const classes = useStyles();
+  const { user } = React.useContext(UserContext);
   const [exam, setExam] = React.useState({});
+  const [submitted, setSummited] = React.useState(false);
+
   const { url } = useRouteMatch();
   const { examId } = useParams();
 
@@ -133,6 +138,18 @@ export default function ExamOverview(props) {
       });
   }, [examId]);
 
+  React.useEffect(() => {
+    axios.get(`/api/papers?user=${user._id}&exam=${examId}`)
+    .then((res) => {
+      if (res.data.length !== 0) {
+        setSummited(res.data[0].submitted)
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  }, [])
+
   return (
     <Container className={classes.root} maxWidth="md">
       <Card>
@@ -143,7 +160,7 @@ export default function ExamOverview(props) {
         <Divider />
         <CardContent>
           <Typography>
-          <strong>Open Date:</strong>{' '}
+            <strong>Open Date:</strong>{' '}
             {DateTime.fromISO(exam.dateOpen).toLocaleString(
               DateTime.DATETIME_MED
             )}
@@ -165,15 +182,27 @@ export default function ExamOverview(props) {
         </CardContent>
         <Divider />
         <CardActions>
-          <Button
-            className={classes.buttonStart}
-            variant="outlined"
-            color="primary"
-            component={RouteLink}
-            to={`${url}/paper`}
-          >
-            Start
-          </Button>
+          {submitted ? (
+            <Button
+              className={classes.buttonStart}
+              variant="contained"
+              color="primary"
+              component={RouteLink}
+              to={`${url}/result`}
+            >
+              Result
+            </Button>
+          ) : (
+            <Button
+              className={classes.buttonStart}
+              variant="contained"
+              color="primary"
+              component={RouteLink}
+              to={`${url}/paper`}
+            >
+              Start
+            </Button>
+          )}
         </CardActions>
       </Card>
     </Container>

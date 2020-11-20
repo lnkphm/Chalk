@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { useParams, Link as RouteLink } from 'react-router-dom';
 import axios from 'axios';
 import { DateTime } from 'luxon';
@@ -24,7 +24,10 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(1),
   },
-  reviewButton: {
+  actionButtons: {
+    '& > *': {
+      marginLeft: theme.spacing(1),
+    },
     marginLeft: 'auto',
   },
   result: {
@@ -38,12 +41,12 @@ const useStyles = makeStyles((theme) => ({
 export default function ExamResult(props) {
   const classes = useStyles();
   const { examId } = useParams();
-  const [paper, setPaper] = React.useState(null);
-  const [points, setPoints] = React.useState({
+  const [paper, setPaper] = useState(null);
+  const [points, setPoints] = useState({
     exam: 0,
     paper: 0,
   });
-  const userData = React.useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const calcPaper = (paper) => {
     let paperPoints = 0;
@@ -57,10 +60,10 @@ export default function ExamResult(props) {
 
   React.useEffect(() => {
     axios
-      .get(`/api/papers?user=${userData.user._id}&exam=${examId}`)
+      .get(`/api/papers?user=${user._id}&exam=${examId}`)
       .then((res) => {
         axios
-          .get(`/api/papers/${res.data[0]._id}/details`)
+          .get(`/api/papers/${res.data[0]._id}`)
           .then((res) => {
             console.log(res.data);
             setPaper(res.data);
@@ -73,7 +76,7 @@ export default function ExamResult(props) {
       .catch((err) => {
         console.log(err);
       });
-  }, [userData.user._id, examId]);
+  }, []);
 
   return (
     <Container className={classes.root} maxWidth="md">
@@ -91,7 +94,7 @@ export default function ExamResult(props) {
                 <Divider />
                 <CardContent>
                   <div className={classes.examGrade}>
-                    <Typography>User: {paper.user.name}</Typography>
+                    <Typography>User: {user.name}</Typography>
                     <Typography>
                       Submitted:{' '}
                       {DateTime.fromISO(paper.updatedAt).toLocaleString(
@@ -110,14 +113,22 @@ export default function ExamResult(props) {
                 </CardContent>
                 <Divider />
                 <CardActions>
-                  <Button
-                    variant="outlined"
-                    className={classes.reviewButton}
-                    component={RouteLink}
-                    to={`/exams/${examId}/review`}
-                  >
-                    Review
-                  </Button>
+                  <div className={classes.actionButtons}>
+                    <Button
+                      variant="outlined"
+                      component={RouteLink}
+                      to={`/courses/${paper.exam.course}`}
+                    >
+                      Back to course
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      component={RouteLink}
+                      to={`/exams/${examId}/review`}
+                    >
+                      Review
+                    </Button>
+                  </div>
                 </CardActions>
               </Card>
             </Grid>

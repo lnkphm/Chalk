@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Paper = require('../models/paper.model');
-const Question = require('../models/question.model');
 const Exam = require('../models/exam.model');
 
 router.get('/', (req, res, next) => {
@@ -13,14 +12,6 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/:id', (req, res, next) => {
-  Paper.findById(req.params.id).exec((err, paper) => {
-    if (err) return next(err);
-    if (!paper) return next();
-    return res.send(paper);
-  });
-});
-
-router.get('/:id/details', (req, res, next) => {
   Paper.findById(req.params.id)
     .populate('user')
     .populate('exam')
@@ -57,16 +48,14 @@ function GradePaper(paper, exam) {
   let newData = paper.data;
   let questions = exam.questions;
   for (let i = 0; i < newData.length; ++i) {
-    if (newData[i].answers[0] !== '') {
+    if (newData[i].answer !== '') {
       questions.forEach((question) => {
         if (newData[i].question === question._id.toString()) {
           if (question.type === 'multiple_choice') {
             question.answers.forEach((answer) => {
-              if (newData[i].answers[0] === answer._id.toString()) {
+              if (newData[i].answer === answer._id.toString()) {
                 if (answer.correct) {
                   newData[i].points = question.points
-                } else {
-                  newData[i].points = 0;
                 }
               }
             })

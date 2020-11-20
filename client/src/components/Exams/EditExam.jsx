@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import axios from 'axios';
-import DateFnsUtils from '@date-io/date-fns';
+import LuxonUtils from '@date-io/luxon';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -19,6 +19,8 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Divider from '@material-ui/core/Divider';
+
+import SaveIcon from '@material-ui/icons/Save';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -75,19 +77,7 @@ export default function EditExam() {
     axios
       .get(`/api/exams/${examId}`)
       .then((res) => {
-        const exam = res.data;
-        setState({
-          title: exam.title,
-          description: exam.description,
-          dateOpen: exam.dateOpen,
-          dateClose: exam.dateClose,
-          duration: exam.duration,
-          shuffle: exam.shuffle,
-          gradingMethod: exam.gradingMethod,
-          public: exam.public,
-          password: exam.password,
-          course: exam.course,
-        });
+        setState(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -99,7 +89,8 @@ export default function EditExam() {
     setState({ ...state, [event.target.name]: value });
   };
 
-  const onClickSave = () => {
+  const onSubmit = (event) => {
+    event.preventDefault();
     axios
       .put(`/api/exams/${examId}`, state)
       .then((res) => {
@@ -115,157 +106,160 @@ export default function EditExam() {
   };
 
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <Container className={classes.root}>
-        <Card>
-          <CardHeader title="Edit Exam" />
-          <Divider />
-          <CardContent>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  label="Title"
-                  variant="outlined"
-                  fullWidth
-                  required
-                  name="title"
-                  value={state.title}
-                  onChange={onChangeValue}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Description"
-                  variant="outlined"
-                  fullWidth
-                  name="description"
-                  multiline
-                  rows={8}
-                  value={state.description}
-                  onChange={onChangeValue}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <DateTimePicker
-                  label="Date Open"
-                  inputVariant="outlined"
-                  name="dateOpen"
-                  fullWidth
-                  ampm={false}
-                  value={state.dateOpen}
-                  onChange={(value) => {
-                    setState({ ...state, dateOpen: value });
-                  }}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <DateTimePicker
-                  label="Date Close"
-                  inputVariant="outlined"
-                  name="dateClose"
-                  fullWidth
-                  ampm={false}
-                  value={state.dateClose}
-                  onChange={(value) => {
-                    setState({ ...state, dateClose: value });
-                  }}
-                />
-              </Grid>
-              <Grid item xs={5}>
-                <FormControl variant="outlined" fullWidth>
-                  <InputLabel id="labelMethod">Grading Method</InputLabel>
-                  <Select
-                    labelId="labelMethod"
-                    label="Grading Method"
-                    name="gradingMethod"
-                    value={state.gradingMethod}
+    <MuiPickersUtilsProvider utils={LuxonUtils}>
+      <Container className={classes.root} maxWidth="md">
+        <form onSubmit={onSubmit}>
+          <Card>
+            <CardHeader title="Edit Exam" />
+            <Divider />
+            <CardContent>
+              <Grid container spacing={2}>
+                <Grid item xs={10}>
+                  <TextField
+                    label="Title"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    name="title"
+                    value={state.title}
                     onChange={onChangeValue}
-                  >
-                    <MenuItem value="normal">Normal</MenuItem>
-                  </Select>
-                </FormControl>
+                  />
+                </Grid>
+                <Grid className={classes.checkbox} item xs={2}>
+                  <FormControlLabel
+                    control={
+                      <CheckBox
+                        name="public"
+                        checked={state.public}
+                        onChange={(event) => {
+                          setState({
+                            ...state,
+                            public: event.target.checked,
+                          });
+                        }}
+                        color="secondary"
+                      />
+                    }
+                    label="Public"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Description"
+                    variant="outlined"
+                    fullWidth
+                    multiline
+                    rows={5}
+                    name="description"
+                    value={state.description}
+                    onChange={onChangeValue}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <DateTimePicker
+                    label="Date Open"
+                    inputVariant="outlined"
+                    name="dateOpen"
+                    fullWidth
+                    ampm={false}
+                    value={state.dateOpen}
+                    onChange={(value) => {
+                      setState({ ...state, dateOpen: value });
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <DateTimePicker
+                    label="Date Close"
+                    inputVariant="outlined"
+                    name="dateClose"
+                    fullWidth
+                    ampm={false}
+                    value={state.dateClose}
+                    onChange={(value) => {
+                      setState({ ...state, dateClose: value });
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Duration"
+                    variant="outlined"
+                    fullWidth
+                    name="duration"
+                    type="number"
+                    value={state.duration}
+                    onChange={onChangeValue}
+                  />
+                </Grid>
+
+                <Grid item xs={10}>
+                  <FormControl variant="outlined" fullWidth>
+                    <InputLabel id="labelMethod">Grading Method</InputLabel>
+                    <Select
+                      labelId="labelMethod"
+                      label="Grading Method"
+                      name="gradingMethod"
+                      value={state.gradingMethod}
+                      onChange={onChangeValue}
+                    >
+                      <MenuItem value="normal">Normal</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid className={classes.checkbox} item xs={2}>
+                  <FormControlLabel
+                    control={
+                      <CheckBox
+                        name="shuffle"
+                        checked={state.shuffle}
+                        onChange={(event) => {
+                          setState({
+                            ...state,
+                            shuffle: event.target.checked,
+                          });
+                        }}
+                        color="secondary"
+                      />
+                    }
+                    label="Shuffle"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Password"
+                    variant="outlined"
+                    fullWidth
+                    name="password"
+                    value={state.password}
+                    onChange={onChangeValue}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={5}>
-                <TextField
-                  label="Duration"
+            </CardContent>
+            <Divider />
+            <CardActions>
+              <div className={classes.action}>
+                <Button
                   variant="outlined"
-                  fullWidth
-                  name="duration"
-                  type="number"
-                  value={state.duration}
-                  onChange={onChangeValue}
-                />
-              </Grid>
-              <Grid className={classes.checkbox} item xs={1}>
-                <FormControlLabel
-                  control={
-                    <CheckBox
-                      name="public"
-                      checked={state.public}
-                      onChange={(event) => {
-                        setState({
-                          ...state,
-                          public: event.target.checked,
-                        });
-                      }}
-                      color="secondary"
-                    />
-                  }
-                  label="Public"
-                />
-              </Grid>
-              <Grid className={classes.checkbox} item xs={1}>
-                <FormControlLabel
-                  control={
-                    <CheckBox
-                      name="shuffle"
-                      checked={state.shuffle}
-                      onChange={(event) => {
-                        setState({
-                          ...state,
-                          shuffle: event.target.checked,
-                        });
-                      }}
-                      color="secondary"
-                    />
-                  }
-                  label="Shuffle"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Password"
-                  variant="outlined"
-                  fullWidth
-                  name="password"
-                  value={state.password}
-                  onChange={onChangeValue}
-                />
-              </Grid>
-            </Grid>
-          </CardContent>
-          <Divider />
-          <CardActions>
-            <div className={classes.action}>
-              <Button
-                variant="outlined"
-                type="submit"
-                onClick={onClickCancel}
-              >
-                Cancel
-              </Button>
-              <Button
-                className={classes.saveButton}
-                variant="outlined"
-                color="primary"
-                type="submit"
-                onClick={onClickSave}
-              >
-                Save
-              </Button>
-            </div>
-          </CardActions>
-        </Card>
+                  type="submit"
+                  onClick={onClickCancel}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className={classes.saveButton}
+                  variant="contained"
+                  color="primary"
+                  startIcon={<SaveIcon />}
+                  type="submit"
+                >
+                  Save
+                </Button>
+              </div>
+            </CardActions>
+          </Card>
+        </form>
       </Container>
     </MuiPickersUtilsProvider>
   );

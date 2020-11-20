@@ -72,7 +72,7 @@ function QuestionList(props) {
                     </FormLabel>
                     <RadioGroup
                       name={item._id}
-                      value={item.answers[0]}
+                      value={item.answer}
                       id={item._id}
                     >
                       {item.question.answers.map((item, index) =>
@@ -149,11 +149,11 @@ export default function ExamReview() {
     axios
       .get(`/api/papers?user=${userData.user._id}&exam=${examId}`)
       .then((res) => {
-        axios.get(`/api/papers/${res.data[0]._id}/details`).then((res) => {
+        axios.get(`/api/papers/${res.data[0]._id}`).then((res) => {
           setPaper(res.data);
         });
       });
-  }, [examId, userData.user._id]);
+  }, []);
 
   return (
     <Container className={classes.root} maxWidth="md">
