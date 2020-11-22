@@ -242,7 +242,6 @@ export default function EditExam() {
               <div className={classes.action}>
                 <Button
                   variant="outlined"
-                  type="submit"
                   onClick={onClickCancel}
                 >
                   Cancel

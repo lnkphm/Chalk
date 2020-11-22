@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -12,6 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 
 export default function RemoveUserDialog(props) {
   const { courseId } = useParams();
+  const { enqueueSnackbar } = useSnackbar();
   const [dialog, setDialog] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -27,6 +29,7 @@ export default function RemoveUserDialog(props) {
       .delete(`/api/courses/${courseId}/users/${props.user._id}`)
       .then((res) => {
         props.callback();
+        enqueueSnackbar('User removed!')
         handleClose();
       })
       .catch((err) => {

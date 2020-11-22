@@ -5,6 +5,7 @@ import { Duration } from 'luxon';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Container from '@material-ui/core/Container';
@@ -18,12 +19,15 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import Link from '@material-ui/core/Link';
+import TextField from '@material-ui/core/TextField';
 
 import UserContext from '../../contexts/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(4)
   },
   paper: {
     padding: theme.spacing(3),
@@ -53,6 +57,9 @@ const useStyles = makeStyles((theme) => ({
   timeRemaining: {
     marginTop: theme.spacing(1),
   },
+  answers: {
+    marginTop: theme.spacing(2),
+  }
 }));
 
 function QuestionList(props) {
@@ -69,30 +76,66 @@ function QuestionList(props) {
   return (
     <div>
       <Grid container spacing={3}>
-        {props.data.map((item, index) => (
-          <Grid key={index} item xs={12}>
-            <Paper className={classes.paper}>
-              <FormControl component="fieldset">
-                <FormLabel component="legend">{item.question.text}</FormLabel>
-                <RadioGroup
-                  name={item._id}
-                  value={data[index].answer}
-                  id={item._id}
-                  onChange={handleChange(index)}
-                >
-                  {item.question.answers.map((item, index) => (
-                    <FormControlLabel
-                      key={index}
-                      value={item._id}
-                      control={<Radio />}
-                      label={item.text}
-                    />
-                  ))}
-                </RadioGroup>
-              </FormControl>
-            </Paper>
-          </Grid>
-        ))}
+        {props.data.map((item, index) => {
+          if (item.question.type === 'multiple_choice') {
+            return (
+              <Grid key={index} item xs={12}>
+                <Card>
+                  <CardHeader title={`Question ${index + 1}`} />
+                  <Divider />
+                  <CardContent>
+                    <Typography variant="body1" component="p">{item.question.text}</Typography>
+                    <div className={classes.answers}>
+                      <FormControl component="fieldset">
+                        <FormLabel component="legend">Answers</FormLabel>
+                        <RadioGroup
+                          name={item._id}
+                          value={data[index].answer}
+                          id={item._id}
+                          onChange={handleChange(index)}
+                        >
+                          {item.question.answers.map((item, index) => (
+                            <FormControlLabel
+                              key={index}
+                              value={item._id}
+                              control={<Radio />}
+                              label={item.text}
+                            />
+                          ))}
+                        </RadioGroup>
+                      </FormControl>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          } else if (item.question.type === 'short_answer') {
+            return (
+              <Grid key={index} item xs={12}>
+                <Card>
+                  <CardHeader title={`Question ${index + 1}`} />
+                  <Divider />
+                  <CardContent>
+                    <Typography variant="body1" component="p">
+                      {item.question.text}
+                    </Typography>
+                    <div className={classes.answers}>
+                      <TextField
+                        variant="outlined"
+                        name={item._id}
+                        value={data[index].answer}
+                        onChange={handleChange(index)}
+                        label="Answer"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          } else {
+            return <div />
+          }
+        })}
       </Grid>
     </div>
   );
@@ -162,6 +205,7 @@ export default function ExamPaper(props) {
   const { user } = useContext(UserContext);
   const [paper, setPaper] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [update, setUpdate] = useState(false);
 
   React.useEffect(() => {
     const fetchData = () => {
@@ -203,17 +247,20 @@ export default function ExamPaper(props) {
       });
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && update) {
       if (paper.timeRemaining !== 0) {
         updatePaper();
       } else {
         submitPaper();
       }
+      setUpdate(false);
     }
-  }, [paper, loading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, update]);
 
   useEffect(() => {
     if (!loading) {
@@ -221,9 +268,11 @@ export default function ExamPaper(props) {
         setPaper((paper) => {
           return { ...paper, timeRemaining: paper.timeRemaining - 1 };
         });
+        setUpdate(true);
       }, 60000);
       return () => clearInterval(interval);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
   const updatePaper = () => {

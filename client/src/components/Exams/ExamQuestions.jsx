@@ -1,16 +1,16 @@
 import React from 'react';
-import { Link as RouteLink, useParams } from 'react-router-dom';
+import { Link as RouteLink, useParams, useRouteMatch } from 'react-router-dom';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import { DataGrid } from '@material-ui/data-grid';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import CreateQuestionDialog from './CreateQuestionDialog';
 import DeleteQuestionDialog from './DeleteQuestionDialog';
@@ -18,17 +18,19 @@ import DeleteQuestionDialog from './DeleteQuestionDialog';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   },
   title: {
-    marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
   },
   toolbar: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   table: {
-    marginTop: theme.spacing(2),
     width: '100%',
     height: 640,
   },
@@ -40,23 +42,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ActionButtons(props) {
-  return (
-    <div>
-      <Grid container>
-        <Grid item xs={6}>
-          <IconButton>
-            <EditIcon />
-          </IconButton>
-        </Grid>
-        <Grid item xs={6}>
-          <DeleteQuestionDialog id={props.questionId} />
-        </Grid>
-      </Grid>
-    </div>
-  );
-}
-
 function getQuestionRows(questions) {
   return questions.map((item, index) => ({
     id: index,
@@ -66,23 +51,47 @@ function getQuestionRows(questions) {
   }));
 }
 
-const columns = [
-  { field: 'id', headerName: '#', width: 50 },
-  { field: 'text', headerName: 'Question', width: 500 },
-  { field: 'points', headerName: 'Points', width: 100 },
-  {
-    field: 'action',
-    headerName: 'Actions',
-    renderCell: (params) => <ActionButtons questionId={params.value} />,
-  },
-];
-
-export default function UserList(props) {
+export default function QuestionList() {
   const classes = useStyles();
   const [state, setState] = React.useState(null);
   const { examId } = useParams();
+  const { url } = useRouteMatch();
 
-  React.useEffect(() => {
+  const ActionButtons = (props) => {
+    return (
+      <div>
+        <Grid container>
+          <Grid item xs={6}>
+            <IconButton
+              component={RouteLink}
+              to={`${url}/${props.questionId}/edit`}
+            >
+              <EditIcon />
+            </IconButton>
+          </Grid>
+          <Grid item xs={6}>
+            <DeleteQuestionDialog
+              callback={callbackDeleteQuestion}
+              id={props.questionId}
+            />
+          </Grid>
+        </Grid>
+      </div>
+    );
+  };
+
+  const columns = [
+    { field: 'id', headerName: '#', width: 50 },
+    { field: 'text', headerName: 'Question', width: 500 },
+    { field: 'points', headerName: 'Points', width: 100 },
+    {
+      field: 'action',
+      headerName: 'Actions',
+      renderCell: (params) => <ActionButtons questionId={params.value} />,
+    },
+  ];
+
+  const fetchData = () => {
     axios
       .get(`/api/exams/${examId}/details`)
       .then((res) => {
@@ -91,27 +100,37 @@ export default function UserList(props) {
       .catch((err) => {
         console.log(err);
       });
-  }, [examId]);
+  };
+
+  React.useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const callbackCreateQuestion = () => {
+    fetchData();
+  };
+
+  const callbackDeleteQuestion = () => {
+    fetchData();
+  };
 
   return (
     <Container className={classes.root} maxWidth="md">
       <Typography className={classes.title} variant="h4">
-        Question
+        Questions
       </Typography>
-      <Grid className={classes.toolbar} container>
-        <Grid item xs>
-          <Button variant="outlined" component={RouteLink} to={`/exams/${examId}`}>
-            Back to exam
-          </Button>
-        </Grid>
-        <Grid item>
-          <ButtonGroup>
-            <CreateQuestionDialog />
-            <Button>Import</Button>
-            <Button>Export</Button>
-          </ButtonGroup>
-        </Grid>
-      </Grid>
+      <div className={classes.toolbar}>
+        <Button
+          variant="outlined"
+          startIcon={<ArrowBackIcon />}
+          component={RouteLink}
+          to={`/exams/${examId}`}
+        >
+          Back to exam
+        </Button>
+        <CreateQuestionDialog callback={callbackCreateQuestion} />
+      </div>
       <Paper className={classes.paper} variant="outlined">
         <div className={classes.table}>
           {state ? (

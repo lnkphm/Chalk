@@ -24,7 +24,10 @@ export default function DeleteQuestionDialog(props) {
 
   const deleteQuestion = () => {
     axios.delete(`/api/exams/${examId}/questions/${props.id}`).then(() => {
-      window.location.reload();
+      axios.delete(`/api/questions/${props.id}`).then(() => {
+        props.callback();
+        handleClose();
+      })
     });
   };
 

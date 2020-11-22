@@ -15,7 +15,6 @@ const QuestionSchema = new Schema(
         correct: { type: Boolean },
       },
     ],
-    exams: [{ type: Schema.Types.ObjectId, ref: 'Exam' }],
     tags: [{ type: Schema.Types.ObjectId, ref: 'Tag' }],
   },
   {

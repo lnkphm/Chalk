@@ -60,6 +60,13 @@ function GradePaper(paper, exam) {
               }
             })
           }
+          if (question.type === 'short_answer') {
+            question.answers.forEach((answer) => {
+              if (newData[i].answer === answer.text) {
+                newData[i].points = question.points
+              }
+            })
+          }
         }
       })
     }

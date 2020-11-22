@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { useSnackbar } from 'notistack';
 import LuxonUtils from '@date-io/luxon';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/core/styles';
@@ -62,6 +63,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function CreateExamDialog(props) {
   const classes = useStyles();
   const { courseId } = useParams();
+  const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = React.useState(false);
   const [state, setState] = React.useState({
     title: '',
@@ -94,7 +96,10 @@ export default function CreateExamDialog(props) {
     axios
       .post(`/api/exams`, state)
       .then((res) => {
-        props.callback(res.data);
+        props.callback();
+        enqueueSnackbar(`Exam ${res.data.title} created!`, {
+          variant: 'success',
+        });
         handleClose();
       })
       .catch((err) => {

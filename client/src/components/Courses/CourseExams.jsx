@@ -10,7 +10,6 @@ import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
-import { useSnackbar } from 'notistack';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
@@ -70,7 +69,6 @@ function ExamAccordion(props) {
 export default function CourseExams(props) {
   const classes = useStyles();
   const [exams, setExams] = React.useState([]);
-  const { enqueueSnackbar } = useSnackbar();
   const { courseId } = useParams();
 
   const fetchData = () => {
@@ -86,9 +84,6 @@ export default function CourseExams(props) {
 
   const callbackCreateExam = (exam) => {
     fetchData();
-    enqueueSnackbar(`Exam ${exam.title} created.`, {
-      variant: 'success',
-    });
   };
 
   React.useEffect(() => {

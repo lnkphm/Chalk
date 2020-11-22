@@ -1,6 +1,7 @@
 import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { useSnackbar } from 'notistack';
 import DateFnsUtils from '@date-io/date-fns';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 
@@ -51,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
 export default function EditCourse(props) {
   const classes = useStyles();
   const history = useHistory();
+  const { enqueueSnackbar } = useSnackbar();
   const { courseId } = useParams();
   const [options, setOptions] = React.useState([]);
   const [state, setState] = React.useState({
@@ -104,6 +106,9 @@ export default function EditCourse(props) {
     axios
       .put(`/api/courses/${courseId}`, state)
       .then((res) => {
+        enqueueSnackbar(`Course updated`, {
+          variant: 'success'
+        })
         history.push(`/courses/${courseId}`);
       })
       .catch((err) => {

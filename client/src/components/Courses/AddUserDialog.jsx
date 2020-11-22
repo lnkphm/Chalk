@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -63,6 +64,7 @@ function SearchUser({ callback }) {
 
 export default function AddUserDialog(props) {
   const [dialog, setDialog] = React.useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   const [selectedUsers, setSelectedUsers] = React.useState([]);
   const { courseId } = useParams();
   const handleClickOpen = () => {
@@ -87,6 +89,9 @@ export default function AddUserDialog(props) {
       .post(`/api/courses/${courseId}/users`, data)
       .then((res) => {
         props.callback();
+        enqueueSnackbar('Users added!', {
+          variant: 'success'
+        });
         handleClose();
       })
       .catch((err) => {

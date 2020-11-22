@@ -28,7 +28,6 @@ router.post('/', (req, res, next) => {
     feedback: req.body.feedback,
     answers: req.body.answers,
     points: req.body.points,
-    exams: [],
     tags: req.body.tags
   });
   newQuestion.save((err, question) => {
@@ -58,7 +57,6 @@ router.put('/:id', (req, res, next) => {
     feedback: req.body.feedback,
     points: req.body.points,
     answers: req.body.answers,
-    tags: req.body.tags
   };
   Question.findByIdAndUpdate(
     req.params.id,

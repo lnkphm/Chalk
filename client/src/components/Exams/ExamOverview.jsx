@@ -106,11 +106,11 @@ function SettingMenu(props) {
           <Typography>Are you sure?</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
+          <Button onClick={handleCloseDialog}>
             Cancel
           </Button>
-          <Button onClick={deleteExam} color="primary">
-            OK
+          <Button onClick={deleteExam} color="secondary">
+            Delete
           </Button>
         </DialogActions>
       </Dialog>

@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import IconButton from '@material-ui/core/IconButton';
 import Link from '@material-ui/core/Link';
@@ -20,11 +21,17 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import Collapse from '@material-ui/core/Collapse';
 
 import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
 import PersonIcon from '@material-ui/icons/Person';
 import FolderIcon from '@material-ui/icons/Folder';
+import ClassIcon from '@material-ui/icons/Class';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import CategoryIcon from '@material-ui/icons/Category';
+import LabelIcon from '@material-ui/icons/Label';
 
 import UserContext from '../contexts/UserContext';
 
@@ -51,7 +58,96 @@ const useStyles = makeStyles((theme) => ({
   menuButton: {
     marginRight: theme.spacing(2),
   },
+  nested: {
+    paddingLeft: theme.spacing(4),
+  },
 }));
+
+function DrawerList(props) {
+  const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+
+  const handleClick = () => {
+    setOpen(!open);
+  };
+
+  return (
+    <div>
+    <List>
+      <ListItem
+        button
+        component={RouteLink}
+        to="/home"
+        className={classes.listItem}
+        onClick={props.handleClose}
+      >
+        <ListItemIcon>
+          <HomeIcon />
+        </ListItemIcon>
+        <ListItemText primary="Home" />
+      </ListItem>
+      <ListItem
+        button
+        component={RouteLink}
+        to="/courses"
+        className={classes.listItem}
+        onClick={props.handleClose}
+      >
+        <ListItemIcon>
+          <ClassIcon />
+        </ListItemIcon>
+        <ListItemText primary="Courses" />
+      </ListItem>
+      </List>
+      <Divider />
+      <List>
+      <ListItem button onClick={handleClick}>
+        <ListItemIcon>
+          <FolderIcon />
+        </ListItemIcon>
+        <ListItemText primary="System" />
+        {open ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItem
+            button
+            component={RouteLink}
+            to="/users"
+            className={classes.nested}
+            onClick={props.handleClose}
+          >
+            <ListItemIcon>
+              <PersonIcon />
+            </ListItemIcon>
+            <ListItemText primary="Users" />
+          </ListItem>
+          <ListItem
+            button
+            className={classes.nested}
+            onClick={props.handleClose}
+          >
+            <ListItemIcon>
+              <CategoryIcon />
+            </ListItemIcon>
+            <ListItemText primary="Categories" />
+          </ListItem>
+          <ListItem
+            button
+            className={classes.nested}
+            onClick={props.handleClose}
+          >
+            <ListItemIcon>
+              <LabelIcon />
+            </ListItemIcon>
+            <ListItemText primary="Tags" />
+          </ListItem>
+        </List>
+      </Collapse>
+    </List>
+    </div>
+  );
+}
 
 function AppBarDrawer() {
   const classes = useStyles();
@@ -64,47 +160,6 @@ function AppBarDrawer() {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const list = (
-    <List>
-      <ListItem
-        button
-        component={RouteLink}
-        to="/home"
-        className={classes.listItem}
-        onClick={handleClose}
-      >
-        <ListItemIcon>
-          <HomeIcon />
-        </ListItemIcon>
-        <ListItemText primary="Home" />
-      </ListItem>
-      <ListItem
-        button
-        component={RouteLink}
-        to="/users"
-        className={classes.listItem}
-        onClick={handleClose}
-      >
-        <ListItemIcon>
-          <PersonIcon />
-        </ListItemIcon>
-        <ListItemText primary="Users" />
-      </ListItem>
-      <ListItem
-        button
-        component={RouteLink}
-        to="/courses"
-        className={classes.listItem}
-        onClick={handleClose}
-      >
-        <ListItemIcon>
-          <FolderIcon />
-        </ListItemIcon>
-        <ListItemText primary="Courses" />
-      </ListItem>
-    </List>
-  );
 
   return (
     <ClickAwayListener onClickAway={handleClose}>
@@ -123,7 +178,7 @@ function AppBarDrawer() {
           open={open}
           onClose={handleClose}
         >
-          {list}
+          {<DrawerList handleClose={handleClose} />}
         </Drawer>
       </div>
     </ClickAwayListener>

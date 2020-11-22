@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   useParams,
   Link as RouteLink,
@@ -7,6 +7,7 @@ import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Container from '@material-ui/core/Container';
@@ -20,12 +21,15 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import Link from '@material-ui/core/Link';
+import TextField from '@material-ui/core/TextField';
 
 import UserContext from '../../contexts/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(4)
   },
   paper: {
     padding: theme.spacing(3),
@@ -45,61 +49,111 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
   },
   correctAnswer: {
-    border: '1px solid #dc004e',
-    borderRadius: '16px',
+    color: "#dc004e",
   },
+  answers: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
+  points: {
+    marginTop: 'auto',
+  }
 }));
 
 function QuestionList(props) {
   const classes = useStyles();
+  const [data, setData] = useState(props.data);
 
   return (
     <div>
       <Grid container spacing={3}>
-        {props.paper.data.map((item, index) => (
-          <Grid key={index} item xs={12}>
-            <Paper className={classes.paper}>
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
-                  <Typography>
-                    Points: {`${item.points} / ${item.question.points}`}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl component="fieldset">
-                    <FormLabel component="legend">
+        {props.data.map((item, index) => {
+          if (item.question.type === 'multiple_choice') {
+            return (
+              <Grid key={index} item xs={12}>
+                <Card>
+                  <CardHeader
+                    title={`Question ${index + 1}`}
+                    subheader={`points: ${item.points}/${item.question.points}`}
+                  />
+                  <Divider />
+                  <CardContent>
+                    <Typography variant="body1" component="p">
                       {item.question.text}
-                    </FormLabel>
-                    <RadioGroup
-                      name={item._id}
-                      value={item.answer}
-                      id={item._id}
-                    >
-                      {item.question.answers.map((item, index) =>
-                        item.correct ? (
-                          <FormControlLabel
-                            className={classes.correctAnswer}
-                            key={index}
-                            value={item._id}
-                            control={<Radio />}
-                            label={item.text}
-                          />
-                        ) : (
-                          <FormControlLabel
-                            key={index}
-                            value={item._id}
-                            control={<Radio />}
-                            label={item.text}
-                          />
-                        )
-                      )}
-                    </RadioGroup>
-                  </FormControl>
-                </Grid>
+                    </Typography>
+                    <div className={classes.answers}>
+                      <FormControl component="fieldset">
+                        <FormLabel component="legend">Answers</FormLabel>
+                        <RadioGroup
+                          name={item._id}
+                          value={data[index].answer}
+                          id={item._id}
+                        >
+                          {item.question.answers.map((item, index) => {
+                            if (item.correct) {
+                              return (
+                                <FormControlLabel
+                                  className={classes.correctAnswer}
+                                  key={index}
+                                  value={item._id}
+                                  control={<Radio />}
+                                  label={item.text}
+                                />
+                              );
+                            } else {
+                              return (
+                                <FormControlLabel
+                                  key={index}
+                                  value={item._id}
+                                  control={<Radio />}
+                                  label={item.text}
+                                />
+                              );
+                            }
+                          })}
+                        </RadioGroup>
+                      </FormControl>
+                    </div>
+                    <Typography>Feedback: {item.question.feedback}</Typography>
+                  </CardContent>
+                </Card>
               </Grid>
-            </Paper>
-          </Grid>
-        ))}
+            );
+          } else if (item.question.type === 'short_answer') {
+            return (
+              <Grid key={index} item xs={12}>
+                <Card>
+                  <CardHeader
+                    title={`Question ${index + 1}`}
+                    subheader={`points: ${item.points}/${item.question.points}`}
+                  />
+                  <Divider />
+                  <CardContent>
+                    <Typography variant="body1" component="p">
+                      {item.question.text}
+                    </Typography>
+                    <div className={classes.answers}>
+                      <TextField
+                        variant="outlined"
+                        fullWidth
+                        name={item._id}
+                        value={data[index].answer}
+                        label="Answer"
+                      />
+                    </div>
+                    <Typography>Correct answers:</Typography>
+                    {item.question.answers.map((item, index) => (
+                      <Typography key={index}>{`• ${item.text}`}</Typography>
+                    ))}
+                    <Typography>Feedback: {item.question.feedback}</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          } else {
+            return <div />;
+          }
+        })}
       </Grid>
     </div>
   );
@@ -165,7 +219,7 @@ export default function ExamReview() {
           <Divider />
           <Grid className={classes.main} container spacing={3}>
             <Grid item xs={12} sm={8}>
-              <QuestionList paper={paper} />
+              <QuestionList data={paper.data} />
             </Grid>
             <Grid item xs={12} sm={4}>
               <PaperNav paper={paper} />

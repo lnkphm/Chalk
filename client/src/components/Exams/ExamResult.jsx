@@ -65,7 +65,6 @@ export default function ExamResult(props) {
         axios
           .get(`/api/papers/${res.data[0]._id}`)
           .then((res) => {
-            console.log(res.data);
             setPaper(res.data);
             setPoints(calcPaper(res.data));
           })
@@ -122,7 +121,8 @@ export default function ExamResult(props) {
                       Back to course
                     </Button>
                     <Button
-                      variant="outlined"
+                      variant="contained"
+                      color="primary"
                       component={RouteLink}
                       to={`/exams/${examId}/review`}
                     >

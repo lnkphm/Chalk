@@ -1,15 +1,10 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import CloseIcon from '@material-ui/icons/Close';
-import Grow from '@material-ui/core/Grow';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
@@ -21,29 +16,18 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import CheckBox from '@material-ui/core/Checkbox';
 import ClearIcon from '@material-ui/icons/Clear';
 import AddIcon from '@material-ui/icons/Add';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Divider from '@material-ui/core/Divider';
+import SaveIcon from '@material-ui/icons/Save';
+
 
 const useStyles = makeStyles((theme) => ({
-  appBar: {
-    position: 'relative',
-  },
-  title: {
-    marginLeft: theme.spacing(2),
-    flex: 1,
-  },
   root: {
     flexGrow: 1,
     marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(4),
-  },
-  breadcrumbs: {
-    marginBottom: theme.spacing(2),
-  },
-  submitButton: {
-    marginLeft: 'auto',
-  },
-  back: {
-    display: 'flex',
-    alignItems: 'center',
     marginBottom: theme.spacing(2),
   },
   checkbox: {
@@ -53,11 +37,17 @@ const useStyles = makeStyles((theme) => ({
   answerText: {
     display: 'flex',
     alignItems: 'center'
+  },
+  actions: {
+    marginLeft: 'auto',
+  },
+  saveButton: {
+    marginLeft: theme.spacing(1),
   }
 }));
 
 function Answers(props) {
-  const [answers, setAnswers] = React.useState(props.answers);
+  const [answers, setAnswers] = useState(props.answers);
   const classes = useStyles();
 
   const handleChangeText = (event, index) => {
@@ -178,60 +168,33 @@ function Answers(props) {
   );
 }
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Grow ref={ref} {...props} />;
-});
-
-export default function CreateQuestionDialog(props) {
+export default function EditQuestion(props) {
   const classes = useStyles();
-  const { examId } = useParams();
-  const [open, setOpen] = React.useState(false);
-  const [state, setState] = React.useState({
-    text: 'Question',
-    type: 'multiple_choice',
-    shuffle: true,
-    feedback: 'No feedback',
-    points: 1,
-    answers: [
-      {
-        text: 'New answer',
-        correct: false,
-      },
-    ],
-    tags: [],
-  });
+  const { examId, questionId } = useParams();
+  const history = useHistory();
+  const [ question, setQuestion] = useState(null);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  useEffect(() => {
+    axios.get(`/api/questions/${questionId}`)
+      .then((res) => {
+        setQuestion(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  }, [questionId]);
 
   const onChangeValue = (event) => {
     const value = event.target.value;
-    setState({ ...state, [event.target.name]: value });
+    setQuestion({ ...question, [event.target.name]: value });
   };
 
-  const onSubmitQuestion = (event) => {
+  const handleSubmitQuestion = (event) => {
     event.preventDefault();
     axios
-      .post(`/api/questions`, state)
-      .then((res) => {
-        const data = {
-          questions: [],
-        };
-        data.questions.push(res.data._id);
-        axios
-          .post(`/api/exams/${examId}/questions`, data)
-          .then((res) => {
-            props.callback();
-            handleClose();
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+      .put(`/api/questions/${questionId}`, question)
+      .then(() => {
+        history.push(`/exams/${examId}/questions`);
       })
       .catch((err) => {
         console.log(err);
@@ -239,46 +202,24 @@ export default function CreateQuestionDialog(props) {
   };
 
   const callbackAnswers = (answers) => {
-    console.log(answers);
-    setState({ ...state, answers: answers });
+    setQuestion({ ...question, answers: answers });
   };
 
+  const handleClickCancel = () => {
+    history.push(`/exams/${examId}/questions`);
+  };
+
+  if (!question) {
+    return <div />
+  }
+
   return (
-    <div>
-      <Button
-        variant="outlined"
-        startIcon={<AddIcon />}
-        color="primary"
-        onClick={handleClickOpen}
-      >
-        Add new
-      </Button>
-      <Dialog
-        fullScreen
-        open={open}
-        onClose={handleClose}
-        TransitionComponent={Transition}
-      >
-        <form onSubmit={onSubmitQuestion}>
-          <AppBar className={classes.appBar} color="default">
-            <Toolbar>
-              <IconButton
-                edge="start"
-                color="inherit"
-                onClick={handleClose}
-                aria-label="close"
-              >
-                <CloseIcon />
-              </IconButton>
-              <Typography variant="h6" className={classes.title}>
-                New question
-              </Typography>
-              <Button autoFocus color="inherit" type="submit">
-                Save
-              </Button>
-            </Toolbar>
-          </AppBar>
-          <Container className={classes.root} maxWidth="md">
+    <Container className={classes.root} maxWidth="md">
+      <form onSubmit={handleSubmitQuestion}>
+        <Card>
+          <CardHeader title="Edit question" />
+          <Divider />
+          <CardContent>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <FormControl variant="outlined" fullWidth>
@@ -287,7 +228,7 @@ export default function CreateQuestionDialog(props) {
                     labelId="labelType"
                     label="Type"
                     name="type"
-                    value={state.type}
+                    value={question.type}
                     onChange={onChangeValue}
                   >
                     <MenuItem value="multiple_choice">Multiple Choice</MenuItem>
@@ -304,7 +245,7 @@ export default function CreateQuestionDialog(props) {
                   name="text"
                   multiline
                   rows={4}
-                  value={state.text}
+                  value={question.text}
                   onChange={onChangeValue}
                 />
               </Grid>
@@ -314,7 +255,7 @@ export default function CreateQuestionDialog(props) {
                   variant="outlined"
                   fullWidth
                   name="feedback"
-                  value={state.feedback}
+                  value={question.feedback}
                   onChange={onChangeValue}
                 />
               </Grid>
@@ -325,7 +266,7 @@ export default function CreateQuestionDialog(props) {
                   fullWidth
                   name="points"
                   type="number"
-                  value={state.points}
+                  value={question.points}
                   onChange={onChangeValue}
                 />
               </Grid>
@@ -334,10 +275,10 @@ export default function CreateQuestionDialog(props) {
                   control={
                     <CheckBox
                       name="shuffle"
-                      checked={state.shuffle}
+                      checked={question.shuffle}
                       onChange={(event) => {
-                        setState({
-                          ...state,
+                        setQuestion({
+                          ...question,
                           shuffle: event.target.checked,
                         });
                       }}
@@ -349,15 +290,32 @@ export default function CreateQuestionDialog(props) {
               </Grid>
               <Grid item xs={12}>
                 <Answers
-                  type={state.type}
-                  answers={state.answers}
+                  type={question.type}
+                  answers={question.answers}
                   callback={callbackAnswers}
                 />
               </Grid>
             </Grid>
-          </Container>
-        </form>
-      </Dialog>
-    </div>
+          </CardContent>
+          <Divider />
+          <CardActions>
+            <div className={classes.actions}>
+              <Button variant="outlined" onClick={handleClickCancel}>
+                Cancel
+              </Button>
+              <Button
+                className={classes.saveButton}
+                variant="contained"
+                color="primary"
+                startIcon={<SaveIcon />}
+                type="submit"
+              >
+                Save
+              </Button>
+            </div>
+          </CardActions>
+        </Card>
+      </form>
+    </Container>
   );
 }

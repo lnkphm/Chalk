@@ -16,7 +16,8 @@ import '../assets/css/Calendar.css';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    paddingTop: theme.spacing(2),
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   },
   paper: {
     padding: theme.spacing(5),
