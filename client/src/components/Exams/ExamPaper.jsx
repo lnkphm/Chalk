@@ -62,6 +62,18 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+function shuffle(array) {
+  let m = array.length, t, i;
+  while (m) {
+    i = Math.floor(Math.random() * m--);
+    t = array[m];
+    array[m] = array[i];
+    array[i] = t;
+  }
+
+  return array;
+}
+
 function QuestionList(props) {
   const classes = useStyles();
   const [data, setData] = useState(props.data);
@@ -217,7 +229,10 @@ export default function ExamPaper(props) {
           });
         } else {
           axios.get(`/api/exams/${examId}`).then((res) => {
-            const examData = res.data;
+            let examData = res.data;
+            if (examData.shuffle) {
+              examData.questions = shuffle(examData.questions);
+            }
             const newPaper = {
               user: user._id,
               exam: examData._id,
@@ -231,6 +246,7 @@ export default function ExamPaper(props) {
                 };
               }),
             };
+
             axios
               .post(`/api/papers`, newPaper)
               .then((res) => {

@@ -2,8 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Paper = require('../models/paper.model');
 const Exam = require('../models/exam.model');
+const ensureAuth = require('../middleware/ensureAuth');
+const ensureNonStudent = require('../middleware/ensureNonStudent');
 
-router.get('/', (req, res, next) => {
+router.get('/', ensureAuth, (req, res, next) => {
   Paper.find(req.query).populate('user').exec((err, papers) => {
     if (err) return next(err);
     if (!papers) return next();
@@ -11,7 +13,7 @@ router.get('/', (req, res, next) => {
   });
 });
 
-router.get('/:id', (req, res, next) => {
+router.get('/:id', ensureAuth, (req, res, next) => {
   Paper.findById(req.params.id)
     .populate('user')
     .populate('exam')
@@ -28,7 +30,7 @@ router.get('/:id', (req, res, next) => {
     });
 });
 
-router.post('/', (req, res, next) => {
+router.post('/', ensureAuth, (req, res, next) => {
   const newPaper = new Paper({
     user: req.body.user,
     exam: req.body.exam,
@@ -76,7 +78,7 @@ function GradePaper(paper, exam) {
   return newPaper;
 }
 
-router.put('/:id', (req, res, next) => {
+router.put('/:id', ensureAuth, (req, res, next) => {
   let updatedPaper = {
     user: req.body.user,
     exam: req.body.exam,
@@ -116,7 +118,7 @@ router.put('/:id', (req, res, next) => {
   }
 });
 
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', ensureAuth, ensureNonStudent, (req, res, next) => {
   Paper.findByIdAndDelete(req.params.id, (err) => {
     if (err) return next(err);
     return res.send({ message: 'Paper deleted!' });

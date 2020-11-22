@@ -15,6 +15,7 @@ import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import SaveIcon from '@material-ui/icons/Save';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,8 +57,6 @@ export default function EditUser(props) {
           name: data.name,
           email: data.email,
           role: data.role,
-          password: "",
-          confirmPassword: ""
         })
       })
       .catch((err) => {
@@ -76,7 +75,6 @@ export default function EditUser(props) {
       email: state.email,
       name: state.name,
       role: state.role,
-      password: state.password,
     };
 
     axios
@@ -148,28 +146,6 @@ export default function EditUser(props) {
                   onChange={onChangeValue}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Password"
-                  variant="outlined"
-                  fullWidth
-                  name="password"
-                  type="password"
-                  value={state.password}
-                  onChange={onChangeValue}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Confirm Password"
-                  variant="outlined"
-                  fullWidth
-                  name="confirmPassword"
-                  type="password"
-                  value={state.confirmPassword}
-                  onChange={onChangeValue}
-                />
-              </Grid>
             </Grid>
           </CardContent>
           <Divider />
@@ -186,8 +162,9 @@ export default function EditUser(props) {
             <Button
               className={classes.submitButton}
               type="submit"
-              variant="outlined"
+              variant="contained"
               color="primary"
+              startIcon={<SaveIcon />}
             >
               Save
             </Button>

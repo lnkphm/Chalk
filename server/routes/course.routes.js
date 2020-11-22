@@ -2,10 +2,13 @@ const express = require('express');
 const router = express.Router();
 const Course = require('../models/course.model');
 const User = require('../models/user.model');
+const ensureAuth = require('../middleware/ensureAuth');
+const ensureAdmin = require('../middleware/ensureAdmin');
+const ensureNonStudent = require('../middleware/ensureNonStudent');
 
 // @desc Get all courses
 // @route GET /api/courses
-router.get('/', (req, res, next) => {
+router.get('/', ensureAuth, (req, res, next) => {
   Course.find(req.query).exec((err, courses) => {
     if (err) return next(err);
     if (!courses) return next();
@@ -15,7 +18,7 @@ router.get('/', (req, res, next) => {
 
 // @desc Get course info
 // @route GET /api/courses/:id
-router.get('/:id', (req, res, next) => {
+router.get('/:id', ensureAuth, (req, res, next) => {
   Course.findById(req.params.id)
     .populate('category')
     .populate('users', '-courses -hash -salt')
@@ -28,7 +31,7 @@ router.get('/:id', (req, res, next) => {
 
 // @desc Create new course
 // @route POST /api/courses
-router.post('/', (req, res, next) => {
+router.post('/', ensureAuth, ensureAdmin, (req, res, next) => {
   const newCourse = new Course({
     name: req.body.name,
     description: req.body.description,
@@ -48,31 +51,36 @@ router.post('/', (req, res, next) => {
 
 // @desc Add user to course
 // @route PUT /api/courses/:courseId/users
-router.post('/:courseId/users', (req, res, next) => {
-  const users = req.body.users;
-  Course.findByIdAndUpdate(
-    req.params.courseId,
-    { $addToSet: { users: { $each: users } } },
-    { new: true },
-    (err, course) => {
-      if (err) return next(err);
-      users.forEach((user, index) => {
-        User.findByIdAndUpdate(
-          user,
-          { $addToSet: { courses: req.params.courseId } },
-          (err) => {
-            if (err) return next(err);
-          }
-        );
-      });
-      return res.send(course);
-    }
-  );
-});
+router.post(
+  '/:courseId/users',
+  ensureAuth,
+  ensureNonStudent,
+  (req, res, next) => {
+    const users = req.body.users;
+    Course.findByIdAndUpdate(
+      req.params.courseId,
+      { $addToSet: { users: { $each: users } } },
+      { new: true },
+      (err, course) => {
+        if (err) return next(err);
+        users.forEach((user, index) => {
+          User.findByIdAndUpdate(
+            user,
+            { $addToSet: { courses: req.params.courseId } },
+            (err) => {
+              if (err) return next(err);
+            }
+          );
+        });
+        return res.send(course);
+      }
+    );
+  }
+);
 
 // @desc Update course
 // @route PUT /api/courses/:id
-router.put('/:id', (req, res, next) => {
+router.put('/:id', ensureAuth, ensureNonStudent, (req, res, next) => {
   const updatedCourse = {
     name: req.body.name,
     description: req.body.description,
@@ -96,7 +104,7 @@ router.put('/:id', (req, res, next) => {
 
 // @desc Delete course
 // @route DELETE /api/courses/:id
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', ensureAuth, ensureAdmin, (req, res, next) => {
   Course.findByIdAndDelete(req.params.id, (err) => {
     if (err) return next(err);
     return res.send({ message: 'Course deleted' });
@@ -105,23 +113,28 @@ router.delete('/:id', (req, res, next) => {
 
 // @desc Remove user from course
 // @route DELETE /api/courses/:courseId/users/:userId
-router.delete('/:courseId/users/:userId', (req, res, next) => {
-  Course.findByIdAndUpdate(
-    req.params.courseId,
-    { $pull: { users: req.params.userId } },
-    { new: true },
-    (err, course) => {
-      if (err) return next(err);
-      User.findByIdAndUpdate(
-        req.params.userId,
-        { $pull: { courses: req.params.courseId } },
-        (err) => {
-          if (err) return next(err);
-        }
-      );
-      return res.send(course);
-    }
-  );
-});
+router.delete(
+  '/:courseId/users/:userId',
+  ensureAuth,
+  ensureNonStudent,
+  (req, res, next) => {
+    Course.findByIdAndUpdate(
+      req.params.courseId,
+      { $pull: { users: req.params.userId } },
+      { new: true },
+      (err, course) => {
+        if (err) return next(err);
+        User.findByIdAndUpdate(
+          req.params.userId,
+          { $pull: { courses: req.params.courseId } },
+          (err) => {
+            if (err) return next(err);
+          }
+        );
+        return res.send(course);
+      }
+    );
+  }
+);
 
 module.exports = router;

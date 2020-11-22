@@ -189,7 +189,6 @@ export default function CreateQuestionDialog(props) {
   const [state, setState] = React.useState({
     text: 'Question',
     type: 'multiple_choice',
-    shuffle: true,
     feedback: 'No feedback',
     points: 1,
     answers: [
@@ -318,7 +317,7 @@ export default function CreateQuestionDialog(props) {
                   onChange={onChangeValue}
                 />
               </Grid>
-              <Grid item xs={10}>
+              <Grid item xs={12}>
                 <TextField
                   label="Points"
                   variant="outlined"
@@ -327,24 +326,6 @@ export default function CreateQuestionDialog(props) {
                   type="number"
                   value={state.points}
                   onChange={onChangeValue}
-                />
-              </Grid>
-              <Grid className={classes.checkbox} item xs={2}>
-                <FormControlLabel
-                  control={
-                    <CheckBox
-                      name="shuffle"
-                      checked={state.shuffle}
-                      onChange={(event) => {
-                        setState({
-                          ...state,
-                          shuffle: event.target.checked,
-                        });
-                      }}
-                      color="secondary"
-                    />
-                  }
-                  label="Shuffle"
                 />
               </Grid>
               <Grid item xs={12}>

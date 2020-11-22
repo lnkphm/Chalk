@@ -259,7 +259,7 @@ export default function EditQuestion(props) {
                   onChange={onChangeValue}
                 />
               </Grid>
-              <Grid item xs={10}>
+              <Grid item xs={12}>
                 <TextField
                   label="Points"
                   variant="outlined"
@@ -268,24 +268,6 @@ export default function EditQuestion(props) {
                   type="number"
                   value={question.points}
                   onChange={onChangeValue}
-                />
-              </Grid>
-              <Grid className={classes.checkbox} item xs={2}>
-                <FormControlLabel
-                  control={
-                    <CheckBox
-                      name="shuffle"
-                      checked={question.shuffle}
-                      onChange={(event) => {
-                        setQuestion({
-                          ...question,
-                          shuffle: event.target.checked,
-                        });
-                      }}
-                      color="secondary"
-                    />
-                  }
-                  label="Shuffle"
                 />
               </Grid>
               <Grid item xs={12}>

@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const Exam = require('../models/exam.model');
 const Question = require('../models/question.model');
+const ensureAuth = require('../middleware/ensureAuth');
+const ensureNonStudent = require('../middleware/ensureNonStudent');
 
 // @desc Get all exam
 // @route GET /api/exams
-router.get('/', (req, res, next) => {
+router.get('/', ensureAuth, (req, res, next) => {
   Exam.find(req.query).exec((err, exams) => {
     if (err) return next(err);
     if (!exams) return next();
@@ -15,7 +17,7 @@ router.get('/', (req, res, next) => {
 
 // @desc Get exam info
 // @route GET /api/exams/:id
-router.get('/:id', (req, res, next) => {
+router.get('/:id', ensureAuth, (req, res, next) => {
   Exam.findById(req.params.id).exec((err, exam) => {
     if (err) return next(err);
     if (!exam) return next();
@@ -23,7 +25,7 @@ router.get('/:id', (req, res, next) => {
   });
 });
 
-router.get('/:id/details', (req, res, next) => {
+router.get('/:id/details', ensureAuth, (req, res, next) => {
   Exam.findById(req.params.id)
     .populate('questions')
     .exec((err, exam) => {
@@ -33,7 +35,7 @@ router.get('/:id/details', (req, res, next) => {
     });
 });
 
-router.post('/', (req, res, next) => {
+router.post('/', ensureAuth, ensureNonStudent, (req, res, next) => {
   const newExam = new Exam({
     title: req.body.title,
     description: req.body.description,
@@ -54,29 +56,34 @@ router.post('/', (req, res, next) => {
   });
 });
 
-router.post('/:id/questions', (req, res, next) => {
-  const questions = req.body.questions;
-  Exam.findByIdAndUpdate(
-    req.params.id,
-    { $addToSet: { questions: { $each: questions } } },
-    { new: true },
-    (err, exam) => {
-      if (err) return next(err);
-      questions.forEach((item, index) => {
-        Question.findByIdAndUpdate(
-          item,
-          { $addToSet: { exams: req.params.id } },
-          (err) => {
-            if (err) return next(err);
-          }
-        );
-      });
-      return res.send(exam);
-    }
-  );
-});
+router.post(
+  '/:id/questions',
+  ensureAuth,
+  ensureNonStudent,
+  (req, res, next) => {
+    const questions = req.body.questions;
+    Exam.findByIdAndUpdate(
+      req.params.id,
+      { $addToSet: { questions: { $each: questions } } },
+      { new: true },
+      (err, exam) => {
+        if (err) return next(err);
+        questions.forEach((item, index) => {
+          Question.findByIdAndUpdate(
+            item,
+            { $addToSet: { exams: req.params.id } },
+            (err) => {
+              if (err) return next(err);
+            }
+          );
+        });
+        return res.send(exam);
+      }
+    );
+  }
+);
 
-router.put('/:id', (req, res, next) => {
+router.put('/:id', ensureAuth, ensureNonStudent, (req, res, next) => {
   const updatedExam = {
     title: req.body.title,
     description: req.body.description,
@@ -103,7 +110,7 @@ router.put('/:id', (req, res, next) => {
 
 // @desc Delete exam
 // @route DELETE /api/exams/:examId
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', ensureAuth, ensureNonStudent, (req, res, next) => {
   Exam.findByIdAndDelete(req.params.id, (err) => {
     if (err) return next(err);
     return res.send({ message: 'Exam deleted' });
@@ -112,23 +119,28 @@ router.delete('/:id', (req, res, next) => {
 
 // @desc Remove question from exam
 // @route DELETE /api/exams/:examId/questions/:questionId
-router.delete('/:examId/questions/:questionId', (req, res, next) => {
-  Exam.findByIdAndUpdate(
-    req.params.examId,
-    { $pull: { questions: req.params.questionId } },
-    { new: true },
-    (err, exam) => {
-      if (err) return next(err);
-      Question.findByIdAndUpdate(
-        req.params.questionId,
-        { $pull: { exams: req.params.examId } },
-        (err) => {
-          if (err) return next(err);
-        }
-      );
-      return res.send(exam);
-    }
-  );
-});
+router.delete(
+  '/:examId/questions/:questionId',
+  ensureAuth,
+  ensureNonStudent,
+  (req, res, next) => {
+    Exam.findByIdAndUpdate(
+      req.params.examId,
+      { $pull: { questions: req.params.questionId } },
+      { new: true },
+      (err, exam) => {
+        if (err) return next(err);
+        Question.findByIdAndUpdate(
+          req.params.questionId,
+          { $pull: { exams: req.params.examId } },
+          (err) => {
+            if (err) return next(err);
+          }
+        );
+        return res.send(exam);
+      }
+    );
+  }
+);
 
 module.exports = router;

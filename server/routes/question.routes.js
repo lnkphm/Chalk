@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Question = require('../models/question.model');
+const ensureAuth = require('../middleware/ensureAuth');
+const ensureNonStudent = require('../middleware/ensureNonStudent');
 
-router.get('/', (req, res, next) => {
+router.get('/', ensureAuth, ensureNonStudent, (req, res, next) => {
   Question.find(req.query).exec((err, questions) => {
     if (err) return next(err);
     if (!questions) return next();
@@ -10,7 +12,7 @@ router.get('/', (req, res, next) => {
   });
 });
 
-router.get('/:id', (req, res, next) => {
+router.get('/:id', ensureAuth, ensureNonStudent, (req, res, next) => {
   Question.findById(req.params.id)
     .populate('tags')
     .exec((err, question) => {
@@ -20,11 +22,10 @@ router.get('/:id', (req, res, next) => {
     });
 });
 
-router.post('/', (req, res, next) => {
+router.post('/', ensureAuth, ensureNonStudent, (req, res, next) => {
   const newQuestion = new Question({
     text: req.body.text,
     type: req.body.type,
-    shuffle: req.body.shuffle,
     feedback: req.body.feedback,
     answers: req.body.answers,
     points: req.body.points,
@@ -37,7 +38,7 @@ router.post('/', (req, res, next) => {
   });
 });
 
-router.post('/:id/tags', (req, res, next) => {
+router.post('/:id/tags', ensureAuth, ensureNonStudent, (req, res, next) => {
   const tags = req.body.tags;
   Question.findByIdAndUpdate(
     req.params.id,
@@ -49,11 +50,10 @@ router.post('/:id/tags', (req, res, next) => {
   );
 });
 
-router.put('/:id', (req, res, next) => {
+router.put('/:id', ensureAuth, ensureNonStudent, (req, res, next) => {
   const updatedQuestion = {
     text: req.body.text,
     type: req.body.type,
-    shuffle: req.body.shuffle,
     feedback: req.body.feedback,
     points: req.body.points,
     answers: req.body.answers,
@@ -68,14 +68,14 @@ router.put('/:id', (req, res, next) => {
   );
 });
 
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', ensureAuth, ensureNonStudent, (req, res, next) => {
   Question.findByIdAndDelete(req.params.id, (err) => {
     if (err) return next(err);
     return res.send({ message: 'Question deleted!' });
   });
 });
 
-router.delete('/:questionId/tags/:tagId', (req, res, next) => {
+router.delete('/:questionId/tags/:tagId', ensureAuth, ensureNonStudent, (req, res, next) => {
   Question.findByIdAndUpdate(
     req.params.questionId,
     { $pull: { tags: req.params.tagId } },
