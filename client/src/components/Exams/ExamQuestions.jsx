@@ -15,6 +15,9 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CreateQuestionDialog from './CreateQuestionDialog';
 import DeleteQuestionDialog from './DeleteQuestionDialog';
 
+import CheckRole from '../../utils/CheckRole';
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -115,6 +118,10 @@ export default function QuestionList() {
     fetchData();
   };
 
+  if (!state) {
+    return <CheckRole role="student" not={true} />;
+  }
+
   return (
     <Container className={classes.root} maxWidth="md">
       <Typography className={classes.title} variant="h4">
@@ -133,15 +140,11 @@ export default function QuestionList() {
       </div>
       <Paper className={classes.paper} variant="outlined">
         <div className={classes.table}>
-          {state ? (
-            <DataGrid
-              rows={getQuestionRows(state.questions)}
-              columns={columns}
-              pageSize={10}
-            />
-          ) : (
-            <div />
-          )}
+          <DataGrid
+            rows={getQuestionRows(state.questions)}
+            columns={columns}
+            pageSize={10}
+          />
         </div>
       </Paper>
     </Container>

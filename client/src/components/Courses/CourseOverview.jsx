@@ -4,8 +4,10 @@ import {
   Link as RouteLink,
   useRouteMatch,
   useHistory,
+  Redirect
 } from 'react-router-dom';
 import axios from 'axios';
+import {DateTime} from 'luxon';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
@@ -23,6 +25,7 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import IconButton from '@material-ui/core/IconButton';
+import UserContext from '../../contexts/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,6 +48,7 @@ function SettingMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [linkDialog, setLinkDialog] = React.useState(false);
   const [deleteDialog, setDeleteDialog] = React.useState(false);
+  const {user} = React.useContext(UserContext);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -88,23 +92,35 @@ function SettingMenu() {
       <IconButton onClick={handleClick}>
         <MoreVertIcon />
       </IconButton>
-      <Menu
-        id="simple-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        <MenuItem onClick={openLinkDialog}>Copy link</MenuItem>
-        <MenuItem
-          component={RouteLink}
-          to={`${url}/edit`}
-          onClick={handleClose}
+      {user.role !== 'student' ? (
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
         >
-          Edit
-        </MenuItem>
-        <MenuItem onClick={openDeleteDialog}>Delete</MenuItem>
-      </Menu>
+          <MenuItem onClick={openLinkDialog}>Copy link</MenuItem>
+          <MenuItem
+            component={RouteLink}
+            to={`${url}/edit`}
+            onClick={handleClose}
+          >
+            Edit
+          </MenuItem>
+          <MenuItem onClick={openDeleteDialog}>Delete</MenuItem>
+        </Menu>
+      ) : (
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem onClick={openLinkDialog}>Copy link</MenuItem>
+        </Menu>
+      )}
       <Dialog
         open={linkDialog}
         onClose={closeLinkDialog}
@@ -152,7 +168,8 @@ function SettingMenu() {
 export default function CourseOverview(props) {
   const classes = useStyles();
   const { courseId } = useParams();
-  const [course, setCourse] = React.useState([]);
+  const [course, setCourse] = React.useState(null);
+  const {user} = React.useContext(UserContext);
 
   React.useEffect(() => {
     axios.get(`/api/courses/${courseId}`).then((res) => {
@@ -160,12 +177,33 @@ export default function CourseOverview(props) {
     });
   }, [courseId]);
 
+  if (!course) {
+    return <div />
+  } 
+  
+  if (!user.courses.find(item => item._id === courseId)) {
+    return <Redirect to='/home' />
+  }
+
   return (
     <Container className={classes.root} maxWidth="md">
       <Card>
         <CardHeader title={course.name} action={<SettingMenu />} />
         <Divider />
         <CardContent>
+          <Typography>
+            <strong>Open date:</strong>{' '}
+            {DateTime.fromISO(course.dateStart).toLocaleString(
+              DateTime.DATETIME_MED
+            )}
+          </Typography>
+          <Typography>
+            <strong>Close date:</strong>{' '}
+            {DateTime.fromISO(course.dateEnd).toLocaleString(
+              DateTime.DATETIME_MED
+            )}
+          </Typography>
+          <Typography><strong>Description:</strong></Typography>
           <Typography>{course.description}</Typography>
         </CardContent>
       </Card>

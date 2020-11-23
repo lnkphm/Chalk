@@ -31,18 +31,30 @@ router.get('/:id', ensureAuth, (req, res, next) => {
 });
 
 router.post('/', ensureAuth, (req, res, next) => {
-  const newPaper = new Paper({
-    user: req.body.user,
-    exam: req.body.exam,
-    submitted: req.body.submitted,
-    timeRemaining: req.body.timeRemaining,
-    graded: false,
-    data: req.body.data,
-  });
-  newPaper.save((err, paper) => {
+  Exam.findById(req.body.exam).exec((err, exam) => {
     if (err) return next(err);
-    if (!paper) return next();
-    return res.status(201).send(paper);
+    let currentDate = new Date();
+    let openDate = new Date(exam.dateOpen);
+    let closeDate = new Date(exam.dateClose);
+    if (currentDate.getTime() < openDate.getTime()) {
+      res.status(403).send({ message: 'Too soon!' });
+    }
+    if (currentDate.getTime() > closeDate.getTime()) {
+      res.status(403).send({ message: 'Too late!' });
+    }
+    const newPaper = new Paper({
+      user: req.body.user,
+      exam: req.body.exam,
+      submitted: req.body.submitted,
+      timeRemaining: req.body.timeRemaining,
+      graded: false,
+      data: req.body.data,
+    });
+    newPaper.save((err, paper) => {
+      if (err) return next(err);
+      if (!paper) return next();
+      return res.status(201).send(paper);
+    });
   });
 });
 
@@ -79,6 +91,9 @@ function GradePaper(paper, exam) {
 }
 
 router.put('/:id', ensureAuth, (req, res, next) => {
+  if (req.user.role === "student" && req.user._id != req.body.user) {
+    return res.send({message: 'Wait, that\'s illegal!'})
+  }
   let updatedPaper = {
     user: req.body.user,
     exam: req.body.exam,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouteLink, useHistory } from 'react-router-dom';
+import { Link as RouteLink, useHistory, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import LuxonUtils from '@date-io/luxon';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -19,6 +19,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import CheckBox from '@material-ui/core/Checkbox';
+
+import UserContext from '../../contexts/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,11 +46,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EditCourse(props) {
+export default function CreateCourse(props) {
   const classes = useStyles();
   const history = useHistory();
   const [categories, setCategories] = React.useState([]);
-  const [state, setState] = React.useState({
+  const initState = {
     name: '',
     description: '',
     dateStart: new Date(),
@@ -56,7 +58,9 @@ export default function EditCourse(props) {
     public: true,
     password: '',
     category: '',
-  });
+  };
+  const [state, setState] = React.useState(initState);
+  const { user } = React.useContext(UserContext);
 
   React.useEffect(() => {
     axios
@@ -79,6 +83,7 @@ export default function EditCourse(props) {
     axios
       .post(`/api/courses`, state)
       .then((res) => {
+        setState(initState);
         history.push(`/courses`);
       })
       .catch((err) => {
@@ -86,11 +91,15 @@ export default function EditCourse(props) {
       });
   };
 
+  if (user.role !== 'admin') {
+    return <Redirect to="/home" />;
+  }
+
   return (
     <MuiPickersUtilsProvider utils={LuxonUtils}>
       <Container className={classes.root} maxWidth="md">
-      <form onSubmit={onSubmit}>
-        <Card>
+        <form onSubmit={onSubmit}>
+          <Card>
             <CardHeader title="Create New Course" />
             <Divider />
             <CardContent>
@@ -210,9 +219,8 @@ export default function EditCourse(props) {
                 Create
               </Button>
             </CardActions>
-        </Card>
+          </Card>
         </form>
-
       </Container>
     </MuiPickersUtilsProvider>
   );

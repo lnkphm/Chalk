@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Link as RouteLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -25,6 +26,60 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function CourseItem(props) {
+  const [exams, setExams] = React.useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      axios.get(`/api/exams?course=${props.course._id}`).then((res) => {
+        setExams(res.data);
+      });
+    }
+    fetchData();
+  }, []);
+
+  return (
+    <Card>
+      <CardHeader
+        title={
+          <Link component={RouteLink} to={`/courses/${props.course._id}`}>
+            {props.course.name}
+          </Link>
+        }
+      />
+      <Divider />
+      <CardContent>
+        <Typography>Current exams</Typography>
+        <ul>
+          {exams.map((item, index) => {
+            const current = new Date();
+            const examOpen = new Date(item.dateOpen);
+            const examClose = new Date(item.dateClose);
+            if (
+              current.getTime() > examOpen.getTime() &&
+              current.getTime() < examClose.getTime()
+            ) {
+              return (
+                <li key={index}>
+                  <Link
+                    component={RouteLink}
+                    color="inherit"
+                    to={`/exams/${item._id}`}
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              );
+            } else {
+              return
+            }
+          })}
+        </ul>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function Home() {
   const { user } = React.useContext(UserContext);
   const [date, setDate] = React.useState(new Date());
@@ -38,19 +93,7 @@ export default function Home() {
             {user.courses.length > 0 ? (
               user.courses.map((item, index) => (
                 <Grid key={index} item xs={12}>
-                  <Card>
-                    <CardHeader
-                      title={
-                        <Link component={RouteLink} to={`/courses/${item._id}`}>
-                          {item.name}
-                        </Link>
-                      }
-                    />
-                    <Divider />
-                    <CardContent>
-                      <Typography noWrap>{item.description}</Typography>
-                    </CardContent>
-                  </Card>
+                  <CourseItem course={item} />
                 </Grid>
               ))
             ) : (
@@ -66,15 +109,6 @@ export default function Home() {
         </Grid>
         <Grid item xs={12} sm={4}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Card>
-                <CardHeader title="Upcoming" />
-                <Divider />
-                <CardContent>
-                  <Typography>There is no upcoming</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
             <Grid item xs={12}>
               <Card>
                 <CardHeader title="Calendar" />

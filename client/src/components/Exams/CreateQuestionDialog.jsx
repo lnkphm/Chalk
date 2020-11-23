@@ -186,7 +186,7 @@ export default function CreateQuestionDialog(props) {
   const classes = useStyles();
   const { examId } = useParams();
   const [open, setOpen] = React.useState(false);
-  const [state, setState] = React.useState({
+  const initState = {
     text: 'Question',
     type: 'multiple_choice',
     feedback: 'No feedback',
@@ -198,7 +198,8 @@ export default function CreateQuestionDialog(props) {
       },
     ],
     tags: [],
-  });
+  }
+  const [state, setState] = React.useState(initState);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -226,6 +227,7 @@ export default function CreateQuestionDialog(props) {
           .post(`/api/exams/${examId}/questions`, data)
           .then((res) => {
             props.callback();
+            setState(initState);
             handleClose();
           })
           .catch((err) => {

@@ -16,6 +16,8 @@ import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import AddIcon from '@material-ui/icons/Add';
 
+import UserContext from '../../contexts/UserContext';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(2),
@@ -37,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
 export default function CourseList(props) {
   const classes = useStyles();
   const [courses, setCourses] = React.useState([]);
+  const { user } = React.useContext(UserContext);
 
   React.useEffect(() => {
     axios
@@ -57,15 +60,19 @@ export default function CourseList(props) {
             <Typography variant="h4" className={classes.title}>
               Courses
             </Typography>
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddIcon />}
-              component={RouteLink}
-              to={`/courses/create`}
-            >
-              Create
-            </Button>
+            {user.role === 'admin' ? (
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddIcon />}
+                component={RouteLink}
+                to={`/courses/create`}
+              >
+                Create
+              </Button>
+            ) : (
+              <div />
+            )}
           </div>
           <Divider />
         </Grid>

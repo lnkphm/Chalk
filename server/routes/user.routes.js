@@ -8,7 +8,7 @@ const ensureAdmin = require('../middleware/ensureAdmin');
 // @route GET /api/users
 router.get('/', ensureAuth, (req, res, next) => {
   User.find(req.query)
-    .select('-hash -salt')
+    .select('-username -hash -salt')
     .exec((err, users) => {
       if (err) {
         return next(err);

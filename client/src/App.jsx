@@ -11,6 +11,7 @@ import Profile from './pages/Profile';
 import Courses from './pages/Courses';
 import Exams from './pages/Exams';
 import Users from './pages/Users';
+import Categories from './pages/Categories';
 
 import UserContext from './contexts/UserContext';
 import ProtectedRoute from './utils/ProtectedRoute';
@@ -63,6 +64,7 @@ export default function App() {
               <Route path="/courses" component={Courses} />
               <Route path="/exams" component={Exams} />
               <Route path="/users" component={Users} />
+              <Route path="/categories" component={Categories} />
             </Switch>
           </ProtectedRoute>
         </Switch>

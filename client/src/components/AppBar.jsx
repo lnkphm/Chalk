@@ -66,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
 function DrawerList(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const {user} = React.useContext(UserContext);
 
   const handleClick = () => {
     setOpen(!open);
@@ -73,78 +74,101 @@ function DrawerList(props) {
 
   return (
     <div>
-    <List>
-      <ListItem
-        button
-        component={RouteLink}
-        to="/home"
-        className={classes.listItem}
-        onClick={props.handleClose}
-      >
-        <ListItemIcon>
-          <HomeIcon />
-        </ListItemIcon>
-        <ListItemText primary="Home" />
-      </ListItem>
-      <ListItem
-        button
-        component={RouteLink}
-        to="/courses"
-        className={classes.listItem}
-        onClick={props.handleClose}
-      >
-        <ListItemIcon>
-          <ClassIcon />
-        </ListItemIcon>
-        <ListItemText primary="Courses" />
-      </ListItem>
+      <List>
+        <ListItem
+          button
+          component={RouteLink}
+          to="/home"
+          className={classes.listItem}
+          onClick={props.handleClose}
+        >
+          <ListItemIcon>
+            <HomeIcon />
+          </ListItemIcon>
+          <ListItemText primary="Home" />
+        </ListItem>
+        <ListItem
+          button
+          component={RouteLink}
+          to="/courses"
+          className={classes.listItem}
+          onClick={props.handleClose}
+        >
+          <ListItemIcon>
+            <FolderIcon />
+          </ListItemIcon>
+          <ListItemText primary="Courses" />
+        </ListItem>
+        {user.courses.map((item, index) => (
+          <ListItem
+            button
+            key={index}
+            component={RouteLink}
+            to={`/courses/${item._id}`}
+            className={classes.nested}
+            onClick={props.handleClose}
+          >
+            <ListItemIcon>
+              <ClassIcon />
+            </ListItemIcon>
+            <ListItemText primary={item.name} />
+          </ListItem>
+        ))}
       </List>
       <Divider />
-      <List>
-      <ListItem button onClick={handleClick}>
-        <ListItemIcon>
-          <FolderIcon />
-        </ListItemIcon>
-        <ListItemText primary="System" />
-        {open ? <ExpandLess /> : <ExpandMore />}
-      </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <ListItem
-            button
-            component={RouteLink}
-            to="/users"
-            className={classes.nested}
-            onClick={props.handleClose}
-          >
+      {user.role === 'admin' ? (
+        <List>
+          <ListItem button onClick={handleClick}>
             <ListItemIcon>
-              <PersonIcon />
+              <FolderIcon />
             </ListItemIcon>
-            <ListItemText primary="Users" />
+            <ListItemText primary="System" />
+            {open ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
-          <ListItem
-            button
-            className={classes.nested}
-            onClick={props.handleClose}
-          >
-            <ListItemIcon>
-              <CategoryIcon />
-            </ListItemIcon>
-            <ListItemText primary="Categories" />
-          </ListItem>
-          <ListItem
-            button
-            className={classes.nested}
-            onClick={props.handleClose}
-          >
-            <ListItemIcon>
-              <LabelIcon />
-            </ListItemIcon>
-            <ListItemText primary="Tags" />
-          </ListItem>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem
+                button
+                component={RouteLink}
+                to="/users"
+                className={classes.nested}
+                onClick={props.handleClose}
+              >
+                <ListItemIcon>
+                  <PersonIcon />
+                </ListItemIcon>
+                <ListItemText primary="Users" />
+              </ListItem>
+              {/* <ListItem
+                button
+                component={RouteLink}
+                to="/categories"
+                className={classes.nested}
+                onClick={props.handleClose}
+              >
+                <ListItemIcon>
+                  <CategoryIcon />
+                </ListItemIcon>
+                <ListItemText primary="Categories" />
+              </ListItem>
+              <ListItem
+                button
+                component={RouteLink}
+                to="/tags"
+                className={classes.nested}
+                onClick={props.handleClose}
+              >
+                <ListItemIcon>
+                  <LabelIcon />
+                </ListItemIcon>
+                <ListItemText primary="Tags" />
+              </ListItem> */}
+            </List>
+          </Collapse>
         </List>
-      </Collapse>
-    </List>
+      ) : (
+        <div />
+      )}
     </div>
   );
 }
@@ -188,33 +212,60 @@ function AppBarDrawer() {
 function CourseNav(props) {
   const classes = useStyles();
   const { courseId } = useParams();
+  const {user} = React.useContext(UserContext);
 
-  return (
-    <div className={classes.nav}>
-      <Tabs value={props.value} indicatorColor="primary">
-        <Tab
-          component={RouteLink}
-          to={`/courses/${courseId}`}
-          label="Overview"
-        />
-        <Tab
-          component={RouteLink}
-          to={`/courses/${courseId}/exams`}
-          label="Exams"
-        />
-        <Tab
-          component={RouteLink}
-          to={`/courses/${courseId}/users`}
-          label="Users"
-        />
-        <Tab
-          component={RouteLink}
-          to={`/courses/${courseId}/grades`}
-          label="Grades"
-        />
-      </Tabs>
-    </div>
-  );
+  if (user.role !== "student") {
+    return (
+      <div className={classes.nav}>
+        <Tabs value={props.value} indicatorColor="primary">
+          <Tab
+            component={RouteLink}
+            to={`/courses/${courseId}`}
+            label="Overview"
+          />
+          <Tab
+            component={RouteLink}
+            to={`/courses/${courseId}/exams`}
+            label="Exams"
+          />
+          <Tab
+            component={RouteLink}
+            to={`/courses/${courseId}/users`}
+            label="Users"
+          />
+          <Tab
+            component={RouteLink}
+            to={`/courses/${courseId}/grades`}
+            label="Grades"
+          />
+        </Tabs>
+      </div>
+    );
+  
+  } else {
+    return (
+      <div className={classes.nav}>
+        <Tabs value={props.value} indicatorColor="primary">
+          <Tab
+            component={RouteLink}
+            to={`/courses/${courseId}`}
+            label="Overview"
+          />
+          <Tab
+            component={RouteLink}
+            to={`/courses/${courseId}/exams`}
+            label="Exams"
+          />
+          <Tab
+            component={RouteLink}
+            to={`/courses/${courseId}/users`}
+            label="Users"
+          />
+        </Tabs>
+      </div>
+    );
+  
+  }
 }
 
 function CourseNavRoutes() {

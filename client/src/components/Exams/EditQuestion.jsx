@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
@@ -23,6 +23,7 @@ import CardActions from '@material-ui/core/CardActions';
 import Divider from '@material-ui/core/Divider';
 import SaveIcon from '@material-ui/icons/Save';
 
+import CheckRole from '../../utils/CheckRole';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,14 +37,14 @@ const useStyles = makeStyles((theme) => ({
   },
   answerText: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   actions: {
     marginLeft: 'auto',
   },
   saveButton: {
     marginLeft: theme.spacing(1),
-  }
+  },
 }));
 
 function Answers(props) {
@@ -156,7 +157,7 @@ function Answers(props) {
             </Grid>
           );
         } else {
-          return <div />
+          return <div />;
         }
       })}
       <Grid item xs={12}>
@@ -172,16 +173,17 @@ export default function EditQuestion(props) {
   const classes = useStyles();
   const { examId, questionId } = useParams();
   const history = useHistory();
-  const [ question, setQuestion] = useState(null);
+  const [question, setQuestion] = useState(null);
 
   useEffect(() => {
-    axios.get(`/api/questions/${questionId}`)
+    axios
+      .get(`/api/questions/${questionId}`)
       .then((res) => {
         setQuestion(res.data);
       })
       .catch((err) => {
         console.log(err);
-      })
+      });
   }, [questionId]);
 
   const onChangeValue = (event) => {
@@ -210,11 +212,11 @@ export default function EditQuestion(props) {
   };
 
   if (!question) {
-    return <div />
+    return <CheckRole role="student" not={true} />;
   }
 
   return (
-    <Container className={classes.root} maxWidth="md">
+    <Container className={classes.root} maxWidth="md">    
       <form onSubmit={handleSubmitQuestion}>
         <Card>
           <CardHeader title="Edit question" />

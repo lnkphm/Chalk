@@ -4,6 +4,7 @@ import {
   useParams,
   Link as RouteLink,
   useHistory,
+  Redirect
 } from 'react-router-dom';
 import axios from 'axios';
 import { DateTime } from 'luxon';
@@ -91,8 +92,12 @@ function SettingMenu(props) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem component={RouteLink} to={`${url}/questions`}>Questions</MenuItem>
-        <MenuItem component={RouteLink} to={`${url}/edit`}>Edit</MenuItem>
+        <MenuItem component={RouteLink} to={`${url}/questions`}>
+          Questions
+        </MenuItem>
+        <MenuItem component={RouteLink} to={`${url}/edit`}>
+          Edit
+        </MenuItem>
         <MenuItem onClick={handleClickDialog}>Delete</MenuItem>
       </Menu>
       <Dialog
@@ -106,9 +111,7 @@ function SettingMenu(props) {
           <Typography>Are you sure?</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>
-            Cancel
-          </Button>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
           <Button onClick={deleteExam} color="secondary">
             Delete
           </Button>
@@ -118,10 +121,45 @@ function SettingMenu(props) {
   );
 }
 
+function StartButton(props) {
+  const classes = useStyles();
+  const { url } = useRouteMatch();
+  let currentDate = new Date();
+  let openDate = new Date(props.exam.dateOpen);
+  let closeDate = new Date(props.exam.dateClose);
+  if (
+    currentDate.getTime() < openDate.getTime() ||
+    currentDate.getTime() > closeDate.getTime()
+  ) {
+    return (
+      <Button
+        className={classes.buttonStart}
+        variant="contained"
+        disabled
+      >
+        Start
+      </Button>
+    );
+  } else {
+    return (
+      <Button
+        className={classes.buttonStart}
+        variant="contained"
+        color="primary"
+        component={RouteLink}
+        to={`${url}/paper`}
+      >
+        Start
+      </Button>
+    );
+  }
+
+}
+
 export default function ExamOverview(props) {
   const classes = useStyles();
   const { user } = React.useContext(UserContext);
-  const [exam, setExam] = React.useState({});
+  const [exam, setExam] = React.useState(null);
   const [submitted, setSummited] = React.useState(false);
 
   const { url } = useRouteMatch();
@@ -139,23 +177,36 @@ export default function ExamOverview(props) {
   }, [examId]);
 
   React.useEffect(() => {
-    axios.get(`/api/papers?user=${user._id}&exam=${examId}`)
-    .then((res) => {
-      if (res.data.length !== 0) {
-        setSummited(res.data[0].submitted)
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-  }, [])
+    axios
+      .get(`/api/papers?user=${user._id}&exam=${examId}`)
+      .then((res) => {
+        if (res.data.length !== 0) {
+          setSummited(res.data[0].submitted);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  if (!exam) {
+    return <div />
+  } else if (!user.courses.find(item => item._id === exam.course)) {
+    return <Redirect to='/home' />
+  }
 
   return (
     <Container className={classes.root} maxWidth="md">
       <Card>
         <CardHeader
           title={exam.title}
-          action={<SettingMenu courseId={exam.course} />}
+          action={
+            user.role !== 'student' ? (
+              <SettingMenu courseId={exam.course} />
+            ) : (
+              <div />
+            )
+          }
         />
         <Divider />
         <CardContent>
@@ -193,15 +244,7 @@ export default function ExamOverview(props) {
               Result
             </Button>
           ) : (
-            <Button
-              className={classes.buttonStart}
-              variant="contained"
-              color="primary"
-              component={RouteLink}
-              to={`${url}/paper`}
-            >
-              Start
-            </Button>
+            <StartButton exam={exam} />
           )}
         </CardActions>
       </Card>

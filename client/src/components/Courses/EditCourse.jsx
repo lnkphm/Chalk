@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
 import DateFnsUtils from '@date-io/date-fns';
@@ -21,6 +21,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import CheckBox from '@material-ui/core/Checkbox';
+
+import UserContext from '../../contexts/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,6 +66,8 @@ export default function EditCourse(props) {
     password: '',
     category: '',
   });
+  const {user} = React.useContext(UserContext);
+
 
   React.useEffect(() => {
     axios
@@ -119,6 +123,10 @@ export default function EditCourse(props) {
   const onClickCancel = () => {
     history.push(`/courses/${courseId}`);
   };
+
+  if (user.role !== 'admin') {
+    return <Redirect to="/home" />;
+  }
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>

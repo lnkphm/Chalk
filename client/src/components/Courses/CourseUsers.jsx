@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
@@ -17,6 +17,7 @@ import Divider from '@material-ui/core/Divider';
 import AddUserDialog from './AddUserDialog';
 import RemoveUserDialog from './RemoveUserDialog';
 import DefaultAvatar from '../../assets/images/avatar.jpg';
+import UserContext from '../../contexts/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,6 +33,7 @@ export default function CourseUsers() {
   const classes = useStyles();
   const { courseId } = useParams();
   const [users, setUsers] = React.useState([]);
+  const { user } = React.useContext(UserContext);
 
   const fetchData = () => {
     axios
@@ -57,24 +59,36 @@ export default function CourseUsers() {
     fetchData();
   };
 
-  const UserListItem = (user, index, role) => {
-    if (user.role !== role) return;
+  const UserListItem = (item, index, role) => {
+    if (item.role !== role) return;
     return (
       <ListItem key={index}>
         <ListItemAvatar>
-          <Avatar src={user.avatar ? user.avatar : DefaultAvatar} />
+          <Avatar src={item.avatar ? item.avatar : DefaultAvatar} />
         </ListItemAvatar>
-        <ListItemText primary={user.name} />
-        <ListItemSecondaryAction>
-          <RemoveUserDialog user={user} callback={removeUserCallback} />
-        </ListItemSecondaryAction>
+        <ListItemText primary={item.name} />
+        {user.role !== 'student' ? (
+          <ListItemSecondaryAction>
+            <RemoveUserDialog user={item} callback={removeUserCallback} />
+          </ListItemSecondaryAction>
+        ) : (
+          <div />
+        )}
       </ListItem>
     );
   };
 
+  if (!user.courses.find(item => item._id === courseId)) {
+    return <Redirect to='/home' />
+  }
+
   return (
     <Container className={classes.root} maxWidth="md">
-      <AddUserDialog callback={addUserCallback} />
+      {user.role !== 'student' ? (
+        <AddUserDialog callback={addUserCallback} />
+      ) : (
+        <div />
+      )}
       {['Teacher', 'Student'].map((role, index) => (
         <Card className={classes.card} key={index}>
           <CardHeader title={role} />

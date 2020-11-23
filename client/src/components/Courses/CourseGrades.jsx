@@ -10,6 +10,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import { DataGrid } from '@material-ui/data-grid';
 
+import CheckRole from '../../utils/CheckRole';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(2),
@@ -23,15 +25,15 @@ const useStyles = makeStyles((theme) => ({
 function ExamSelect(props) {
   const classes = useStyles();
   const [exams, setExams] = useState([]);
-  const [selectedExam, setSelectedExam] = useState("");
+  const [selectedExam, setSelectedExam] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios.get(`/api/exams?course=${props.courseId}`);
       setExams(result.data);
-    }
+    };
     fetchData();
-  }, [props.courseId])
+  }, [props.courseId]);
 
   const handleChange = (event) => {
     setSelectedExam(event.target.value);
@@ -54,12 +56,14 @@ function ExamSelect(props) {
             onChange={handleChange}
             label="Exam"
           >
-            <MenuItem value="" disabled>Choose an exam</MenuItem>
-            {
-              exams.map((item, index) => (
-                <MenuItem key={index} value={item._id}>{item.title}</MenuItem>
-              ))
-            }
+            <MenuItem value="" disabled>
+              Choose an exam
+            </MenuItem>
+            {exams.map((item, index) => (
+              <MenuItem key={index} value={item._id}>
+                {item.title}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       ) : (
@@ -77,7 +81,7 @@ function GradeTable(props) {
     { field: 'username', headerName: 'Username', width: 150 },
     { field: 'name', headerName: 'Name', width: 150 },
     { field: 'points', headerName: 'Points', width: 150 },
-    { field: 'grade', headerName: 'Grade', width: 150 },
+    { field: 'grade', headerName: 'Grade / 10.00', width: 150 },
   ];
 
   const getExamPoints = (exam) => {
@@ -96,19 +100,31 @@ function GradeTable(props) {
     return total;
   };
 
-  const getPaperRows = (exam, papers) => {
+  const getPaperRows = (exam, papers, users) => {
     const examPoints = getExamPoints(exam);
 
-    const rows = papers.map((item, index) => {
-      const paperPoints = getPaperPoints(item);
+    const rows = users.map((item, index) => {
+      const paper = papers.find(paper => paper.user._id === item._id)
+      const paperPoints = (paper) ? (getPaperPoints(paper)) : 0;
       return {
         id: index,
-        username: item.user.username,
-        name: item.user.name,
+        username: item.username,
+        name: item.name,
         points: `${paperPoints} / ${examPoints}`,
         grade: ((paperPoints / examPoints) * 10).toFixed(2),
       };
-    });
+    })
+
+    // const rows = papers.map((item, index) => {
+    //   const paperPoints = getPaperPoints(item);
+    //   return {
+    //     id: index,
+    //     username: item.user.username,
+    //     name: item.user.name,
+    //     points: `${paperPoints} / ${examPoints}`,
+    //     grade: ((paperPoints / examPoints) * 10).toFixed(2),
+    //   };
+    // });
 
     return rows;
   };
@@ -139,18 +155,19 @@ export default function CourseGrades(props) {
       setPapers(papers.data);
       const course = await axios.get(`/api/courses/${courseId}`);
       setCourse(course.data);
-    }
+    };
     getData();
-  }
+  };
 
   return (
     <Container className={classes.root} maxWidth="md">
+      <CheckRole role="student" not="true" />
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <ExamSelect courseId={courseId} callback={examSelectCallback} />
         </Grid>
         <Grid item xs={12}>
-          {exam && papers && course ? (
+          {course && exam && papers ? (
             <GradeTable exam={exam} papers={papers} users={course.users} />
           ) : (
             <div />

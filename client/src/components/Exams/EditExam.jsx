@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import LuxonUtils from '@date-io/luxon';
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -21,6 +21,7 @@ import CardActions from '@material-ui/core/CardActions';
 import Divider from '@material-ui/core/Divider';
 
 import SaveIcon from '@material-ui/icons/Save';
+import UserContext from '../../contexts/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -60,6 +61,7 @@ export default function EditExam() {
   const classes = useStyles();
   const { examId } = useParams();
   const history = useHistory();
+  const {user} = React.useContext(UserContext);
   const [state, setState] = React.useState({
     title: '',
     description: '',
@@ -104,6 +106,10 @@ export default function EditExam() {
   const onClickCancel = () => {
     history.push(`/exams/${examId}`);
   };
+
+  if (user.role === 'student') {
+    return <Redirect to="/home" />
+  }
 
   return (
     <MuiPickersUtilsProvider utils={LuxonUtils}>

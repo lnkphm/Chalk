@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { useParams, Link as RouteLink } from 'react-router-dom';
+import { useParams, Link as RouteLink, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -10,10 +10,10 @@ import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
-
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import CreateExamDialog from './CreateExamDialog';
+import UserContext from '../../contexts/UserContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -70,6 +70,7 @@ export default function CourseExams(props) {
   const classes = useStyles();
   const [exams, setExams] = React.useState([]);
   const { courseId } = useParams();
+  const {user} = React.useContext(UserContext);
 
   const fetchData = () => {
     axios
@@ -91,10 +92,18 @@ export default function CourseExams(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if (!user.courses.find(item => item._id === courseId)) {
+    return <Redirect to='/home' />
+  }
+
   return (
     <Container maxWidth="md" className={classes.root}>
       <div className={classes.toolbar}>
-        <CreateExamDialog callback={callbackCreateExam} />
+        {user.role !== 'student' ? (
+          <CreateExamDialog callback={callbackCreateExam} />
+        ) : (
+          <div />
+        )}
       </div>
       <div className={classes.examList}>
         {exams.map((item, index) => (
