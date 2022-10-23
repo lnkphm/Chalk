@@ -1,2 +1,2 @@
 # Chalk
-Attempt to create a LMS from scratch.
+Try to create a LMS from scratch.
